@@ -18,6 +18,19 @@
   <script>
     tailwind.config = {
       theme: {
+        /* Escalamos la tipografía base para mayor accesibilidad visual */
+        fontSize: {
+          'xs': ['0.9rem', { lineHeight: '1.35rem' }],     /* ~14.4px (antes 12px) */
+          'sm': ['1.05rem', { lineHeight: '1.6rem' }],     /* ~16.8px (antes 14px) */
+          'base': ['1.15rem', { lineHeight: '1.75rem' }],  /* ~18.4px (antes 16px) */
+          'lg': ['1.25rem', { lineHeight: '1.8rem' }],     /* ~20px */
+          'xl': ['1.5rem', { lineHeight: '2rem' }],        /* ~24px */
+          '2xl': ['1.875rem', { lineHeight: '2.25rem' }],  /* ~30px */
+          '3xl': ['2.25rem', { lineHeight: '2.5rem' }],    /* ~36px */
+          '4xl': ['2.5rem', { lineHeight: '2.75rem' }],    /* ~40px */
+          '5xl': ['3rem', { lineHeight: '1' }],            /* ~48px */
+          '6xl': ['3.75rem', { lineHeight: '1' }],         /* ~60px */
+        },
         extend: {
           colors: {
             brand: {
@@ -40,6 +53,39 @@
   </script>
 
   <style>
+    /* Reglas globales de accesibilidad para textos muy pequeños */
+    .text-\\[9px\\],
+    .text-\\[10px\\],
+    .text-\\[11px\\] {
+      font-size: 0.95rem !important; /* Forzamos un tamaño mínimo legible (~15px) */
+      line-height: 1.45rem !important;
+    }
+    .text-xs { font-size: 1.05rem !important; line-height: 1.6rem !important; }
+
+    /* Ajuste de contenedores circulares (badges) para que la letra más grande no se desborde */
+    .w-5.h-5 { width: 1.5rem !important; height: 1.5rem !important; } 
+    .w-7.h-7 { width: 2.2rem !important; height: 2.2rem !important; }
+
+    /* Layout Fluido - Aprovechar el ancho total de la pantalla */
+    .max-w-4xl, 
+    .max-w-5xl, 
+    .max-w-6xl, 
+    .max-w-7xl {
+      max-width: 100% !important;
+      padding-left: 4vw !important;
+      padding-right: 4vw !important;
+    }
+    
+    @media (min-width: 1536px) {
+      .max-w-4xl, 
+      .max-w-5xl, 
+      .max-w-6xl, 
+      .max-w-7xl {
+        padding-left: 8vw !important;
+        padding-right: 8vw !important;
+      }
+    }
+
     body {
       background-color: #FEFAE0;
       color: #131A0B;
@@ -150,11 +196,11 @@
     <!-- Fila 2: Barra de Navegación -->
     <div class="border-t border-white/10 bg-brand-forest">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-11 text-xs">
+        <div class="flex flex-wrap items-center justify-between py-2 min-h-[48px] gap-y-3 gap-x-6 text-xs">
           
           <!-- Enlaces de navegación principales -->
-          <nav class="flex items-center gap-1 sm:gap-2">
-            <a href="#index.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10">
+          <nav class="flex flex-wrap items-center gap-1 sm:gap-2">
+            <a href="#index.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Inicio
             </a>
 
@@ -163,7 +209,7 @@
               <button 
                 type="button" 
                 id="nav-category-btn" 
-                class="nav-section-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 focus:outline-none"
+                class="nav-section-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 focus:outline-none whitespace-nowrap"
               >
                 <span>Categorías</span>
                 <i id="nav-category-caret" class="ph ph-caret-down text-xs transition-transform duration-200"></i>
@@ -285,24 +331,24 @@
               </div>
             </div>
 
-            <a href="#categoria.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10">
+            <a href="#categoria.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Productos
             </a>
 
-            <a href="#ayuda.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10">
+            <a href="#ayuda.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Ayuda/FAQ
             </a>
 
-            <a href="#politicas-retiro.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10">
+            <a href="#politicas-retiro.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Políticas de Retiro
             </a>
           </nav>
 
           <!-- A la derecha: Punto de retiro físico en Quito -->
-          <div class="hidden md:flex items-center gap-2 text-brand-cream/80 text-[11px]">
-            <i class="ph ph-map-pin text-brand-sunflower text-sm"></i>
-            <span>González Suárez 420 & Coruña, Quito</span>
-            <span class="text-brand-sunflower font-sans uppercase font-bold text-[10px] sm:text-xs tracking-widest">
+          <div class="hidden lg:flex items-center gap-2 text-brand-cream/80 text-[11px] flex-shrink-0 ml-auto">
+            <i class="ph ph-map-pin text-brand-sunflower text-sm flex-shrink-0"></i>
+            <span class="whitespace-nowrap">González Suárez 420 & Coruña, Quito</span>
+            <span class="text-brand-sunflower font-sans uppercase font-bold text-[10px] sm:text-xs tracking-widest whitespace-nowrap ml-1">
               Retiro al instante
             </span>
           </div>
@@ -617,7 +663,7 @@
           <p class="text-xs sm:text-sm text-brand-cream/80 leading-relaxed mb-4">
             Tu tienda naturista de confianza en Quito, Ecuador. Productos puros del campo y la Amazonía directo a tu hogar.
           </p>
-          <p class="font-sans font-medium italic text-base sm:text-lg text-brand-sunflower tracking-wide">
+          <p class="font-sans font-bold uppercase tracking-widest text-xs sm:text-sm text-brand-sunflower">
             "Sentirse bien nunca fue tan natural."
           </p>
         </div>
