@@ -54,9 +54,9 @@
 
   <style>
     /* Reglas globales de accesibilidad para textos muy pequeños */
-    .text-\\[9px\\],
-    .text-\\[10px\\],
-    .text-\\[11px\\] {
+    .text-\[9px\],
+    .text-\[10px\],
+    .text-\[11px\] {
       font-size: 1.05rem !important; /* Forzamos un tamaño mínimo legible (~16.8px) */
       line-height: 1.5rem !important;
     }
@@ -114,6 +114,33 @@
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Solo mostrar la píldora de retiro cuando quepa holgadamente en la misma fila */
+    .pickup-header-pill {
+      display: none !important;
+    }
+    @media (min-width: 1420px) {
+      .pickup-header-pill {
+        display: flex !important;
+      }
+    }
+
+    /* Control del Header Inteligente (Zoom / Altura) */
+    .smart-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    /* Solución por altura del viewport:
+       En pantallas estándar, un zoom > 170% (ej. 180%) reduce la altura visible por debajo de los 520px.
+       Al desactivar el sticky basándonos en la altura, aseguramos que el header nunca
+       tape el contenido cuando hay poco espacio vertical. */
+    @media (max-height: 520px) {
+      .smart-header {
+        position: relative !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest">
@@ -121,19 +148,19 @@
   <!-- ==========================================
        1. ENCABEZADO Y NAVEGACIÓN PRINCIPAL (#283618)
        ========================================== -->
-  <header class="sticky top-0 z-40 bg-brand-forest text-brand-cream shadow-md">
+  <header class="smart-header bg-brand-forest text-brand-cream shadow-md transition-all">
     <!-- Fila 1: Logo, Buscador y Utilidades -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-      <div class="flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+      <div class="flex items-center justify-between gap-3 sm:gap-4">
         
         <!-- Logo -->
         <a href="#index.html" class="flex items-center gap-2 group flex-shrink-0">
-          <div class="w-12 h-12 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower group-hover:scale-105 transition-transform">
-            <i class="ph ph-plant text-3xl"></i>
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower group-hover:scale-105 transition-transform">
+            <i class="ph ph-plant text-2xl sm:text-3xl"></i>
           </div>
           <div>
-            <span class="font-botanic text-2xl sm:text-3xl font-bold tracking-tight text-brand-cream block leading-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline pr-2">&amp;</span>Pamba</span>
-            <span class="text-[10px] sm:text-xs text-brand-olive tracking-widest uppercase block font-medium">Tu tienda naturista en Quito</span>
+            <span class="font-botanic text-xl sm:text-3xl font-bold tracking-tight text-brand-cream block leading-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-1.5 sm:ml-2 mr-2 sm:mr-3 inline-block transform -rotate-12 align-baseline pr-1 sm:pr-2">&amp;</span>Pamba</span>
+            <span class="text-[9px] sm:text-[10px] md:text-xs text-brand-olive tracking-widest uppercase block font-medium mt-0.5">Tu tienda naturista en Quito</span>
           </div>
         </a>
 
@@ -177,7 +204,7 @@
       </div>
 
       <!-- Buscador en móvil -->
-      <div class="mt-2.5 md:hidden">
+      <div class="mt-2 sm:mt-2.5 md:hidden">
         <div class="relative">
           <input 
             type="text" 
@@ -195,10 +222,10 @@
     <!-- Fila 2: Barra de Navegación -->
     <div class="border-t border-white/10 bg-brand-forest">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-wrap items-center justify-between py-2.5 min-h-[52px] gap-y-3 gap-x-6 text-xs sm:text-sm">
+        <div class="flex flex-nowrap overflow-x-auto hide-scrollbar items-center justify-between py-2 min-h-[48px] gap-x-6 text-xs sm:text-sm">
           
           <!-- Enlaces de navegación principales -->
-          <nav class="flex flex-wrap items-center gap-1 sm:gap-2">
+          <nav class="flex flex-nowrap items-center gap-1 sm:gap-2 flex-shrink-0">
             <a href="#index.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Inicio
             </a>
@@ -208,7 +235,7 @@
               <button 
                 type="button" 
                 id="nav-category-btn" 
-                class="nav-section-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 focus:outline-none whitespace-nowrap"
+                class="nav-section-link flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 focus:outline-none whitespace-nowrap"
               >
                 <span>Categorías</span>
                 <i id="nav-category-caret" class="ph ph-caret-down text-sm transition-transform duration-200"></i>
@@ -330,21 +357,21 @@
               </div>
             </div>
 
-            <a href="#categoria.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+            <a href="#categoria.html" class="nav-section-link px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Productos
             </a>
 
-            <a href="#ayuda.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+            <a href="#ayuda.html" class="nav-section-link px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Ayuda/FAQ
             </a>
 
-            <a href="#politicas-retiro.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+            <a href="#politicas-retiro.html" class="nav-section-link px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Políticas de Retiro
             </a>
           </nav>
 
-          <!-- A la derecha: Punto de retiro físico en Quito con diseño en forma de píldora (Pill) y dirección más grande -->
-          <div class="hidden xl:flex items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
+          <!-- A la derecha: Punto de retiro físico en Quito (se oculta al achicar la ventana para evitar que salte de fila) -->
+          <div class="pickup-header-pill items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
             <i class="ph ph-map-pin text-brand-sunflower text-lg flex-shrink-0"></i>
             <span class="text-brand-cream/90 text-sm whitespace-nowrap font-medium tracking-wide">González Suárez 420 & Coruña, Quito</span>
             <div class="w-px h-4 bg-white/20 mx-1.5"></div>
@@ -650,15 +677,15 @@
        ========================================== -->
   <footer class="bg-brand-forest text-brand-cream border-t border-brand-forest/20 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-10 xl:gap-14">
         
         <!-- Columna 1 -->
-        <div>
-          <div class="flex items-center gap-2 mb-4">
-            <span class="w-10 h-10 rounded-lg bg-brand-cream/10 text-brand-sunflower flex items-center justify-center font-bold">
+        <div class="min-w-0 pr-0 xl:pr-6">
+          <div class="flex items-center gap-2 mb-4 flex-wrap">
+            <span class="w-10 h-10 rounded-lg bg-brand-cream/10 text-brand-sunflower flex items-center justify-center font-bold flex-shrink-0">
               <i class="ph ph-plant text-2xl"></i>
             </span>
-            <span class="font-botanic text-3xl font-bold tracking-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba</span>
+            <span class="font-botanic text-2xl 2xl:text-3xl font-bold tracking-tight flex items-center whitespace-nowrap">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba</span>
           </div>
           <p class="text-sm sm:text-base text-brand-cream/80 leading-relaxed mb-5 font-medium">
             Tu tienda naturista de confianza en Quito, Ecuador. Productos puros del campo y la Amazonía directo a tu hogar.
@@ -669,10 +696,10 @@
         </div>
 
         <!-- Columna 2 -->
-        <div>
+        <div class="min-w-0">
           <h4 class="font-botanic font-bold text-lg text-brand-cream mb-5 flex items-center gap-2">
-            <i class="ph ph-phone-call text-brand-sunflower text-xl"></i>
-            Atención & Ayuda
+            <i class="ph ph-phone-call text-brand-sunflower text-xl flex-shrink-0"></i>
+            <span>Atención & Ayuda</span>
           </h4>
           <ul class="space-y-3 text-sm text-brand-cream/90 font-medium">
             <li class="flex items-center gap-2.5">
@@ -1286,8 +1313,8 @@
                 <div>
                   <h3 class="font-botanic text-xl sm:text-2xl font-bold text-brand-forest group-hover:text-brand-leaf transition-colors">Suplementos & Superalimentos</h3>
                   <p class="text-sm text-brand-forest/90 mt-2 mb-4 font-medium leading-relaxed">Superalimentos en polvo, maca, cacao fino, colágeno, vitaminas, minerales y remedios tradicionales.</p>
-                  <span class="inline-flex items-center gap-2 text-sm font-bold text-brand-forest group-hover:translate-x-1 transition-transform bg-white/30 px-3 py-1.5 rounded-lg border border-brand-forest/20">
-                    <span>Explorar 10 formulaciones activas</span>
+                  <span class="inline-flex items-center gap-2 text-sm text-brand-forest group-hover:translate-x-1 transition-transform bg-white/30 px-3 py-1.5 rounded-lg border border-brand-forest/20">
+                    <span>Explorar <strong class="font-bold">10</strong> productos disponibles</span>
                     <i class="ph ph-arrow-right text-lg"></i>
                   </span>
                 </div>
@@ -1459,111 +1486,111 @@
             ` : ''}
           </nav>
 
-          <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
             
-            <aside class="lg:col-span-1 bg-brand-cream p-5 rounded-3xl border-[3px] border-brand-forest shadow-sm space-y-4">
-              <div class="flex items-center justify-between pb-3 border-b-2 border-brand-forest/20">
-                <h3 class="font-botanic font-bold text-base text-brand-forest uppercase tracking-wider flex items-center gap-2">
-                  <i class="ph ph-funnel text-lg text-brand-forest"></i>
-                  Categorías
+            <aside class="lg:col-span-4 xl:col-span-3 bg-brand-cream p-5 sm:p-6 rounded-3xl border-[3px] border-brand-forest shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b-2 border-brand-forest/20 gap-2">
+                <h3 class="font-botanic font-bold text-base text-brand-forest uppercase tracking-wider flex items-center gap-2 min-w-0">
+                  <i class="ph ph-funnel text-lg text-brand-forest flex-shrink-0"></i>
+                  <span class="truncate">Categorías</span>
                 </h3>
-                <a href="#categoria.html" class="text-xs text-brand-forest hover:underline font-bold">Limpiar</a>
+                <a href="#categoria.html" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0">Limpiar</a>
               </div>
 
-              <a href="#categoria.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-forest font-semibold'} text-sm transition-colors border border-brand-forest/20">
-                <span class="flex items-center gap-2.5">
-                  <i class="ph ph-squares-four text-lg"></i>
-                  <span>Todos los productos</span>
+              <a href="#categoria.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-forest font-semibold'} text-sm transition-colors border border-brand-forest/20 gap-2">
+                <span class="flex items-center gap-2.5 min-w-0">
+                  <i class="ph ph-squares-four text-lg flex-shrink-0"></i>
+                  <span class="truncate">Todos los productos</span>
                 </span>
-                <span class="text-xs px-2 py-0.5 rounded-full ${!selectedCat && !selectedSpecial ? 'bg-brand-forest text-brand-cream' : 'bg-brand-forest/20 text-brand-forest'} font-bold">${PRODUCTS.length}</span>
+                <span class="text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${!selectedCat && !selectedSpecial ? 'bg-brand-forest text-brand-cream' : 'bg-brand-forest/20 text-brand-forest'} font-bold">${PRODUCTS.length}</span>
               </a>
 
               <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <div class="sidebar-cat-header flex items-center justify-between w-full p-3.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none" data-cat="especiales">
-                  <span class="text-sm font-bold text-brand-forest flex items-center gap-2.5">
-                    <i class="ph ph-sparkle text-lg text-amber-600"></i>
-                    <span>Selección Especial</span>
+                <div class="sidebar-cat-header flex items-center justify-between w-full p-3.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-2" data-cat="especiales">
+                  <span class="text-sm font-bold text-brand-forest flex items-center gap-2.5 min-w-0">
+                    <i class="ph ph-sparkle text-lg text-amber-600 flex-shrink-0"></i>
+                    <span class="truncate">Selección Especial</span>
                   </span>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream">${allSpecialCount}</span>
-                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest ${selectedSpecial ? 'rotate-180' : ''}"></i>
+                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedSpecial ? 'rotate-180' : ''}"></i>
                   </div>
                 </div>
 
                 <div class="sidebar-cat-drawer ${selectedSpecial ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2.5 space-y-1.5">
-                  <a href="#categoria.html?special=all" class="flex items-center justify-between px-3 py-2 rounded-lg text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors">
-                    <span>Ver toda la selección</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">${allSpecialCount}</span>
+                  <a href="#categoria.html?special=all" class="flex items-center justify-between px-3 py-2 rounded-lg text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
+                    <span class="truncate">Ver toda la selección</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">${allSpecialCount}</span>
                   </a>
-                  <a href="#categoria.html?special=destacados" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'destacados' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span class="flex items-center gap-1.5">
-                      <i class="ph ph-star text-sm text-amber-600"></i>
-                      <span>Productos Destacados</span>
+                  <a href="#categoria.html?special=destacados" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'destacados' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="flex items-center gap-1.5 min-w-0">
+                      <i class="ph ph-star text-sm text-amber-600 flex-shrink-0"></i>
+                      <span class="truncate">Productos Destacados</span>
                     </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">4</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
                   </a>
-                  <a href="#categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'mas-vendidos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span class="flex items-center gap-1.5">
-                      <i class="ph ph-fire text-sm text-amber-600"></i>
-                      <span>Los Más Vendidos</span>
+                  <a href="#categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'mas-vendidos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="flex items-center gap-1.5 min-w-0">
+                      <i class="ph ph-fire text-sm text-amber-600 flex-shrink-0"></i>
+                      <span class="truncate">Los Más Vendidos</span>
                     </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">6</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">6</span>
                   </a>
-                  <a href="#categoria.html?special=nuevos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'nuevos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span class="flex items-center gap-1.5">
-                      <i class="ph ph-plant text-sm text-brand-moss"></i>
-                      <span>Productos Nuevos</span>
+                  <a href="#categoria.html?special=nuevos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSpecial === 'nuevos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="flex items-center gap-1.5 min-w-0">
+                      <i class="ph ph-plant text-sm text-brand-moss flex-shrink-0"></i>
+                      <span class="truncate">Productos Nuevos</span>
                     </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">4</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
                   </a>
                 </div>
               </div>
 
               <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <div class="sidebar-cat-header flex items-center justify-between w-full p-3.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none" data-cat="suplementos">
-                  <span class="text-sm font-bold text-brand-forest flex items-center gap-2.5">
-                    <i class="ph ph-lightning text-lg text-brand-forest"></i>
-                    Suplementos
+                <div class="sidebar-cat-header flex items-center justify-between w-full p-3.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-2" data-cat="suplementos">
+                  <span class="text-sm font-bold text-brand-forest flex items-center gap-2.5 min-w-0">
+                    <i class="ph ph-lightning text-lg text-brand-forest flex-shrink-0"></i>
+                    <span class="truncate">Suplementos</span>
                   </span>
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 flex-shrink-0">
                     <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream">10</span>
-                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest ${selectedCat === 'suplementos' ? 'rotate-180' : ''}"></i>
+                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedCat === 'suplementos' ? 'rotate-180' : ''}"></i>
                   </div>
                 </div>
 
                 <div class="sidebar-cat-drawer ${selectedCat === 'suplementos' ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2.5 space-y-1.5">
-                  <a href="#categoria.html?cat=suplementos" class="flex items-center justify-between px-3 py-2 rounded-lg text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors">
-                    <span>Ver todos los suplementos</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">10</span>
+                  <a href="#categoria.html?cat=suplementos" class="flex items-center justify-between px-3 py-2 rounded-lg text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
+                    <span class="truncate">Ver todos los suplementos</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'vitaminas-minerales' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span>Vitaminas y Minerales</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">3</span>
+                  <a href="#categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'vitaminas-minerales' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="truncate">Vitaminas y Minerales</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">3</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'remedios' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span>Remedios</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">2</span>
+                  <a href="#categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'remedios' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="truncate">Remedios</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">2</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'suplementos-polvo' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors">
-                    <span>Suplementos en Polvo</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold">5</span>
+                  <a href="#categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs ${selectedSubcat === 'suplementos-polvo' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                    <span class="truncate">Suplementos en Polvo</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">5</span>
                   </a>
                 </div>
               </div>
             </aside>
 
-            <div class="lg:col-span-3 space-y-6">
+            <div class="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0">
               <div class="flex items-center justify-between pb-4 border-b border-brand-olive/60">
-                <div>
-                  <h2 class="font-botanic text-3xl font-bold text-brand-forest">
+                <div class="min-w-0 pr-4">
+                  <h2 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest truncate">
                     ${subcatTitle ? subcatTitle : catTitle}
                   </h2>
-                  <p class="text-sm text-brand-leaf/70 mt-1 font-medium">Mostrando ${filtered.length} formulaciones naturales</p>
+                  <p class="text-sm text-brand-leaf/70 mt-1 font-normal">Mostrando <strong class="font-bold text-base">${filtered.length}</strong> productos naturales</p>
                 </div>
               </div>
 
               ${filtered.length > 0 ? `
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
                   ${filtered.map(renderProductCard).join('')}
                 </div>
               ` : `
