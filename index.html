@@ -344,7 +344,7 @@
           </nav>
 
           <!-- A la derecha: Punto de retiro físico en Quito con diseño en forma de píldora (Pill) y dirección más grande -->
-          <div class="hidden lg:flex items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
+          <div class="hidden xl:flex items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
             <i class="ph ph-map-pin text-brand-sunflower text-lg flex-shrink-0"></i>
             <span class="text-brand-cream/90 text-sm whitespace-nowrap font-medium tracking-wide">González Suárez 420 & Coruña, Quito</span>
             <div class="w-px h-4 bg-white/20 mx-1.5"></div>
@@ -1353,7 +1353,7 @@
             </a>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
             ${featured.map(renderProductCard).join('')}
           </div>
         </section>
@@ -1373,7 +1373,7 @@
                 <i class="ph ph-arrow-right text-lg"></i>
               </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
               ${bestSellers.map(renderProductCard).join('')}
             </div>
           </div>
@@ -1390,7 +1390,7 @@
                 <i class="ph ph-arrow-right text-lg"></i>
               </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
               ${newArrivals.map(renderProductCard).join('')}
             </div>
           </div>
@@ -1620,23 +1620,23 @@
             </div>
           </div>
 
-          <div class="mt-auto bg-[#3e4a2f] p-3 rounded-xl border border-brand-forest/30 flex items-center justify-between gap-2 shadow-xs">
+          <div class="mt-auto bg-[#3e4a2f] p-2.5 sm:p-3 rounded-xl border border-brand-forest/30 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 shadow-xs">
             <div>
-              <span class="text-xl font-extrabold text-brand-cream block leading-tight">$${p.price.toFixed(2)}</span>
+              <span class="text-lg sm:text-xl font-extrabold text-brand-cream block leading-tight">$${p.price.toFixed(2)}</span>
             </div>
 
-            <div class="flex items-center gap-2">
-              <a href="#producto.html?id=${p.id}" class="px-3 py-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest hover:bg-brand-olive/40 text-xs font-bold transition-colors shadow-xs">
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <a href="#producto.html?id=${p.id}" class="px-2.5 sm:px-3 py-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest hover:bg-brand-olive/40 text-xs font-bold transition-colors shadow-xs">
                 Ver
               </a>
               <button 
                 type="button" 
                 onclick="addToCart('${p.id}', 1)" 
-                class="px-3.5 py-2 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center gap-1.5 transition-transform active:scale-95 shadow-xs"
+                class="px-2.5 sm:px-3.5 py-2 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center gap-1.5 transition-transform active:scale-95 shadow-xs"
                 aria-label="Añadir ${p.name} al carrito"
               >
                 <i class="ph ph-shopping-cart text-base"></i>
-                <span class="hidden sm:inline">Añadir</span>
+                <span class="hidden sm:inline lg:hidden xl:inline">Añadir</span>
               </button>
             </div>
           </div>
