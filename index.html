@@ -139,6 +139,15 @@
       position: sticky;
       top: 0;
       z-index: 40;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+    .smart-header .max-w-7xl {
+      padding-left: clamp(0.5rem, 2.5vw, 2rem) !important;
+      padding-right: clamp(0.5rem, 2.5vw, 2rem) !important;
+      box-sizing: border-box !important;
+      width: 100% !important;
     }
 
     /* Solución por altura del viewport:
@@ -171,28 +180,32 @@
        ========================================== -->
   <header class="smart-header bg-brand-forest text-brand-cream shadow-md transition-all">
     <!-- Fila 1: Logo, Buscador y Utilidades -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
-      <div class="flex items-center justify-between gap-3 sm:gap-4">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-3 w-full box-border">
+      <div class="flex items-center justify-between gap-1.5 sm:gap-4 w-full">
         
         <!-- Logo -->
-        <a href="#index.html" class="flex items-center gap-2 group flex-shrink-0">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower group-hover:scale-105 transition-transform">
-            <i class="ph ph-plant text-2xl sm:text-3xl"></i>
+        <a href="#index.html" class="flex items-center gap-1.5 sm:gap-2.5 group flex-shrink-0">
+          <div class="w-8 h-8 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower group-hover:scale-105 transition-transform flex-shrink-0">
+            <i class="ph ph-plant text-lg sm:text-2xl md:text-3xl"></i>
           </div>
-          <div>
-            <span class="font-botanic text-xl sm:text-3xl font-bold tracking-tight text-brand-cream block leading-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-1.5 sm:ml-2 mr-2 sm:mr-3 inline-block transform -rotate-12 align-baseline pr-1 sm:pr-2">&amp;</span>Pamba</span>
-            <span class="text-[9px] sm:text-[10px] md:text-xs text-brand-olive tracking-widest uppercase block font-medium mt-0.5">Tu tienda naturista en Quito</span>
+          <div class="flex flex-col justify-center">
+            <span class="font-botanic text-[clamp(1rem,3.8vw,1.875rem)] font-bold tracking-tight text-brand-cream block leading-tight flex items-center whitespace-nowrap">
+              Sacha<span class="font-hand text-brand-sunflower text-[1.25em] sm:text-[1.4em] font-bold ml-1 sm:ml-2 mr-1 sm:mr-3 inline-block transform -rotate-12 align-baseline pr-0.5 sm:pr-2">&amp;</span>Pamba
+            </span>
+            <span class="text-[9px] sm:text-[10px] md:text-xs text-brand-olive tracking-wider sm:tracking-widest uppercase font-medium mt-0.5 hidden sm:block">
+              Tu tienda naturista en Quito
+            </span>
           </div>
         </a>
 
-        <!-- Buscador centrado con dropdown en vivo -->
-        <div class="flex-1 max-w-lg hidden md:block mx-auto relative">
+        <!-- Buscador centrado con dropdown en vivo (Solo en pantallas grandes para no colisionar) -->
+        <div class="flex-1 max-w-md xl:max-w-lg hidden lg:block mx-4 relative min-w-[200px]">
           <div class="relative">
             <input 
               type="text" 
               id="live-search-input" 
               placeholder="¿Qué producto natural buscas hoy? (ej. maca, sacha inchi...)"
-              class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-3 pl-12 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf focus:placeholder-brand-leaf/50 transition-all shadow-inner"
+              class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 xl:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf focus:placeholder-brand-leaf/50 transition-all shadow-inner"
             >
             <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-lg text-brand-sunflower pointer-events-none"></i>
           </div>
@@ -203,35 +216,35 @@
         </div>
 
         <!-- Acciones: Cuenta y Carrito -->
-        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div class="flex items-center gap-1 sm:gap-2.5 flex-shrink-0 ml-auto">
           <button 
             type="button" 
             id="nav-auth-btn" 
-            class="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs sm:text-sm font-semibold text-brand-cream hover:bg-white/10 transition-colors focus:outline-none"
+            class="flex items-center justify-center p-1.5 sm:p-2 lg:px-3 lg:py-2 rounded-full text-xs sm:text-sm font-semibold text-brand-cream hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0"
             aria-label="Acceder a mi cuenta"
           >
-            <i class="ph ph-user text-xl"></i>
-            <span id="nav-auth-label" class="hidden sm:inline">Iniciar Sesión</span>
+            <i class="ph ph-user text-lg sm:text-xl flex-shrink-0"></i>
+            <span id="nav-auth-label" class="hidden lg:inline">Iniciar Sesión</span>
           </button>
 
-          <a href="#carrito.html" class="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm hover:bg-[#dcb556] transition-transform active:scale-95 shadow-sm">
-            <i class="ph ph-shopping-cart text-xl"></i>
-            <span class="hidden sm:inline">Carrito</span>
-            <span id="cart-counter-badge" class="w-6 h-6 rounded-full bg-brand-forest text-brand-cream flex items-center justify-center text-xs font-bold">
+          <a href="#carrito.html" class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 lg:px-4 py-1.5 lg:py-2 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm hover:bg-[#dcb556] transition-transform active:scale-95 shadow-sm flex-shrink-0">
+            <i class="ph ph-shopping-cart text-lg sm:text-xl flex-shrink-0"></i>
+            <span class="hidden lg:inline">Carrito</span>
+            <span id="cart-counter-badge" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-brand-forest text-brand-cream flex items-center justify-center text-[10px] sm:text-xs font-bold flex-shrink-0">
               0
             </span>
           </a>
         </div>
       </div>
 
-      <!-- Buscador en móvil -->
-      <div class="mt-2 sm:mt-2.5 md:hidden">
+      <!-- Buscador en móvil y pantallas menores a lg (Ocupa su propia fila completa para no amontonar la superior) -->
+      <div class="mt-2.5 sm:mt-3 lg:hidden w-full">
         <div class="relative">
           <input 
             type="text" 
             id="live-search-input-mobile" 
             placeholder="Buscar productos naturales..."
-            class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf"
+            class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 sm:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf"
           >
           <i class="ph-bold ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-sunflower pointer-events-none"></i>
         </div>
