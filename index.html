@@ -4130,76 +4130,76 @@
     // --- Vista 10: Políticas de Retiro en Tienda (politicas-retiro.html) ---
     function renderPoliticasRetiroView() {
       return `
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
           
-          <div class="text-left mb-10 pb-5 border-b border-brand-forest/20">
-            <div class="flex items-center gap-2.5 text-brand-moss font-bold text-sm sm:text-base uppercase tracking-widest mb-2">
-              <i class="ph ph-storefront text-xl"></i>
+          <div class="text-left mb-8 sm:mb-10 pb-5 border-b border-brand-forest/20">
+            <div class="flex items-center gap-2.5 text-brand-moss font-bold text-xs sm:text-sm md:text-base uppercase tracking-widest mb-2 flex-wrap">
+              <i class="ph ph-storefront text-lg sm:text-xl flex-shrink-0"></i>
               <span>Servicio de Tienda Física — Quito, Pichincha</span>
             </div>
-            <h1 class="font-botanic text-3xl sm:text-5xl font-bold text-brand-forest mt-1">Políticas de Retiro en Tienda</h1>
-            <p class="text-base sm:text-lg text-brand-leaf/80 mt-3 max-w-3xl leading-relaxed font-medium">
+            <h1 class="font-botanic text-2xl sm:text-4xl md:text-5xl font-bold text-brand-forest mt-1 break-words">Políticas de Retiro en Tienda</h1>
+            <p class="text-sm sm:text-base md:text-lg text-brand-leaf/80 mt-3 max-w-3xl leading-relaxed font-medium break-words">
               En Sacha & Pamba cuidamos cada detalle para que tu experiencia de retiro en nuestra tienda de Quito sea rápida, segura y sustentable.
             </p>
           </div>
 
-          <div class="space-y-8 text-left">
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 sm:p-9 shadow-sm">
-              <div class="flex items-start gap-5">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-xs">
+          <div class="space-y-6 sm:space-y-8 text-left">
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-5 sm:p-7 md:p-9 shadow-sm">
+              <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-2xl sm:text-4xl flex-shrink-0 shadow-xs">
                   <i class="ph ph-map-pin"></i>
                 </div>
-                <div class="space-y-4 flex-1">
-                  <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">1. Ubicación y Horarios de Atención</h3>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                <div class="space-y-4 flex-1 min-w-0">
+                  <h3 class="font-botanic font-bold text-lg sm:text-xl md:text-2xl text-brand-forest break-words">1. Ubicación y Horarios de Atención</h3>
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Todos los retiros se realizan exclusivamente en nuestro punto oficial en <strong>Av. González Suárez 420 y Coruña, Quito, Ecuador</strong>.
                   </p>
-                  <div class="bg-[#CCD5AE] p-5 sm:p-6 rounded-2xl border-2 border-brand-forest/30 text-sm sm:text-base text-brand-forest space-y-2.5 shadow-xs font-medium">
-                    <p class="flex items-center gap-3">
-                      <i class="ph ph-calendar-check text-xl text-brand-forest flex-shrink-0"></i>
-                      <span><strong>Lunes a Viernes:</strong> 08:30 a 18:30 (horario ininterrumpido)</span>
+                  <div class="bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 text-xs sm:text-sm md:text-base text-brand-forest space-y-2.5 shadow-xs font-medium">
+                    <p class="flex items-start gap-3">
+                      <i class="ph ph-calendar-check text-xl text-brand-forest flex-shrink-0 mt-0.5"></i>
+                      <span class="min-w-0 flex-1 break-words"><strong>Lunes a Viernes:</strong> 08:30 a 18:30 (horario ininterrumpido)</span>
                     </p>
-                    <p class="flex items-center gap-3">
-                      <i class="ph ph-clock text-xl text-brand-forest flex-shrink-0"></i>
-                      <span><strong>Sábados:</strong> 09:00 a 14:00</span>
+                    <p class="flex items-start gap-3">
+                      <i class="ph ph-clock text-xl text-brand-forest flex-shrink-0 mt-0.5"></i>
+                      <span class="min-w-0 flex-1 break-words"><strong>Sábados:</strong> 09:00 a 14:00</span>
                     </p>
-                    <p class="flex items-center gap-3 pt-2 border-t border-brand-forest/20 text-brand-forest/90">
-                      <i class="ph ph-prohibit text-xl text-brand-forest flex-shrink-0"></i>
-                      <span><strong>Domingos y Feriados Nacionales:</strong> Cerrado (pedidos procesados el siguiente día hábil).</span>
+                    <p class="flex items-start gap-3 pt-2 border-t border-brand-forest/20 text-brand-forest/90">
+                      <i class="ph ph-prohibit text-xl text-brand-forest flex-shrink-0 mt-0.5"></i>
+                      <span class="min-w-0 flex-1 break-words"><strong>Domingos y Feriados Nacionales:</strong> Cerrado (pedidos procesados el siguiente día hábil).</span>
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 sm:p-9 shadow-sm">
-              <div class="flex items-start gap-5">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-xs">
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-5 sm:p-7 md:p-9 shadow-sm">
+              <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-2xl sm:text-4xl flex-shrink-0 shadow-xs">
                   <i class="ph ph-clock"></i>
                 </div>
-                <div class="space-y-3 flex-1">
-                  <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">2. Tiempos de Preparación y Notificación</h3>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                <div class="space-y-3 flex-1 min-w-0">
+                  <h3 class="font-botanic font-bold text-lg sm:text-xl md:text-2xl text-brand-forest break-words">2. Tiempos de Preparación y Notificación</h3>
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Tu pedido se empaca artesanalmente en materiales biodegradables dentro de un plazo promedio de <strong>2 horas hábiles</strong> tras confirmar la orden en línea.
                   </p>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Podrás hacer seguimiento de tu orden en la sección de <em>Seguimiento de Pedidos</em>. Cuando el estado marque <strong>"Listo para Retiro"</strong>, puedes pasar inmediatamente.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 sm:p-9 shadow-sm">
-              <div class="flex items-start gap-5">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-xs">
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-5 sm:p-7 md:p-9 shadow-sm">
+              <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-2xl sm:text-4xl flex-shrink-0 shadow-xs">
                   <i class="ph ph-identification-card"></i>
                 </div>
-                <div class="space-y-3 flex-1">
-                  <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">3. Requisitos para el Retiro</h3>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                <div class="space-y-3 flex-1 min-w-0">
+                  <h3 class="font-botanic font-bold text-lg sm:text-xl md:text-2xl text-brand-forest break-words">3. Requisitos para el Retiro</h3>
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Para resguardar la seguridad de tu compra, es indispensable presentar en mostrador:
                   </p>
-                  <ul class="list-disc list-inside text-base text-brand-leaf/80 space-y-2 pl-2 leading-relaxed font-medium">
+                  <ul class="list-disc pl-5 space-y-2 text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     <li><strong>Documento de Identificación original:</strong> Cédula de identidad física o pasaporte del titular de la compra.</li>
                     <li><strong>Código de Pedido:</strong> Número oficial (#NAT-XXXX) visible en tu pantalla o comprobante.</li>
                     <li><strong>Retiro por Terceros:</strong> Si otra persona retira en tu lugar, debe presentar una foto legible de la cédula del comprador junto a su propia identificación y número de pedido.</li>
@@ -4208,42 +4208,42 @@
               </div>
             </div>
 
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 sm:p-9 shadow-sm">
-              <div class="flex items-start gap-5">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-xs">
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-5 sm:p-7 md:p-9 shadow-sm">
+              <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-2xl sm:text-4xl flex-shrink-0 shadow-xs">
                   <i class="ph ph-archive-box"></i>
                 </div>
-                <div class="space-y-3 flex-1">
-                  <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">4. Costos y Período de Almacenamiento Gratuito</h3>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                <div class="space-y-3 flex-1 min-w-0">
+                  <h3 class="font-botanic font-bold text-lg sm:text-xl md:text-2xl text-brand-forest break-words">4. Costos y Período de Almacenamiento Gratuito</h3>
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     El servicio de retiro en nuestra tienda es <strong>100% gratuito ($0.00)</strong> sin ningún monto mínimo de compra.
                   </p>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Guardamos tu pedido empacado y resguardado en temperatura controlada hasta por un máximo de <strong>15 días calendario</strong>. Si necesitas extender el plazo, comunícate a nuestro WhatsApp <em>+593 99 876 5432</em>.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 sm:p-9 shadow-sm">
-              <div class="flex items-start gap-5">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-xs">
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-5 sm:p-7 md:p-9 shadow-sm">
+              <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-2xl sm:text-4xl flex-shrink-0 shadow-xs">
                   <i class="ph ph-credit-card"></i>
                 </div>
-                <div class="space-y-3 flex-1">
-                  <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">5. Formas de Pago Aceptadas en Tienda</h3>
-                  <p class="text-base text-brand-leaf/80 leading-relaxed font-medium">
+                <div class="space-y-3 flex-1 min-w-0">
+                  <h3 class="font-botanic font-bold text-lg sm:text-xl md:text-2xl text-brand-forest break-words">5. Formas de Pago Aceptadas en Tienda</h3>
+                  <p class="text-sm sm:text-base text-brand-leaf/80 leading-relaxed font-medium break-words">
                     Si elegiste la opción <strong>"Pagar al Retirar"</strong>, podrás cancelar el valor exacto de tu orden en mostrador mediante:
                   </p>
-                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-sm sm:text-base">
-                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs">
-                      <i class="ph ph-money text-xl"></i> Efectivo exacto
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-sm sm:text-base">
+                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs text-center min-w-0 break-words">
+                      <i class="ph ph-money text-xl flex-shrink-0"></i> <span>Efectivo exacto</span>
                     </span>
-                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs">
-                      <i class="ph ph-credit-card text-xl"></i> Débito y Crédito
+                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs text-center min-w-0 break-words">
+                      <i class="ph ph-credit-card text-xl flex-shrink-0"></i> <span>Débito y Crédito</span>
                     </span>
-                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs">
-                      <i class="ph ph-bank text-xl"></i> Transferencia directa
+                    <span class="bg-[#CCD5AE] p-3.5 rounded-xl border-2 border-brand-forest/20 font-bold text-brand-forest flex items-center justify-center gap-2 shadow-xs text-center min-w-0 break-words">
+                      <i class="ph ph-bank text-xl flex-shrink-0"></i> <span>Transferencia directa</span>
                     </span>
                   </div>
                 </div>
@@ -4251,9 +4251,9 @@
             </div>
           </div>
 
-          <div class="mt-12 text-center pt-3">
-            <a href="#categoria.html" class="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base shadow-sm transition-transform active:scale-95">
-              <i class="ph ph-plant text-xl"></i>
+          <div class="mt-10 sm:mt-12 text-center pt-3">
+            <a href="#categoria.html" class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base shadow-sm transition-transform active:scale-95 max-w-full break-words">
+              <i class="ph ph-plant text-xl flex-shrink-0"></i>
               <span>Explorar catálogo y hacer tu pedido</span>
             </a>
           </div>
