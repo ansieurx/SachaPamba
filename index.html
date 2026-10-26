@@ -302,7 +302,7 @@
               Inicio
             </a>
 
-            <!-- Botón Desplegable de Categorías con soporte Hover y Click -->
+            <!-- Botón Desplegable de Categorías (Apertura y Cierre por Clic) -->
             <div class="relative" id="nav-category-container">
               <button 
                 type="button" 
@@ -316,7 +316,7 @@
               <!-- Panel Desplegable Flotante -->
               <div 
                 id="nav-category-menu" 
-                class="hidden dropdown-enter absolute left-0 top-full mt-2 w-[92vw] sm:w-[500px] bg-[#FEFAE0] text-[#3e4a2f] rounded-2xl shadow-2xl border-2 border-[#283618] overflow-hidden z-50 p-4 sm:p-5 before:content-[''] before:absolute before:-top-3 before:left-0 before:right-0 before:h-3"
+                class="hidden dropdown-enter absolute left-0 top-full mt-2 w-[92vw] sm:w-[500px] bg-[#FEFAE0] text-[#3e4a2f] rounded-2xl shadow-2xl border-2 border-[#283618] overflow-hidden z-50 p-4 sm:p-5"
               >
                 <div class="flex items-center justify-between pb-3 mb-3 border-b-2 border-[#CCD5AE]">
                   <div class="flex items-center gap-2">
@@ -1185,16 +1185,9 @@
     const navCaret = document.getElementById('nav-category-caret');
     const navClose = document.getElementById('nav-category-close');
     const navAccordion = document.getElementById('nav-category-accordion');
-    const navContainer = document.getElementById('nav-category-container') || navBtn?.parentElement;
-
-    let navCategoryCloseTimer = null;
 
     function openNavCategoryMenu() {
       if (!navMenu) return;
-      if (navCategoryCloseTimer) {
-        clearTimeout(navCategoryCloseTimer);
-        navCategoryCloseTimer = null;
-      }
       if (navMenu.classList.contains('hidden')) {
         collapseNavCategories();
         navMenu.classList.remove('hidden');
@@ -1209,7 +1202,7 @@
         e.preventDefault();
         e.stopPropagation();
       }
-      if (navMenu.classList.contains('hidden')) {
+      if (navMenu && navMenu.classList.contains('hidden')) {
         openNavCategoryMenu();
       } else {
         closeNavCategoryMenu();
@@ -1223,10 +1216,6 @@
     }
 
     function closeNavCategoryMenu() {
-      if (navCategoryCloseTimer) {
-        clearTimeout(navCategoryCloseTimer);
-        navCategoryCloseTimer = null;
-      }
       if (!navMenu) return;
       navMenu.classList.add('hidden');
       if (navBackdrop) navBackdrop.classList.add('hidden');
@@ -1234,32 +1223,6 @@
       if (navBtn) navBtn.classList.remove('bg-white/15', 'text-white');
       collapseNavCategories();
     }
-
-    function scheduleCloseNavCategoryMenu(delay = 220) {
-      if (navCategoryCloseTimer) clearTimeout(navCategoryCloseTimer);
-      navCategoryCloseTimer = setTimeout(() => {
-        closeNavCategoryMenu();
-      }, delay);
-    }
-
-    // Despliegue automático al pasar el puntero (hover)
-    if (navContainer) {
-      navContainer.addEventListener('mouseenter', () => {
-        openNavCategoryMenu();
-      });
-      navContainer.addEventListener('mouseleave', () => {
-        scheduleCloseNavCategoryMenu(220);
-      });
-    }
-
-    // Al pasar el cursor a otros enlaces principales, cerrar inmediatamente el menú
-    document.querySelectorAll('.nav-section-link').forEach(link => {
-      if (link !== navBtn) {
-        link.addEventListener('mouseenter', () => {
-          closeNavCategoryMenu();
-        });
-      }
-    });
 
     if (navBtn) navBtn.addEventListener('click', toggleNavCategoryMenu);
     if (navClose) navClose.addEventListener('click', (e) => { e.stopPropagation(); closeNavCategoryMenu(); });
