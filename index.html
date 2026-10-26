@@ -144,8 +144,14 @@
 
     /* Estilos del Carrusel / Panel Promocional */
     .hero-nav-arrow {
-      width: 3.25rem !important;
-      height: 3.25rem !important;
+      width: 2.35rem !important;
+      height: 2.35rem !important;
+    }
+    @media (min-width: 640px) {
+      .hero-nav-arrow {
+        width: 2.75rem !important;
+        height: 2.75rem !important;
+      }
     }
   </style>
 </head>
@@ -1246,10 +1252,10 @@
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
             
             <!-- Contenedor del Carrusel: Rectángulo con Bordes Redondeados -->
-            <div id="hero-carousel" class="relative w-full min-h-[460px] sm:min-h-[520px] lg:h-[560px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-brand-forest/15 bg-brand-forest">
+            <div id="hero-carousel" class="relative w-full min-h-[460px] sm:min-h-[500px] lg:h-[530px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 border-brand-forest/15 bg-brand-forest flex items-center justify-center">
               
-              <!-- SLIDE 1: Sentirse bien nunca fue tan natural (Sección Principal Solicitada) -->
-              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-100 pointer-events-auto z-10 flex items-center">
+              <!-- SLIDE 1: Sentirse bien nunca fue tan natural -->
+              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-100 pointer-events-auto z-10 flex items-center justify-center">
                 <!-- Fondo visual natural andino/amazónico -->
                 <img 
                   src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80" 
@@ -1258,42 +1264,41 @@
                   loading="eager"
                   onerror="this.src='https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80'"
                 >
-                <!-- Gradiente de legibilidad y contraste botánico -->
-                <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/25 sm:to-transparent"></div>
+                <!-- Gradiente unificado para legibilidad y contraste -->
+                <div class="absolute inset-0 bg-black/60 sm:bg-black/55 backdrop-brightness-90"></div>
                 
-                <!-- Contenido Slide 1 -->
-                <div class="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-16 sm:py-20">
-                  <div class="max-w-2xl text-left space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
+                <!-- Contenido Slide 1: Completamente Centrado y Alineado -->
+                <div class="relative max-w-3xl mx-auto px-12 sm:px-16 md:px-20 lg:px-24 w-full py-10 sm:py-14 text-center flex flex-col items-center justify-center">
+                  <div class="h-8 flex items-center justify-center mb-3 sm:mb-4">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
                       <i class="ph ph-plant text-sm"></i>
                       <span>Herbolaria Viva &amp; Tradición Ancestral</span>
-                    </div>
-                    
-                    <h1 class="font-botanic text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg">
-                      Sentirse bien nunca fue tan natural.
-                    </h1>
-                    
-                    <p class="text-base sm:text-lg text-white/95 max-w-xl font-medium leading-relaxed drop-shadow">
-                      Cosechas seleccionadas de comunidades campesinas y recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
-                    </p>
-                    
-                    <!-- Acciones Rápidas / Botones Interactivos -->
-                    <div class="flex flex-wrap items-center gap-3.5 pt-3">
-                      <a href="#mas-vendidos" class="px-7 py-3.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#dcb556] transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2.5">
-                        <span>Ver más vendidos</span>
-                        <i class="ph ph-arrow-down text-lg"></i>
-                      </a>
-                      <a href="#categoria.html" class="px-7 py-3.5 rounded-full bg-brand-forest/90 border border-white/25 text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2.5 backdrop-blur-xs">
-                        <i class="ph ph-magnifying-glass text-lg"></i>
-                        <span>Explorar catálogo</span>
-                      </a>
-                    </div>
+                    </span>
+                  </div>
+                  
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center">
+                    Sentirse bien nunca fue tan natural.
+                  </h2>
+                  
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                    Cosechas seleccionadas de comunidades campesinas y recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
+                  </p>
+                  
+                  <div class="flex flex-wrap items-center justify-center gap-3.5">
+                    <a href="#mas-vendidos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#dcb556] transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2">
+                      <span>Ver más vendidos</span>
+                      <i class="ph ph-arrow-down text-base"></i>
+                    </a>
+                    <a href="#categoria.html" class="px-6 py-3 rounded-full bg-brand-forest/90 border border-white/25 text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2 backdrop-blur-xs">
+                      <i class="ph ph-magnifying-glass text-base"></i>
+                      <span>Explorar catálogo</span>
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <!-- SLIDE 2: Promoción de Suscripción & Ahorro (Inspirado en Imagen 1) -->
-              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center">
+              <!-- SLIDE 2: Promoción de Suscripción & Ahorro -->
+              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center">
                 <!-- Fondo visual -->
                 <img 
                   src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1920&q=80" 
@@ -1302,40 +1307,41 @@
                   loading="lazy"
                   onerror="this.src='https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1920&q=80'"
                 >
-                <!-- Gradiente de legibilidad premium -->
-                <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20 sm:to-transparent"></div>
+                <!-- Gradiente unificado -->
+                <div class="absolute inset-0 bg-black/60 sm:bg-black/55 backdrop-brightness-90"></div>
                 
-                <!-- Contenido Slide 2 -->
-                <div class="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-16 sm:py-20">
-                  <div class="max-w-2xl text-left space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
+                <!-- Contenido Slide 2: Completamente Centrado y Alineado -->
+                <div class="relative max-w-3xl mx-auto px-12 sm:px-16 md:px-20 lg:px-24 w-full py-10 sm:py-14 text-center flex flex-col items-center justify-center">
+                  <div class="h-8 flex items-center justify-center mb-3 sm:mb-4">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
                       <i class="ph ph-sparkle text-sm"></i>
-                      <span>Plan Bienestar Mensual</span>
-                    </div>
-                    
-                    <h2 class="font-botanic text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg">
-                      Suscríbete &amp; Ahorra 15% en Cada Pedido
-                    </h2>
-                    
-                    <p class="text-base sm:text-lg text-white/90 max-w-xl font-medium leading-relaxed drop-shadow">
-                      Recibe tus infusiones medicinales, superalimentos y tinturas puras en tu hogar cada mes con despacho prioritario y regalos botánicos sorpresa.
-                    </p>
-                    
-                    <div class="pt-3 flex flex-wrap items-center gap-4">
-                      <a href="#categoria.html?special=mas-vendidos" class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-brand-forest font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-sunflower hover:text-brand-leaf transition-all duration-300 shadow-xl active:scale-95 group">
-                        <span>Ver Ofertas de Suscripción</span>
-                        <i class="ph ph-arrow-right text-lg group-hover:translate-x-1.5 transition-transform"></i>
-                      </a>
-                      <span class="inline-flex items-center gap-1.5 text-white/80 text-xs sm:text-sm font-semibold">
-                        <i class="ph ph-check-circle text-brand-sunflower text-base"></i> Sin permanencia · Cancela cuando quieras
-                      </span>
-                    </div>
+                      <span>Plan Bienestar Mensual &amp; Ahorro</span>
+                    </span>
+                  </div>
+                  
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center">
+                    Suscríbete &amp; Ahorra 15% en Cada Pedido
+                  </h2>
+                  
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                    Recibe tus infusiones medicinales, superalimentos y tinturas puras en tu hogar cada mes con despacho prioritario y regalos botánicos sorpresa.
+                  </p>
+                  
+                  <div class="flex flex-wrap items-center justify-center gap-3.5">
+                    <a href="#categoria.html?special=mas-vendidos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#dcb556] transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2">
+                      <span>Ver Planes de Ahorro</span>
+                      <i class="ph ph-arrow-right text-base"></i>
+                    </a>
+                    <a href="#categoria.html" class="px-6 py-3 rounded-full bg-brand-forest/90 border border-white/25 text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2 backdrop-blur-xs">
+                      <i class="ph ph-check-circle text-base text-brand-sunflower"></i>
+                      <span>Sin Permanencia · Cancela Libremente</span>
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <!-- SLIDE 3: Novedades / Cosecha Dorada Amazónica (Inspirado en Imagen 2) -->
-              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center">
+              <!-- SLIDE 3: Novedades / Cosecha Dorada Amazónica -->
+              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center">
                 <!-- Fondo visual cálido atardecer -->
                 <img 
                   src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80" 
@@ -1344,37 +1350,41 @@
                   loading="lazy"
                   onerror="this.src='https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=1920&q=80'"
                 >
-                <!-- Gradiente cálido atardecer -->
-                <div class="absolute inset-0 bg-gradient-to-r from-[#1c2411]/90 via-[#283618]/65 to-black/30"></div>
+                <!-- Gradiente unificado -->
+                <div class="absolute inset-0 bg-black/60 sm:bg-black/55 backdrop-brightness-90"></div>
                 
-                <!-- Contenido Slide 3 -->
-                <div class="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-16 sm:py-20">
-                  <div class="max-w-2xl text-left space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-brand-sunflower font-bold text-xs uppercase tracking-widest border border-brand-sunflower/40">
+                <!-- Contenido Slide 3: Completamente Centrado y Alineado -->
+                <div class="relative max-w-3xl mx-auto px-12 sm:px-16 md:px-20 lg:px-24 w-full py-10 sm:py-14 text-center flex flex-col items-center justify-center">
+                  <div class="h-8 flex items-center justify-center mb-3 sm:mb-4">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
                       <i class="ph ph-sun-horizon text-sm"></i>
                       <span>Recién Cosechado · Temporada Solar</span>
-                    </div>
-                    
-                    <h2 class="font-botanic text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg">
-                      Tinturas &amp; Fórmulas Vivas
-                    </h2>
-                    
-                    <p class="text-base sm:text-lg text-white/90 max-w-xl font-medium leading-relaxed drop-shadow">
-                      Evocando la calidez del sol andino y la energía pura de las comunidades de Napo y Pastaza. Extractos botánicos puros para revitalizar tu cuerpo y serenar la mente.
-                    </p>
-                    
-                    <div class="pt-3">
-                      <a href="#categoria.html?special=nuevos" class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-brand-forest font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-sunflower hover:text-brand-leaf transition-all duration-300 shadow-xl active:scale-95 group">
-                        <span>Explorar la Colección</span>
-                        <i class="ph ph-arrow-right text-lg group-hover:translate-x-1.5 transition-transform"></i>
-                      </a>
-                    </div>
+                    </span>
+                  </div>
+                  
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center">
+                    Tinturas &amp; Fórmulas Vivas de la Selva
+                  </h2>
+                  
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                    Evocando la calidez del sol andino y la energía pura de las comunidades de Napo y Pastaza. Extractos botánicos puros para revitalizar tu cuerpo y serenar la mente.
+                  </p>
+                  
+                  <div class="flex flex-wrap items-center justify-center gap-3.5">
+                    <a href="#categoria.html?special=nuevos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#dcb556] transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2">
+                      <span>Explorar la Colección</span>
+                      <i class="ph ph-arrow-right text-base"></i>
+                    </a>
+                    <a href="#categoria.html?cat=suplementos" class="px-6 py-3 rounded-full bg-brand-forest/90 border border-white/25 text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2 backdrop-blur-xs">
+                      <i class="ph ph-drop text-base"></i>
+                      <span>Ver Tinturas &amp; Extractos</span>
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <!-- SLIDE 4: Calidad y Sellos de Reconocimiento 95+ (Inspirado en Imagen 3) -->
-              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center text-center">
+              <!-- SLIDE 4: Calidad y Sellos de Reconocimiento 95+ -->
+              <div class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center">
                 <!-- Fondo visual verde botánico -->
                 <img 
                   src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1920&q=80" 
@@ -1383,80 +1393,61 @@
                   loading="lazy"
                   onerror="this.src='https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=1920&q=80'"
                 >
-                <!-- Gradiente viñeta para destacar sellos y títulos -->
-                <div class="absolute inset-0 bg-black/65 sm:bg-black/55 backdrop-brightness-75"></div>
+                <!-- Gradiente unificado -->
+                <div class="absolute inset-0 bg-black/60 sm:bg-black/55 backdrop-brightness-90"></div>
                 
-                <!-- Contenido Slide 4 -->
-                <div class="relative max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 w-full py-12 sm:py-16 text-center space-y-6">
-                  <!-- Sellos circulares flotantes estilo imagen 3 -->
-                  <div class="flex items-center justify-center gap-3 sm:gap-6 flex-wrap">
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-brand-sunflower bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-1 text-white shadow-xl hover:scale-105 transition-transform">
-                      <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-tighter text-brand-sunflower leading-none">Pureza</span>
-                      <span class="font-botanic text-lg sm:text-xl font-bold leading-none mt-0.5">98+</span>
-                      <span class="text-[8px] sm:text-[9px] text-white/80 leading-none">Pts</span>
-                    </div>
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-brand-sunflower bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-1 text-white shadow-xl hover:scale-105 transition-transform">
-                      <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-tighter text-brand-sunflower leading-none">Bio</span>
-                      <span class="font-botanic text-base sm:text-lg font-bold leading-none mt-0.5">100%</span>
-                      <span class="text-[8px] sm:text-[9px] text-white/80 leading-none">Orgánico</span>
-                    </div>
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-brand-sunflower bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-1 text-white shadow-xl hover:scale-105 transition-transform">
-                      <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-tighter text-brand-sunflower leading-none">Cosecha</span>
-                      <span class="font-botanic text-lg sm:text-xl font-bold leading-none mt-0.5">95+</span>
-                      <span class="text-[8px] sm:text-[9px] text-white/80 leading-none">Andina</span>
-                    </div>
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-brand-sunflower bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-1 text-white shadow-xl hover:scale-105 transition-transform">
-                      <span class="text-[9px] sm:text-[10px] uppercase font-bold tracking-tighter text-brand-sunflower leading-none">Ética</span>
-                      <span class="font-botanic text-base sm:text-lg font-bold leading-none mt-0.5">Justo</span>
-                      <span class="text-[8px] sm:text-[9px] text-white/80 leading-none">Comercio</span>
-                    </div>
-                  </div>
-
-                  <div class="space-y-3">
-                    <span class="inline-block px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-brand-sunflower font-bold text-xs uppercase tracking-widest border border-brand-sunflower/40">
-                      Evaluado por Expertos Agroecológicos
+                <!-- Contenido Slide 4: Completamente Centrado y Alineado -->
+                <div class="relative max-w-3xl mx-auto px-12 sm:px-16 md:px-20 lg:px-24 w-full py-10 sm:py-14 text-center flex flex-col items-center justify-center">
+                  <div class="h-8 flex items-center justify-center mb-3 sm:mb-4">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs uppercase tracking-widest shadow-md">
+                      <i class="ph ph-seal-check text-sm"></i>
+                      <span>Pureza 98+ · Grado Terapéutico</span>
                     </span>
-                    
-                    <h2 class="font-botanic text-3xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.1] max-w-3xl mx-auto drop-shadow-lg">
-                      Superalimentos con Máxima Calidad
-                    </h2>
-                    
-                    <p class="text-base sm:text-lg text-white/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow">
-                      Maca negra, colágeno con camu camu silvestre, cacao fino de aroma y tinturas concentradas. Eficacia terapéutica respaldada por la tradición.
-                    </p>
                   </div>
-
-                  <div class="pt-2">
-                    <a href="#categoria.html?special=destacados" class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white text-brand-forest font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-sunflower hover:text-brand-leaf transition-all duration-300 shadow-xl active:scale-95 group">
+                  
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[4rem] flex items-center justify-center">
+                    Superalimentos con Máxima Calidad
+                  </h2>
+                  
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                    Maca negra, colágeno con camu camu silvestre, cacao fino de aroma y tinturas concentradas. Eficacia terapéutica respaldada por cosechas agroecológicas.
+                  </p>
+                  
+                  <div class="flex flex-wrap items-center justify-center gap-3.5">
+                    <a href="#categoria.html?special=destacados" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#dcb556] transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2">
                       <span>Comprar Productos Premiados</span>
-                      <i class="ph ph-arrow-right text-lg group-hover:translate-x-1.5 transition-transform"></i>
+                      <i class="ph ph-arrow-right text-base"></i>
+                    </a>
+                    <a href="#categoria.html" class="px-6 py-3 rounded-full bg-brand-forest/90 border border-white/25 text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest transition-all duration-200 active:scale-95 shadow-xl flex items-center gap-2 backdrop-blur-xs">
+                      <i class="ph ph-certificate text-base"></i>
+                      <span>Conocer Sellos Agroecológicos</span>
                     </a>
                   </div>
                 </div>
               </div>
 
-              <!-- Flecha de Navegación Izquierda -->
+              <!-- Flecha de Navegación Izquierda: DENTRO del panel y con margen del filo -->
               <button 
                 id="hero-prev-btn" 
                 type="button" 
                 aria-label="Diapositiva anterior" 
-                class="hero-nav-arrow absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
+                class="hero-nav-arrow absolute left-4 sm:left-6 md:left-8 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
               >
-                <i class="ph ph-caret-left text-2xl font-bold"></i>
+                <i class="ph ph-caret-left text-base sm:text-lg font-bold"></i>
               </button>
 
-              <!-- Flecha de Navegación Derecha -->
+              <!-- Flecha de Navegación Derecha: DENTRO del panel y con margen del filo -->
               <button 
                 id="hero-next-btn" 
                 type="button" 
                 aria-label="Siguiente diapositiva" 
-                class="hero-nav-arrow absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
+                class="hero-nav-arrow absolute right-4 sm:right-6 md:right-8 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
               >
-                <i class="ph ph-caret-right text-2xl font-bold"></i>
+                <i class="ph ph-caret-right text-base sm:text-lg font-bold"></i>
               </button>
 
               <!-- Paginación con Puntos (Dots) -->
-              <div class="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5">
+              <div class="absolute bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5">
                 <button data-hero-slide="0" aria-label="Ir a diapositiva 1" class="hero-dot w-8 h-3 rounded-full bg-white transition-all duration-300 cursor-pointer shadow-md"></button>
                 <button data-hero-slide="1" aria-label="Ir a diapositiva 2" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"></button>
                 <button data-hero-slide="2" aria-label="Ir a diapositiva 3" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"></button>
@@ -3959,14 +3950,15 @@
         startTimer();
       }
 
-      carousel.onmouseenter = () => {
+      const carouselGroup = carousel.closest('.group') || carousel;
+      carouselGroup.onmouseenter = () => {
         if (heroAutoplayTimer) {
           clearInterval(heroAutoplayTimer);
           heroAutoplayTimer = null;
         }
       };
 
-      carousel.onmouseleave = () => {
+      carouselGroup.onmouseleave = () => {
         startTimer();
       };
 
