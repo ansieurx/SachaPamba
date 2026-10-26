@@ -1536,7 +1536,7 @@
         <!-- Sección Dinámica: Productos según la opción seleccionada debajo del carrusel -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-12" id="home-products-section">
           <!-- Cuadrícula Dinámica de Productos -->
-          <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 transition-opacity duration-200">
+          <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-opacity duration-200">
             ${featured.map(renderProductCard).join('')}
           </div>
         </section>
@@ -1799,58 +1799,58 @@
 
     function renderProductCard(p) {
       return `
-        <div class="bg-brand-cream rounded-2xl border-[3px] border-brand-forest p-4 flex flex-col justify-between hover:shadow-xl transition-all group h-full">
+        <div class="bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3.5 sm:p-5 flex flex-col justify-between hover:shadow-xl transition-all group h-full">
           <div>
-            <div class="relative rounded-xl overflow-hidden bg-brand-cream aspect-square mb-4 border border-brand-forest/20">
+            <div class="relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3.5 sm:mb-4 border border-brand-forest/20 shadow-xs">
               <img 
                 src="${p.image}" 
                 alt="${p.name}" 
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=${encodeURIComponent(p.name)}'"
               >
-              <span class="absolute top-2.5 left-2.5 bg-brand-forest/90 text-brand-cream text-xs font-bold px-2.5 py-1 rounded-full shadow-xs">
+              <span class="absolute top-3 left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-3 py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.5rem)] truncate">
                 ${p.subcategoryName}
               </span>
             </div>
 
-            <div class="space-y-1 text-left mb-3">
-              <div class="flex items-center gap-1.5 text-amber-500 text-sm">
-                <i class="ph-fill ph-star text-base"></i>
-                <span class="text-brand-leaf font-bold text-sm">${p.rating.toFixed(1)}</span>
-                <span class="text-brand-leaf/60 text-xs">(${p.reviewsCount})</span>
+            <div class="space-y-1.5 text-left mb-3.5 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-brand-forest text-xs font-semibold">
+                <i class="ph-fill ph-star text-amber-500 text-sm"></i>
+                <span class="font-extrabold text-brand-forest">${p.rating.toFixed(1)}</span>
+                <span class="text-brand-forest/60 text-[11px]">(${p.reviewsCount} reseñas)</span>
               </div>
 
-              <h4 class="font-botanic font-bold text-base text-brand-forest leading-snug line-clamp-2 mt-1">
+              <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1">
                 <a href="#producto.html?id=${p.id}" class="hover:text-brand-moss transition-colors">
                   ${p.name}
                 </a>
               </h4>
               
-              <span class="text-sm text-brand-moss font-bold block mt-1">${p.size}</span>
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">${p.size}</span>
 
-              <p class="text-xs text-brand-leaf/70 line-clamp-2 leading-relaxed font-medium mt-1">
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium">
                 ${p.shortDesc}
               </p>
             </div>
           </div>
 
-          <div class="mt-auto bg-[#3e4a2f] p-2.5 sm:p-3 rounded-xl border border-brand-forest/30 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 shadow-xs">
-            <div>
-              <span class="text-lg sm:text-xl font-extrabold text-brand-cream block leading-tight">$${p.price.toFixed(2)}</span>
+          <div class="mt-auto bg-[#283618] p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+            <div class="min-w-0">
+              <span class="text-base sm:text-xl font-extrabold text-brand-cream block leading-tight tracking-tight">$${p.price.toFixed(2)}</span>
             </div>
 
-            <div class="flex items-center gap-1.5 sm:gap-2">
-              <a href="#producto.html?id=${p.id}" class="px-2.5 sm:px-3 py-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest hover:bg-brand-olive/40 text-xs font-bold transition-colors shadow-xs">
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-auto">
+              <a href="#producto.html?id=${p.id}" class="px-3 py-2 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-all shadow-xs border border-brand-forest/20 text-center">
                 Ver
               </a>
               <button 
                 type="button" 
                 onclick="addToCart('${p.id}', 1)" 
-                class="px-2.5 sm:px-3.5 py-2 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center gap-1.5 transition-transform active:scale-95 shadow-xs"
+                class="px-3 sm:px-3.5 py-2 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap"
                 aria-label="Añadir ${p.name} al carrito"
               >
-                <i class="ph ph-shopping-cart text-base"></i>
-                <span class="hidden sm:inline lg:hidden xl:inline">Añadir</span>
+                <i class="ph ph-shopping-cart text-base flex-shrink-0"></i>
+                <span>Añadir</span>
               </button>
             </div>
           </div>
