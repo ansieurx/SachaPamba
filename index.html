@@ -3142,14 +3142,20 @@
                     <span class="font-semibold text-brand-forest/90 whitespace-nowrap">$${subtotalNeto.toFixed(2)}</span>
                   </div>
                   <div class="flex justify-between items-center gap-2 text-[11px] sm:text-xs text-brand-leaf/70 pl-2.5 border-l-2 border-brand-forest/20">
-                    <span class="min-w-0">IVA (15% incluido)</span>
-                    <span class="font-semibold text-brand-forest/90 whitespace-nowrap">$${iva.toFixed(2)}</span>
+                    <strong class="min-w-0 font-bold text-brand-forest">IVA (15% incluido)</strong>
+                    <span class="font-bold text-brand-forest whitespace-nowrap">$${iva.toFixed(2)}</span>
                   </div>
                 </div>
 
-                <div class="pt-4 border-t border-brand-forest/20 flex justify-between items-baseline gap-2">
-                  <span class="font-botanic font-bold text-lg sm:text-xl text-brand-forest">Total a Pagar</span>
-                  <span class="font-botanic text-2xl sm:text-3xl font-black text-brand-forest whitespace-nowrap">$${total.toFixed(2)}</span>
+                <div class="pt-4 border-t border-brand-forest/20 space-y-2">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <span class="font-botanic font-bold text-lg sm:text-xl text-brand-forest">Total a Pagar</span>
+                    <span class="font-botanic text-2xl sm:text-3xl font-black text-brand-forest whitespace-nowrap">$${total.toFixed(2)}</span>
+                  </div>
+                  <p class="text-[11px] sm:text-xs text-brand-leaf/80 font-medium flex items-center gap-1.5 pt-0.5">
+                    <i class="ph ph-check-circle text-brand-forest text-sm flex-shrink-0"></i>
+                    <span>El IVA ya se encuentra incluido en el total</span>
+                  </p>
                 </div>
 
                 <a href="#checkout-retiro.html" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center">
