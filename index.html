@@ -3805,6 +3805,20 @@
       if (!targetHash.startsWith('#')) {
         targetHash = '#' + targetHash;
       }
+
+      const currentRoute = parseRoute(window.location.hash);
+      const targetRoute = parseRoute(targetHash);
+
+      // Si nos encontramos en Inicio y hacemos clic en el título o inicio, mantenerse donde está sin reiniciar ni mover el scroll
+      if (currentRoute.path === 'index.html' && targetRoute.path === 'index.html') {
+        return;
+      }
+
+      // Si ya nos encontramos en la misma ruta con los mismos parámetros, no hacer nada
+      if (currentRoute.path === targetRoute.path && JSON.stringify(currentRoute.params) === JSON.stringify(targetRoute.params)) {
+        return;
+      }
+
       if (window.location.hash !== targetHash) {
         window.location.hash = targetHash;
       } else {
@@ -4221,6 +4235,14 @@
 
       if (href && href.startsWith('#') && !href.startsWith('#mas-vendidos')) {
         e.preventDefault();
+
+        // Si nos encontramos en Inicio y hacemos clic en el título o inicio, mantenerse donde está
+        const currentRoute = parseRoute(window.location.hash);
+        const targetRoute = parseRoute(href);
+        if (currentRoute.path === 'index.html' && targetRoute.path === 'index.html') {
+          return;
+        }
+
         navigateTo(href);
       }
     });
