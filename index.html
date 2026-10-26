@@ -65,13 +65,12 @@
     .w-5.h-5 { width: 1.75rem !important; height: 1.75rem !important; } 
     .w-7.h-7 { width: 2.25rem !important; height: 2.25rem !important; }
 
-    /* Ampersand (&) estándar sin florituras ni swash display (idéntico a Imagen 3) */
+    /* Ampersand (&) estándar limpio sin diseño/florituras (idéntico a Outfit / imagen de referencia) */
     .amp-normal {
-      font-family: 'Fraunces', 'Outfit', serif !important;
-      font-variation-settings: 'opsz' 14 !important;
-      font-optical-sizing: none !important;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
       font-style: normal !important;
-      font-feature-settings: 'swsh' 0, 'dlig' 0 !important;
+      font-weight: inherit !important;
+      letter-spacing: normal !important;
       display: inline;
     }
 
@@ -1330,7 +1329,7 @@
                   </div>
                   
                   <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance">
-                    Suscríbete <span class="amp-normal">&amp;</span> Ahorra 15% en Cada Pedido
+                    <span class="inline-block whitespace-nowrap">Suscríbete <span class="amp-normal">&amp;</span> Ahorra</span> <span class="inline-block whitespace-nowrap">15% en Cada Pedido</span>
                   </h2>
                   
                   <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
@@ -1407,16 +1406,16 @@
                 <div class="absolute inset-0 bg-black/60 sm:bg-black/55 backdrop-brightness-90"></div>
                 
                 <!-- Contenido Slide 4: Completamente Centrado y Alineado con holgura inferior para dots -->
-                <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
+                <div class="relative z-10 max-w-3xl mx-auto px-6 sm:px-12 md:px-16 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
                   <!-- Insignias Superiores Adaptables: Lado a Lado normalmente, Verticales en zoom moderado, y Auto-adaptables en zoom extremo -->
-                  <div class="w-full flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-3 sm:mb-4 px-1">
-                    <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[clamp(10px,2.2vw,12px)] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-md text-center max-w-[calc(100%-0.5rem)]">
+                  <div class="w-full flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-3 sm:mb-4 px-1 max-w-full">
+                    <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-2xl sm:rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-normal sm:tracking-wider shadow-md text-center max-w-full">
                       <i class="ph ph-leaf text-xs sm:text-sm text-brand-forest flex-shrink-0"></i>
-                      <span class="text-center leading-tight">100% Orgánicos y Sin Químicos</span>
+                      <span class="text-center leading-tight break-words">100% Orgánicos y Sin Químicos</span>
                     </span>
-                    <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[clamp(10px,2.2vw,12px)] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-md text-center max-w-[calc(100%-0.5rem)]">
+                    <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-2xl sm:rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-normal sm:tracking-wider shadow-md text-center max-w-full">
                       <i class="ph ph-users-three text-xs sm:text-sm text-brand-forest flex-shrink-0"></i>
-                      <span class="text-center leading-tight">Directo de Familias Productoras</span>
+                      <span class="text-center leading-tight break-words">Directo de Familias Productoras</span>
                     </span>
                   </div>
                   
@@ -1471,33 +1470,31 @@
 
             </div>
 
-            <!-- Barra de Pestañas Interactivas (Reemplazo de los más vendidos a productos premiados) -->
+            <!-- Barra de Pestañas Interactivas (Destacados, Más Vendidos, Nuevos) -->
             <div class="py-2.5 px-4 text-center">
-              <div class="flex items-center justify-center gap-4 sm:gap-8 flex-wrap text-xs sm:text-sm uppercase tracking-wider text-brand-forest">
+              <div class="flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-xs sm:text-sm uppercase tracking-wider text-brand-forest">
                 <button 
                   type="button" 
                   data-product-tab="destacados" 
-                  class="tab-link-btn text-red-700 hover:text-red-800 transition-colors flex items-center gap-2 font-extrabold cursor-pointer border-b-2 border-red-700 pb-0.5 focus:outline-none"
+                  class="tab-link-btn px-4 py-1.5 rounded-full border-2 border-brand-forest text-brand-cream bg-brand-forest font-extrabold shadow-sm transition-all flex items-center gap-2 cursor-pointer focus:outline-none"
                 >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-red-600 inline-block animate-pulse"></span>
+                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower inline-block animate-pulse"></span>
                   <span>Productos Destacados</span>
                 </button>
-                <span class="text-brand-forest/20 hidden sm:inline">•</span>
                 <button 
                   type="button" 
                   data-product-tab="mas-vendidos" 
-                  class="tab-link-btn text-brand-forest/70 hover:text-brand-forest transition-colors flex items-center gap-2 font-bold cursor-pointer border-b-2 border-transparent pb-0.5 focus:outline-none"
+                  class="tab-link-btn px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-2 cursor-pointer focus:outline-none"
                 >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-red-600 hidden animate-pulse"></span>
+                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower hidden animate-pulse"></span>
                   <span>Los Más Vendidos</span>
                 </button>
-                <span class="text-brand-forest/20 hidden sm:inline">•</span>
                 <button 
                   type="button" 
                   data-product-tab="nuevos" 
-                  class="tab-link-btn text-brand-forest/70 hover:text-brand-forest transition-colors flex items-center gap-2 font-bold cursor-pointer border-b-2 border-transparent pb-0.5 focus:outline-none"
+                  class="tab-link-btn px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-2 cursor-pointer focus:outline-none"
                 >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-red-600 hidden animate-pulse"></span>
+                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower hidden animate-pulse"></span>
                   <span>Productos Nuevos</span>
                 </button>
               </div>
@@ -4034,15 +4031,15 @@
           const isSelected = btn.getAttribute('data-product-tab') === tabKey;
           const dot = btn.querySelector('.tab-pulse-dot');
           if (isSelected) {
-            btn.classList.add('text-red-700', 'hover:text-red-800', 'font-extrabold', 'border-red-700');
-            btn.classList.remove('text-brand-forest/70', 'hover:text-brand-forest', 'font-bold', 'border-transparent');
+            btn.classList.add('border-brand-forest', 'text-brand-cream', 'bg-brand-forest', 'font-extrabold', 'shadow-sm');
+            btn.classList.remove('border-transparent', 'text-brand-forest/80', 'hover:bg-black/5', 'font-bold');
             if (dot) {
               dot.classList.remove('hidden');
               dot.classList.add('inline-block');
             }
           } else {
-            btn.classList.remove('text-red-700', 'hover:text-red-800', 'font-extrabold', 'border-red-700');
-            btn.classList.add('text-brand-forest/70', 'hover:text-brand-forest', 'font-bold', 'border-transparent');
+            btn.classList.remove('border-brand-forest', 'text-brand-cream', 'bg-brand-forest', 'font-extrabold', 'shadow-sm');
+            btn.classList.add('border-transparent', 'text-brand-forest/80', 'hover:bg-black/5', 'font-bold');
             if (dot) {
               dot.classList.add('hidden');
               dot.classList.remove('inline-block');
