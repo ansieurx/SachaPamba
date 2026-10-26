@@ -220,6 +220,17 @@
         gap: 1rem !important;
       }
     }
+
+    /* Ocultar flechas/spinners en inputs numéricos */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+    input[type=number] {
+      -moz-appearance: textfield !important;
+      appearance: textfield !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest">
@@ -2034,10 +2045,6 @@
                       </button>
                     `).join('')}
                   </div>
-                  <p class="text-xs text-center text-brand-leaf/60 font-semibold mt-4 flex items-center justify-center gap-1.5 bg-brand-olive/20 py-2 rounded-xl border border-brand-forest/10 max-w-sm mx-auto">
-                    <i class="ph ph-hand-tap text-base"></i>
-                    <span>Haz clic en las miniaturas para cambiar de vista</span>
-                  </p>
                 </div>
               </div>
 
@@ -2074,7 +2081,7 @@
                   <label for="detail-qty" class="text-sm font-bold text-brand-forest">Cantidad:</label>
                   <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs flex-shrink-0">
                     <button type="button" onclick="adjustProductQty(-1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">-</button>
-                    <input type="number" id="detail-qty" value="1" min="1" max="20" class="w-12 text-center text-sm font-bold bg-transparent text-brand-leaf focus:outline-none" readonly>
+                    <input type="text" inputmode="numeric" id="detail-qty" value="1" class="w-10 text-center text-sm sm:text-base font-bold bg-transparent text-brand-leaf focus:outline-none select-none cursor-default" readonly aria-label="Cantidad">
                     <button type="button" onclick="adjustProductQty(1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">+</button>
                   </div>
                   <span class="text-xs text-brand-forest font-bold inline-flex items-center gap-1.5 bg-[#CCD5AE] px-3 py-1.5 rounded-xl border border-brand-forest/15 shadow-2xs">
@@ -2121,19 +2128,19 @@
                       </button>
                     </div>
                   ` : `
-                    <div class="space-y-4 bg-[#CCD5AE]/30 p-4 rounded-2xl border border-brand-forest/10">
+                    <div class="space-y-4 pt-1">
                       <div class="flex items-start justify-between gap-4">
                         <div>
                           <span class="text-sm sm:text-base font-bold text-brand-forest flex items-center gap-1.5">
-                            <i class="ph ph-seal-check text-xl text-brand-forest"></i>
+                            <i class="ph ph-seal-check text-xl text-brand-forest flex-shrink-0"></i>
                             <span>¡Has retirado este producto en tienda!</span>
                           </span>
-                          <p class="text-xs text-brand-leaf/80 mt-1 font-medium">Ya puedes compartir tu experiencia con nuestra comunidad.</p>
+                          <p class="text-xs sm:text-sm text-brand-leaf/80 mt-1 font-medium">Ya puedes compartir tu experiencia con nuestra comunidad.</p>
                         </div>
                         <button 
                           type="button" 
                           onclick="toggleProductPickupDemo('${product.id}')" 
-                          class="p-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest/60 hover:text-brand-forest text-sm shadow-xs transition-colors" 
+                          class="p-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest/60 hover:text-brand-forest text-sm shadow-xs transition-colors flex-shrink-0" 
                           title="Restablecer estado no retirado"
                         >
                           <i class="ph ph-arrow-counter-clockwise text-base"></i>
@@ -2145,7 +2152,7 @@
                         <button 
                           type="button" 
                           onclick="openReviewModal('${product.id}')" 
-                          class="w-full py-3 px-4 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
+                          class="w-full py-3 px-4 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
                         >
                           <i class="ph ph-star text-brand-sunflower text-lg"></i>
                           <span>Calificar y comentar</span>
