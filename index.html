@@ -65,6 +65,16 @@
     .w-5.h-5 { width: 1.75rem !important; height: 1.75rem !important; } 
     .w-7.h-7 { width: 2.25rem !important; height: 2.25rem !important; }
 
+    /* Ampersand (&) estándar sin florituras ni swash display (idéntico a Imagen 3) */
+    .amp-normal {
+      font-family: 'Fraunces', 'Outfit', serif !important;
+      font-variation-settings: 'opsz' 14 !important;
+      font-optical-sizing: none !important;
+      font-style: normal !important;
+      font-feature-settings: 'swsh' 0, 'dlig' 0 !important;
+      display: inline;
+    }
+
     /* Layout Fluido - Aprovechar el ancho total de la pantalla */
     .max-w-4xl, 
     .max-w-5xl, 
@@ -335,7 +345,7 @@
                       <div class="flex items-center justify-between flex-1">
                         <span class="flex items-center gap-2 text-sm font-bold text-[#283618]">
                           <i class="ph ph-lightning text-lg text-[#3e4a2f]"></i>
-                          <span>Suplementos & Superalimentos</span>
+                          <span>Suplementos <span class="amp-normal">&amp;</span> Superalimentos</span>
                         </span>
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full mr-2 bg-[#3e4a2f] text-[#FEFAE0]">
                           10
@@ -385,7 +395,7 @@
           <!-- A la derecha: Punto de retiro físico en Quito (se oculta al achicar la ventana para evitar que salte de fila) -->
           <div class="pickup-header-pill items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
             <i class="ph ph-map-pin text-brand-sunflower text-lg flex-shrink-0"></i>
-            <span class="text-brand-cream/90 text-sm whitespace-nowrap font-medium tracking-wide">González Suárez 420 & Coruña, Quito</span>
+            <span class="text-brand-cream/90 text-sm whitespace-nowrap font-medium tracking-wide">González Suárez 420 <span class="amp-normal">&amp;</span> Coruña, Quito</span>
             <div class="w-px h-4 bg-white/20 mx-1.5"></div>
             <span class="text-brand-sunflower font-sans uppercase font-black text-xs tracking-widest whitespace-nowrap">
               Retiro al instante
@@ -711,7 +721,7 @@
         <div class="min-w-0">
           <h4 class="font-botanic font-bold text-lg text-brand-cream mb-5 flex items-center gap-2">
             <i class="ph ph-phone-call text-brand-sunflower text-xl flex-shrink-0"></i>
-            <span>Atención & Ayuda</span>
+            <span>Atención <span class="amp-normal">&amp;</span> Ayuda</span>
           </h4>
           <ul class="space-y-3 text-sm text-brand-cream/90 font-medium">
             <li class="flex items-center gap-2.5">
@@ -1272,15 +1282,15 @@
                   <div class="min-h-8 flex items-center justify-center mb-3 sm:mb-4 max-w-full">
                     <span class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-widest shadow-md text-center max-w-full">
                       <i class="ph ph-plant text-sm text-brand-forest flex-shrink-0"></i>
-                      <span>Herbolaria Viva &amp; Tradición Ancestral</span>
+                      <span>Herbolaria Viva <span class="amp-normal">&amp;</span> Tradición Ancestral</span>
                     </span>
                   </div>
                   
-                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[3.8rem] flex items-center justify-center">
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance">
                     Sentirse bien nunca fue tan natural.
                   </h2>
                   
-                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
                     Cosechas seleccionadas de comunidades campesinas y recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
                   </p>
                   
@@ -1315,15 +1325,15 @@
                   <div class="min-h-8 flex items-center justify-center mb-3 sm:mb-4 max-w-full">
                     <span class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-widest shadow-md text-center max-w-full">
                       <i class="ph ph-sparkle text-sm text-brand-forest flex-shrink-0"></i>
-                      <span>Plan Bienestar Mensual &amp; Ahorro</span>
+                      <span>Plan Bienestar Mensual <span class="amp-normal">&amp;</span> Ahorro</span>
                     </span>
                   </div>
                   
-                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[3.8rem] flex items-center justify-center">
-                    Suscríbete &amp; Ahorra 15% en Cada Pedido
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance">
+                    Suscríbete <span class="amp-normal">&amp;</span> Ahorra 15% en Cada Pedido
                   </h2>
                   
-                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
                     Recibe tus infusiones medicinales, superalimentos y tinturas puras en tu hogar cada mes con despacho prioritario y regalos botánicos sorpresa.
                   </p>
                   
@@ -1362,11 +1372,11 @@
                     </span>
                   </div>
                   
-                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[3.8rem] flex items-center justify-center">
-                    Tinturas &amp; Fórmulas Vivas de la Selva
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance">
+                    Tinturas <span class="amp-normal">&amp;</span> Fórmulas Vivas de la Selva
                   </h2>
                   
-                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
                     Evocando la calidez del sol andino y la energía pura de las comunidades de Napo y Pastaza. Extractos botánicos puros para revitalizar tu cuerpo y serenar la mente.
                   </p>
                   
@@ -1377,7 +1387,7 @@
                     </a>
                     <a href="#categoria.html?cat=suplementos" class="px-6 py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center">
                       <i class="ph ph-drop text-base text-brand-sunflower"></i>
-                      <span>Ver Tinturas &amp; Extractos</span>
+                      <span>Ver Tinturas <span class="amp-normal">&amp;</span> Extractos</span>
                     </a>
                   </div>
                 </div>
@@ -1410,11 +1420,11 @@
                     </span>
                   </div>
                   
-                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl min-h-[3rem] sm:min-h-[3.8rem] flex items-center justify-center">
+                  <h2 class="font-botanic text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance">
                     Superalimentos con Máxima Calidad
                   </h2>
                   
-                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 min-h-[3rem] sm:min-h-[3.5rem] flex items-center justify-center">
+                  <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
                     Maca negra, colágeno con camu camu silvestre y cacao puro. Cosechas 100% orgánicas y sin químicos que llegan a ti directo de familias productoras de Napo, Cayambe y Pastaza.
                   </p>
                   
@@ -1507,7 +1517,7 @@
                   <i class="ph ph-lightning"></i>
                 </div>
                 <div class="min-w-0 flex-1 w-full space-y-2.5 sm:space-y-3">
-                  <h3 class="font-botanic text-xl sm:text-2xl md:text-3xl font-bold text-brand-forest group-hover:text-brand-leaf transition-colors break-words leading-tight">Suplementos &amp; Superalimentos</h3>
+                  <h3 class="font-botanic text-xl sm:text-2xl md:text-3xl font-bold text-brand-forest group-hover:text-brand-leaf transition-colors break-words leading-tight">Suplementos <span class="amp-normal">&amp;</span> Superalimentos</h3>
                   <p class="text-xs sm:text-sm md:text-base text-brand-forest/90 font-medium leading-relaxed break-words">Superalimentos en polvo, maca, cacao fino, colágeno, vitaminas, minerales y remedios tradicionales.</p>
                   
                   <div class="pt-1.5 flex flex-wrap items-center gap-2">
@@ -2047,14 +2057,14 @@
           <!-- Pestañas de Información Técnica -->
           <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-6 sm:p-8 shadow-sm space-y-5 text-left">
             <h3 class="font-botanic text-2xl font-bold text-brand-forest border-b border-brand-forest/20 pb-3">
-              Detalles Botánicos & Tradicionales
+              Detalles Botánicos <span class="amp-normal">&amp;</span> Tradicionales
             </h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div class="bg-[#CCD5AE] p-5 rounded-2xl border-2 border-brand-forest/30 space-y-2 shadow-xs">
                 <span class="text-sm font-bold text-brand-forest uppercase tracking-wider flex items-center gap-2">
                   <i class="ph ph-leaf text-brand-forest text-lg"></i>
-                  Ingredientes & Origen
+                  Ingredientes <span class="amp-normal">&amp;</span> Origen
                 </span>
                 <p class="text-base text-brand-leaf font-medium leading-relaxed">${product.ingredients}</p>
               </div>
@@ -2795,7 +2805,7 @@
             <div class="md:col-span-7 bg-brand-cream rounded-3xl border-2 border-brand-forest p-7 shadow-sm space-y-7 text-left">
               <div>
                 <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Paso 3 de 4</span>
-                <h2 class="font-botanic text-2xl sm:text-3xl font-bold text-brand-forest">Método de Pago & Facturación</h2>
+                <h2 class="font-botanic text-2xl sm:text-3xl font-bold text-brand-forest">Método de Pago <span class="amp-normal">&amp;</span> Facturación</h2>
                 <p class="text-sm text-brand-leaf/70 mt-1.5 font-medium">Transacción protegida con cifrado de 256 bits y SRI Ecuador.</p>
               </div>
 
@@ -3019,7 +3029,7 @@
             <div class="bg-brand-forest text-brand-cream rounded-2xl p-6 text-left space-y-4 max-w-xl mx-auto">
               <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-sunflower flex items-center gap-2">
                 <i class="ph ph-storefront text-xl"></i>
-                Punto & Horario de Retiro en Tienda
+                Punto <span class="amp-normal">&amp;</span> Horario de Retiro en Tienda
               </h4>
               <p class="text-sm text-brand-cream/90 leading-relaxed font-medium">
                 <strong>Dirección:</strong> Av. González Suárez 420 y Coruña, Quito, Ecuador.<br>
@@ -3094,7 +3104,7 @@
           <div class="flex items-center justify-between mb-8 pb-4 border-b border-brand-olive/50">
             <div>
               <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Centro de Clientes</span>
-              <h1 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest">Perfil & Seguimiento de pedidos</h1>
+              <h1 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest">Perfil <span class="amp-normal">&amp;</span> Seguimiento de pedidos</h1>
             </div>
             <button 
               type="button" 
@@ -3518,7 +3528,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
           <div class="text-center max-w-2xl mx-auto mb-12">
             <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-2">Centro de Soporte</span>
-            <h1 class="font-botanic text-4xl font-bold text-brand-forest mt-1">Preguntas Frecuentes & Ayuda</h1>
+            <h1 class="font-botanic text-4xl font-bold text-brand-forest mt-1">Preguntas Frecuentes <span class="amp-normal">&amp;</span> Ayuda</h1>
             <p class="text-sm sm:text-base text-brand-leaf/70 mt-3 font-medium leading-relaxed">Todo lo que necesitas saber sobre retiro en tienda, origen agroecológico y modos de uso.</p>
           </div>
 
