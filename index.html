@@ -1206,18 +1206,50 @@
     ];
 
     /* Estado del carrito y checkout */
-    let cart = JSON.parse(localStorage.getItem('sacha_pamba_cart') || '[]');
+    let cart = [];
+    try {
+      cart = JSON.parse(localStorage.getItem('sacha_pamba_cart') || '[]');
+    } catch (e) {
+      cart = [];
+    }
+
+    // Normaliza tipos numéricos, sincroniza precios oficiales y descarta datos corruptos
+    function sanitizeCart() {
+      if (!Array.isArray(cart)) {
+        cart = [];
+        return;
+      }
+      cart = cart
+        .map(item => {
+          if (!item || !item.id) return null;
+          const liveProduct = PRODUCTS.find(p => p.id === item.id);
+          const price = liveProduct ? Number(liveProduct.price) : Number(item.price || 0);
+          const quantity = Math.max(1, parseInt(item.quantity, 10) || 1);
+          return {
+            id: item.id,
+            name: liveProduct ? liveProduct.name : item.name,
+            price: price,
+            size: liveProduct ? liveProduct.size : (item.size || 'Presentación regular'),
+            image: liveProduct ? liveProduct.image : item.image,
+            quantity: quantity
+          };
+        })
+        .filter(item => item && item.quantity > 0);
+    }
+    sanitizeCart();
+
     let pendingCheckoutRedirect = null;
     let selectedPaymentMethod = 'tarjeta';
 
     function saveCart() {
+      sanitizeCart();
       localStorage.setItem('sacha_pamba_cart', JSON.stringify(cart));
       updateCartBadge();
     }
 
     function updateCartBadge() {
       const badge = document.getElementById('cart-counter-badge');
-      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalCount = cart.reduce((sum, item) => sum + (parseInt(item.quantity, 10) || 0), 0);
       if (badge) {
         badge.textContent = totalCount;
         badge.classList.add('scale-125');
@@ -1283,17 +1315,20 @@
       const product = PRODUCTS.find(p => p.id === productId);
       if (!product) return;
 
+      const numQty = Math.max(1, parseInt(quantity, 10) || 1);
       const existingIndex = cart.findIndex(item => item.id === productId);
       if (existingIndex > -1) {
-        cart[existingIndex].quantity += quantity;
+        const curQty = parseInt(cart[existingIndex].quantity, 10) || 0;
+        cart[existingIndex].quantity = curQty + numQty;
+        cart[existingIndex].price = Number(product.price);
       } else {
         cart.push({
           id: product.id,
           name: product.name,
-          price: product.price,
+          price: Number(product.price),
           size: product.size,
           image: product.image,
-          quantity: quantity
+          quantity: numQty
         });
       }
       saveCart();
@@ -1344,13 +1379,20 @@
       const { item, index } = lastRemovedCartItem;
 
       // Asegurar siempre que regrese con cantidad de al menos 1 y nunca 0
-      const restoredQuantity = Math.max(1, item.quantity || 1);
-      const itemToRestore = { ...item, quantity: restoredQuantity };
+      const restoredQuantity = Math.max(1, parseInt(item.quantity, 10) || 1);
+      const prod = PRODUCTS.find(p => p.id === item.id);
+      const restoredPrice = prod ? Number(prod.price) : Number(item.price || 0);
+      const itemToRestore = { 
+        ...item, 
+        price: restoredPrice,
+        quantity: restoredQuantity 
+      };
 
       // Si el producto fue añadido nuevamente entretanto
       const existing = cart.find(i => i.id === itemToRestore.id);
       if (existing) {
-        existing.quantity += restoredQuantity;
+        existing.quantity = (parseInt(existing.quantity, 10) || 0) + restoredQuantity;
+        existing.price = restoredPrice;
       } else {
         if (typeof index === 'number' && index >= 0 && index <= cart.length) {
           cart.splice(index, 0, itemToRestore);
@@ -1416,19 +1458,27 @@
       const item = cart.find(i => i.id === productId);
       if (!item) return;
 
+      const currentQty = Math.max(1, parseInt(item.quantity, 10) || 1);
+      const numDelta = parseInt(delta, 10) || 0;
+
       // Si se hace clic sobre el '-' y la cantidad es 1 (o menor), mostrar ventana de advertencia
-      if (delta < 0 && item.quantity <= 1) {
+      if (numDelta < 0 && currentQty <= 1) {
         openConfirmRemoveModal(item);
         return;
       }
 
-      const nextQuantity = item.quantity + delta;
+      const nextQuantity = currentQty + numDelta;
       if (nextQuantity <= 0) {
         item.quantity = 1;
         removeFromCart(productId);
         return;
       }
       item.quantity = nextQuantity;
+
+      // Sincronizar precio oficial por seguridad
+      const prod = PRODUCTS.find(p => p.id === productId);
+      if (prod) item.price = Number(prod.price);
+
       saveCart();
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
@@ -2898,9 +2948,18 @@
 
     // --- Vista 4: Carrito de Compras (carrito.html) ---
     function renderCartView() {
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const total = subtotal;
+      // Cálculo preciso en centavos para eliminar cualquier error de redondeo de punto flotante
+      const totalCents = cart.reduce((sum, item) => {
+        const pCents = Math.round(Number(item.price) * 100);
+        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
+        return sum + (pCents * q);
+      }, 0);
+
+      const totalCount = cart.reduce((sum, item) => sum + (Math.max(1, parseInt(item.quantity, 10) || 1)), 0);
+      const total = totalCents / 100;
+      const ivaCents = Math.round(totalCents * 0.15 / 1.15);
+      const iva = ivaCents / 100;
+      const subtotalNeto = (totalCents - ivaCents) / 100;
 
       return `
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -3037,7 +3096,7 @@
                       <!-- Total Ítem -->
                       <div class="text-right min-w-[75px] sm:min-w-[90px] flex-shrink-0">
                         <span class="cart-subtotal-label text-[10px] text-brand-leaf/60 font-bold uppercase tracking-wider block md:hidden">Subtotal</span>
-                        <span class="text-base sm:text-lg font-extrabold text-brand-forest whitespace-nowrap">$${(item.price * item.quantity).toFixed(2)}</span>
+                        <span class="text-base sm:text-lg font-extrabold text-brand-forest whitespace-nowrap">$${(((Math.round(Number(item.price) * 100) * (Math.max(1, parseInt(item.quantity, 10) || 1))) / 100)).toFixed(2)}</span>
                       </div>
 
                       <!-- Botón Eliminar Desktop -->
@@ -3076,11 +3135,15 @@
                 <div class="space-y-3.5 text-xs sm:text-sm text-brand-leaf/80 font-medium">
                   <div class="flex justify-between items-center gap-2">
                     <span class="min-w-0">Subtotal artículos (<strong class="text-brand-forest">${totalCount}</strong>)</span>
-                    <span class="font-bold text-brand-forest whitespace-nowrap">$${subtotal.toFixed(2)}</span>
+                    <span class="font-bold text-brand-forest whitespace-nowrap">$${total.toFixed(2)}</span>
                   </div>
-                  <div class="flex justify-between items-center gap-2">
-                    <span class="min-w-0">Impuestos (IVA 15% incluido)</span>
-                    <span class="font-bold text-brand-leaf whitespace-nowrap">$${(subtotal * 0.15 / 1.15).toFixed(2)}</span>
+                  <div class="flex justify-between items-center gap-2 text-[11px] sm:text-xs text-brand-leaf/70 pl-2.5 border-l-2 border-brand-forest/20">
+                    <span class="min-w-0">Base imponible (Subtotal sin IVA)</span>
+                    <span class="font-semibold text-brand-forest/90 whitespace-nowrap">$${subtotalNeto.toFixed(2)}</span>
+                  </div>
+                  <div class="flex justify-between items-center gap-2 text-[11px] sm:text-xs text-brand-leaf/70 pl-2.5 border-l-2 border-brand-forest/20">
+                    <span class="min-w-0">IVA (15% incluido)</span>
+                    <span class="font-semibold text-brand-forest/90 whitespace-nowrap">$${iva.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -3105,7 +3168,12 @@
     function renderCheckoutRetiroView() {
       if (cart.length === 0) return renderCartView();
       const user = getCurrentUser() || { name: '', idNumber: '', email: '', phone: '' };
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalCents = cart.reduce((sum, item) => {
+        const pCents = Math.round(Number(item.price) * 100);
+        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
+        return sum + (pCents * q);
+      }, 0);
+      const subtotal = totalCents / 100;
 
       return `
         <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -3191,8 +3259,8 @@
               <div class="space-y-2.5 max-h-64 overflow-y-auto">
                 ${cart.map(i => `
                   <div class="flex justify-between items-center text-sm py-1.5">
-                    <span class="text-brand-leaf/80 truncate pr-3 font-medium">${i.quantity}x ${i.name}</span>
-                    <span class="font-bold text-brand-forest">$${(i.price * i.quantity).toFixed(2)}</span>
+                    <span class="text-brand-leaf/80 truncate pr-3 font-medium">${Math.max(1, parseInt(i.quantity, 10) || 1)}x ${i.name}</span>
+                    <span class="font-bold text-brand-forest">$${((Math.round(Number(i.price) * 100) * (Math.max(1, parseInt(i.quantity, 10) || 1))) / 100).toFixed(2)}</span>
                   </div>
                 `).join('')}
               </div>
@@ -3211,7 +3279,12 @@
     function renderCheckoutPagoView() {
       if (cart.length === 0) return renderCartView();
       const user = getCurrentUser() || { name: '', idNumber: '', email: '' };
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalCents = cart.reduce((sum, item) => {
+        const pCents = Math.round(Number(item.price) * 100);
+        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
+        return sum + (pCents * q);
+      }, 0);
+      const subtotal = totalCents / 100;
 
       return `
         <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -3345,8 +3418,8 @@
               <div class="space-y-2.5 max-h-64 overflow-y-auto">
                 ${cart.map(i => `
                   <div class="flex justify-between items-center text-sm py-1.5">
-                    <span class="text-brand-leaf/80 truncate pr-3 font-medium">${i.quantity}x ${i.name}</span>
-                    <span class="font-bold text-brand-forest">$${(i.price * i.quantity).toFixed(2)}</span>
+                    <span class="text-brand-leaf/80 truncate pr-3 font-medium">${Math.max(1, parseInt(i.quantity, 10) || 1)}x ${i.name}</span>
+                    <span class="font-bold text-brand-forest">$${((Math.round(Number(i.price) * 100) * (Math.max(1, parseInt(i.quantity, 10) || 1))) / 100).toFixed(2)}</span>
                   </div>
                 `).join('')}
               </div>
@@ -3363,7 +3436,12 @@
 
     function selectPaymentOption(option) {
       selectedPaymentMethod = option;
-      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalCents = cart.reduce((sum, item) => {
+        const pCents = Math.round(Number(item.price) * 100);
+        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
+        return sum + (pCents * q);
+      }, 0);
+      const subtotal = totalCents / 100;
       const cardContainer = document.getElementById('card-fields-container');
       const tiendaContainer = document.getElementById('tienda-info-container');
       const btnText = document.getElementById('btn-confirm-checkout-text');
@@ -3400,16 +3478,16 @@
         const newOrder = {
           number: orderNum,
           date: new Date().toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' }),
-          total: cart.reduce((s, i) => s + (i.price * i.quantity), 0),
+          total: cart.reduce((s, i) => s + (Math.round(Number(i.price) * 100) * (Math.max(1, parseInt(i.quantity, 10) || 1))), 0) / 100,
           method: selectedPaymentMethod === 'tienda' ? 'Pagar al Retirar en Tienda' : 'Tarjeta Débito / Crédito',
           status: 'Listo para Retiro',
           items: cart.map(item => ({
             id: item.id,
             name: item.name,
-            price: item.price,
+            price: Number(item.price),
             size: item.size,
             image: item.image,
-            quantity: item.quantity
+            quantity: Math.max(1, parseInt(item.quantity, 10) || 1)
           }))
         };
 
