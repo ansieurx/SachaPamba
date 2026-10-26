@@ -1267,6 +1267,21 @@
       return String(str ?? '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
+    function getLastVisitedProduct() {
+      try {
+        const stored = sessionStorage.getItem('sacha_last_visited_product');
+        return stored ? JSON.parse(stored) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function setLastVisitedProduct(prod) {
+      try {
+        sessionStorage.setItem('sacha_last_visited_product', JSON.stringify(prod));
+      } catch (e) {}
+    }
+
     // --- Vista 1: Inicio (index.html) ---
     function renderHomeView() {
       const featured = PRODUCTS.filter(p => p.isFeatured).slice(0, 4);
@@ -1649,25 +1664,48 @@
       }
 
       const allSpecialCount = PRODUCTS.filter(p => p.isFeatured || p.isBestSeller || p.isNew).length;
+      const lastProduct = getLastVisitedProduct();
 
       return `
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
-          <nav class="flex items-center gap-2 text-sm text-brand-leaf/60 font-medium mb-8 flex-wrap bg-white/40 py-2 px-4 rounded-xl border border-brand-forest/10">
+          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-8 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
-            <a href="#categoria.html" class="hover:text-brand-forest ${!selectedCat && !selectedSpecial ? 'font-bold text-brand-forest' : ''}">Productos</a>
+            ${!selectedCat && !selectedSpecial ? `
+              <span class="font-bold text-brand-forest">Productos</span>
+            ` : `
+              <a href="#categoria.html" class="hover:text-brand-forest">Productos</a>
+            `}
             ${selectedSpecial ? `
               <span>/</span>
-              <a href="#categoria.html?special=all" class="hover:text-brand-forest ${!subcatTitle ? 'font-bold text-brand-forest' : ''}">${catTitle}</a>
+              ${!subcatTitle ? `
+                <span class="font-bold text-brand-forest">${catTitle}</span>
+              ` : `
+                <a href="#categoria.html?special=all" class="hover:text-brand-forest">${catTitle}</a>
+              `}
             ` : ''}
             ${selectedCat ? `
               <span>/</span>
-              <a href="#categoria.html?cat=${selectedCat}" class="hover:text-brand-forest ${!selectedSubcat ? 'font-bold text-brand-forest' : ''}">${catTitle}</a>
+              ${!selectedSubcat ? `
+                <span class="font-bold text-brand-forest">${catTitle}</span>
+              ` : `
+                <a href="#categoria.html?cat=${selectedCat}" class="hover:text-brand-forest">${catTitle}</a>
+              `}
             ` : ''}
             ${subcatTitle ? `
               <span>/</span>
               <span class="font-bold text-brand-forest">${subcatTitle}</span>
+            ` : ''}
+            ${lastProduct ? `
+              <span class="opacity-40">/</span>
+              <a 
+                href="#producto.html?id=${lastProduct.id}" 
+                class="opacity-60 hover:opacity-100 transition-opacity text-brand-forest font-medium hover:underline inline-flex items-center gap-1"
+                title="Volver a ${escapeHtml(lastProduct.name)}"
+              >
+                <span>${escapeHtml(lastProduct.name)}</span>
+              </a>
             ` : ''}
           </nav>
 
@@ -1863,10 +1901,18 @@
       const gallery = (product.images && product.images.length > 0) ? product.images : [product.image];
       const pickedUp = isProductPickedUp(product.id);
 
+      // Guardar producto para la ruta hacia adelante al volver atrás
+      setLastVisitedProduct({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        categoryName: product.categoryName
+      });
+
       return `
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           
-          <nav class="flex items-center gap-2 text-sm text-brand-leaf/60 font-medium mb-5 flex-wrap bg-white/40 py-2 px-4 rounded-xl border border-brand-forest/10 max-w-fit">
+          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-fit shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
             <a href="#categoria.html" class="hover:text-brand-forest">Productos</a>
