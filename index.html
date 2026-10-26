@@ -209,6 +209,17 @@
         text-align: center !important;
       }
     }
+
+    /* Adaptabilidad de Detalles Botánicos en Zoom */
+    .botanical-section {
+      container-type: inline-size;
+    }
+    @container (max-width: 620px) {
+      .botanical-details-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest">
@@ -1903,10 +1914,10 @@
             </div>
 
             <div class="space-y-1.5 text-left mb-3 sm:mb-4">
-              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-brand-forest text-xs font-semibold">
-                <i class="ph-fill ph-star text-amber-500 text-sm"></i>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs">
+                <i class="ph-fill ph-star text-amber-600 text-sm"></i>
                 <span class="font-extrabold text-brand-forest">${p.rating.toFixed(1)}</span>
-                <span class="text-brand-forest/60 text-[11px]">(${p.reviewsCount} reseñas)</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium">(${p.reviewsCount} reseñas)</span>
               </div>
 
               <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1">
@@ -1965,7 +1976,7 @@
       return `
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           
-          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-fit shadow-xs">
+          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-full shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
             <a href="#categoria.html" class="hover:text-brand-forest">Productos</a>
@@ -2048,27 +2059,27 @@
                   <h1 class="font-botanic text-2xl sm:text-4xl font-bold text-brand-forest leading-snug">
                     ${product.name}
                   </h1>
-                  <div class="inline-flex flex-wrap items-baseline gap-3 mt-3 bg-brand-olive px-4 py-2.5 rounded-2xl border border-brand-forest/20 shadow-xs">
-                    <span class="text-3xl font-black text-brand-forest">$${product.price.toFixed(2)}</span>
-                    <span class="text-sm text-brand-forest/90 font-medium">Presentación: <strong>${product.size}</strong></span>
-                    <span class="text-xs text-brand-forest font-bold bg-brand-cream/70 px-2.5 py-1 rounded-full border border-brand-forest/15">(IVA incluido)</span>
+                  <div class="inline-flex flex-wrap items-baseline gap-2.5 sm:gap-3 mt-3 bg-brand-olive px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-brand-forest/20 shadow-xs max-w-full">
+                    <span class="text-2xl sm:text-3xl font-black text-brand-forest">$${product.price.toFixed(2)}</span>
+                    <span class="text-xs sm:text-sm text-brand-forest/90 font-medium">Presentación: <strong>${product.size}</strong></span>
+                    <span class="text-[11px] sm:text-xs text-brand-forest font-bold bg-brand-cream/70 px-2.5 py-1 rounded-full border border-brand-forest/15">(IVA incluido)</span>
                   </div>
                 </div>
 
-                <p class="text-base sm:text-lg text-brand-leaf/80 leading-relaxed border-y border-brand-forest/15 py-4 font-medium">
+                <p class="text-base sm:text-lg text-brand-leaf/80 leading-relaxed border-y border-brand-forest/15 py-4 font-medium break-words">
                   ${product.shortDesc}
                 </p>
 
-                <div class="flex flex-wrap items-center gap-4 bg-[#FEFAE0] p-4 rounded-2xl border border-brand-forest/10">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 bg-[#FEFAE0] p-3.5 sm:p-4 rounded-2xl border border-brand-forest/10">
                   <label for="detail-qty" class="text-sm font-bold text-brand-forest">Cantidad:</label>
-                  <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs">
+                  <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs flex-shrink-0">
                     <button type="button" onclick="adjustProductQty(-1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">-</button>
                     <input type="number" id="detail-qty" value="1" min="1" max="20" class="w-12 text-center text-sm font-bold bg-transparent text-brand-leaf focus:outline-none" readonly>
                     <button type="button" onclick="adjustProductQty(1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">+</button>
                   </div>
-                  <span class="text-xs text-brand-forest font-bold flex items-center gap-1.5 bg-[#CCD5AE] px-3 py-1.5 rounded-lg">
-                    <i class="ph ph-check-circle text-brand-forest text-base"></i>
-                    Disponible para retiro en Quito
+                  <span class="text-xs text-brand-forest font-bold inline-flex items-center gap-1.5 bg-[#CCD5AE] px-3 py-1.5 rounded-xl border border-brand-forest/15 shadow-2xs">
+                    <i class="ph ph-check-circle text-brand-forest text-base flex-shrink-0"></i>
+                    <span>Disponible para retiro en Quito</span>
                   </span>
                 </div>
 
@@ -2149,53 +2160,61 @@
           </div>
 
           <!-- Pestañas de Información Técnica -->
-          <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-6 sm:p-8 shadow-sm space-y-5 text-left">
-            <h3 class="font-botanic text-2xl font-bold text-brand-forest border-b border-brand-forest/20 pb-3">
+          <div class="botanical-section bg-brand-cream rounded-2xl sm:rounded-3xl border-2 border-brand-forest p-4 sm:p-6 md:p-8 shadow-sm space-y-5 text-left">
+            <h3 class="font-botanic text-xl sm:text-2xl font-bold text-brand-forest border-b border-brand-forest/20 pb-3">
               Detalles Botánicos <span class="amp-normal">&amp;</span> Tradicionales
             </h3>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div class="bg-[#CCD5AE] p-5 rounded-2xl border-2 border-brand-forest/30 space-y-2 shadow-xs">
-                <span class="text-sm font-bold text-brand-forest uppercase tracking-wider flex items-center gap-2">
-                  <i class="ph ph-leaf text-brand-forest text-lg"></i>
-                  Ingredientes <span class="amp-normal">&amp;</span> Origen
-                </span>
-                <p class="text-base text-brand-leaf font-medium leading-relaxed">${product.ingredients}</p>
+            <div class="botanical-details-grid grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div class="bg-[#CCD5AE] p-4 sm:p-5 rounded-2xl border-2 border-brand-forest/30 space-y-3 shadow-xs min-w-0 overflow-hidden flex flex-col justify-start">
+                <div class="flex items-center gap-2.5 min-w-0 pb-1.5 border-b border-brand-forest/15">
+                  <span class="w-8 h-8 rounded-lg bg-brand-forest/10 flex items-center justify-center flex-shrink-0 text-brand-forest text-base">
+                    <i class="ph ph-leaf"></i>
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider min-w-0 flex-1 break-words leading-tight">
+                    Ingredientes &amp; Origen
+                  </span>
+                </div>
+                <p class="text-sm sm:text-base text-brand-leaf font-medium leading-relaxed break-words">${product.ingredients}</p>
               </div>
 
-              <div class="bg-[#CCD5AE] p-5 rounded-2xl border-2 border-brand-forest/30 space-y-2 shadow-xs">
-                <span class="text-sm font-bold text-brand-forest uppercase tracking-wider flex items-center gap-2">
-                  <i class="ph ph-heartbeat text-brand-forest text-lg"></i>
-                  Modo de Uso Sugerido
-                </span>
-                <p class="text-base text-brand-leaf font-medium leading-relaxed">${product.usage}</p>
+              <div class="bg-[#CCD5AE] p-4 sm:p-5 rounded-2xl border-2 border-brand-forest/30 space-y-3 shadow-xs min-w-0 overflow-hidden flex flex-col justify-start">
+                <div class="flex items-center gap-2.5 min-w-0 pb-1.5 border-b border-brand-forest/15">
+                  <span class="w-8 h-8 rounded-lg bg-brand-forest/10 flex items-center justify-center flex-shrink-0 text-brand-forest text-base">
+                    <i class="ph ph-heartbeat"></i>
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider min-w-0 flex-1 break-words leading-tight">
+                    Modo de Uso Sugerido
+                  </span>
+                </div>
+                <p class="text-sm sm:text-base text-brand-leaf font-medium leading-relaxed break-words">${product.usage}</p>
               </div>
             </div>
           </div>
 
           <!-- Sección de Reseñas -->
-          <div id="customer-reviews-section" class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-6 sm:p-8 shadow-sm space-y-7 text-left mt-10">
+          <div id="customer-reviews-section" class="bg-brand-cream rounded-2xl sm:rounded-3xl border-2 border-brand-forest p-4 sm:p-6 md:p-8 shadow-sm space-y-7 text-left mt-10">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-brand-forest/20 gap-4">
               <div>
                 <h3 class="font-botanic text-xl sm:text-2xl font-bold text-brand-forest flex items-center gap-2.5">
-                  <i class="ph ph-chats-circle text-brand-moss text-2xl"></i>
+                  <i class="ph ph-chats-circle text-brand-moss text-2xl flex-shrink-0"></i>
                   <span>Calificaciones y Comentarios</span>
                 </h3>
                 <p class="text-sm text-brand-leaf/70 mt-1 font-medium">Opiniones reales de quienes han retirado y probado esta formulación.</p>
               </div>
               
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest border border-brand-forest/20 flex items-center gap-1.5 shadow-xs">
-                  <i class="ph ph-shield-check text-base text-brand-forest"></i>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#CCD5AE] text-brand-forest border border-brand-forest/20 flex items-center gap-1.5 shadow-xs whitespace-nowrap">
+                  <i class="ph ph-shield-check text-base text-brand-forest flex-shrink-0"></i>
                   <span>100% Retiro Verificado</span>
                 </span>
               </div>
             </div>
 
             <!-- Resumen de Puntuación General con Fondo Verde Oliva Claro (#CCD5AE) -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-[#CCD5AE] p-5 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs">
               <div class="md:col-span-4 text-center md:border-r border-brand-forest/20 pr-0 md:pr-5">
-                <span class="font-botanic text-5xl sm:text-6xl font-black text-brand-forest block leading-none">
+                <span class="font-botanic text-4xl sm:text-5xl md:text-6xl font-black text-brand-forest block leading-none">
                   ${product.rating.toFixed(1)}
                 </span>
                 <div class="flex justify-center text-amber-500 text-xl mt-3 mb-2">
@@ -2205,37 +2224,37 @@
                   <i class="ph-fill ph-star"></i>
                   <i class="ph-fill ph-star"></i>
                 </div>
-                <span class="text-sm text-brand-forest/90 font-bold block">Basado en ${product.reviewsCount} opiniones verificadas</span>
+                <span class="text-xs sm:text-sm text-brand-forest/90 font-bold block">Basado en ${product.reviewsCount} opiniones verificadas</span>
               </div>
 
-              <div class="md:col-span-8 space-y-2 text-sm">
-                <div class="flex items-center gap-3">
-                  <span class="w-16 text-brand-forest font-bold text-right">5 estrellas</span>
-                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner">
+              <div class="md:col-span-8 space-y-2.5 text-xs sm:text-sm">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span class="w-20 sm:w-24 text-brand-forest font-bold text-right flex-shrink-0">5 estrellas</span>
+                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner min-w-0">
                     <div class="bg-amber-500 h-full rounded-full w-[88%]"></div>
                   </div>
-                  <span class="w-10 text-brand-forest font-mono font-bold text-right">88%</span>
+                  <span class="w-10 sm:w-12 text-brand-forest font-mono font-bold text-right flex-shrink-0">88%</span>
                 </div>
-                <div class="flex items-center gap-3">
-                  <span class="w-16 text-brand-forest font-bold text-right">4 estrellas</span>
-                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span class="w-20 sm:w-24 text-brand-forest font-bold text-right flex-shrink-0">4 estrellas</span>
+                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner min-w-0">
                     <div class="bg-amber-500 h-full rounded-full w-[10%]"></div>
                   </div>
-                  <span class="w-10 text-brand-forest font-mono font-bold text-right">10%</span>
+                  <span class="w-10 sm:w-12 text-brand-forest font-mono font-bold text-right flex-shrink-0">10%</span>
                 </div>
-                <div class="flex items-center gap-3">
-                  <span class="w-16 text-brand-forest font-bold text-right">3 estrellas</span>
-                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner">
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span class="w-20 sm:w-24 text-brand-forest font-bold text-right flex-shrink-0">3 estrellas</span>
+                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner min-w-0">
                     <div class="bg-amber-500 h-full rounded-full w-[2%]"></div>
                   </div>
-                  <span class="w-10 text-brand-forest font-mono font-bold text-right">2%</span>
+                  <span class="w-10 sm:w-12 text-brand-forest font-mono font-bold text-right flex-shrink-0">2%</span>
                 </div>
-                <div class="flex items-center gap-3 opacity-50">
-                  <span class="w-16 text-brand-forest font-bold text-right">2 estrellas</span>
-                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner">
+                <div class="flex items-center gap-2 sm:gap-3 opacity-50">
+                  <span class="w-20 sm:w-24 text-brand-forest font-bold text-right flex-shrink-0">2 estrellas</span>
+                  <div class="flex-1 bg-brand-cream rounded-full h-2.5 overflow-hidden border border-brand-forest/20 shadow-inner min-w-0">
                     <div class="bg-amber-500 h-full rounded-full w-[0%]"></div>
                   </div>
-                  <span class="w-10 text-brand-forest font-mono font-bold text-right">0%</span>
+                  <span class="w-10 sm:w-12 text-brand-forest font-mono font-bold text-right flex-shrink-0">0%</span>
                 </div>
               </div>
             </div>
@@ -2399,32 +2418,32 @@
       ]);
 
       return reviews.map(r => `
-        <div class="bg-brand-cream rounded-2xl border border-brand-forest/20 p-5 space-y-3 shadow-sm text-left">
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-brand-forest text-brand-sunflower flex items-center justify-center font-bold text-sm shadow-xs">
+        <div class="bg-brand-cream rounded-2xl border border-brand-forest/20 p-4 sm:p-5 space-y-3 shadow-sm text-left">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-brand-forest/10 sm:border-b-0 sm:pb-0">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-full bg-brand-forest text-brand-sunflower flex items-center justify-center font-bold text-sm shadow-xs flex-shrink-0">
                 ${escapeHtml(r.name.charAt(0))}
               </div>
-              <div>
-                <h5 class="font-bold text-sm text-brand-forest leading-tight">${escapeHtml(r.name)}</h5>
-                <span class="text-xs text-brand-leaf/60 font-medium">${escapeHtml(r.date)}</span>
+              <div class="min-w-0">
+                <h5 class="font-bold text-sm text-brand-forest leading-tight break-words">${escapeHtml(r.name)}</h5>
+                <span class="text-xs text-brand-leaf/60 font-medium block">${escapeHtml(r.date)}</span>
               </div>
             </div>
 
-            <div class="flex items-center gap-2.5">
-              <div class="flex text-amber-500 text-sm">
+            <div class="flex items-center flex-wrap gap-2.5 flex-shrink-0">
+              <div class="flex text-amber-500 text-sm flex-shrink-0">
                 ${Array.from({length: 5}, (_, i) => `<i class="${i < r.rating ? 'ph-fill' : 'ph'} ph-star"></i>`).join('')}
               </div>
               ${r.verified ? `
-                <span class="text-xs bg-[#CCD5AE] text-brand-forest font-bold px-2.5 py-1 rounded-full border border-brand-forest/20 flex items-center gap-1 shadow-xs">
-                  <i class="ph ph-seal-check text-sm"></i>
+                <span class="inline-flex items-center gap-1.5 text-xs bg-[#CCD5AE] text-brand-forest font-bold px-2.5 py-1 rounded-xl border border-brand-forest/20 shadow-xs whitespace-nowrap flex-shrink-0">
+                  <i class="ph ph-seal-check text-sm text-brand-forest"></i>
                   <span>Retirado en tienda física</span>
                 </span>
               ` : ''}
             </div>
           </div>
 
-          <p class="text-sm text-brand-leaf/80 leading-relaxed pl-1 font-medium italic">
+          <p class="text-sm text-brand-leaf/80 leading-relaxed font-medium italic break-words pl-1">
             "${escapeHtml(r.comment)}"
           </p>
 
