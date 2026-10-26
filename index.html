@@ -1497,9 +1497,24 @@
                   <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower hidden animate-pulse"></span>
                   <span>Productos Nuevos</span>
                 </button>
+                <a 
+                  href="#categoria.html" 
+                  class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
+                >
+                  <span>Ver todos</span>
+                  <i class="ph ph-arrow-right text-sm"></i>
+                </a>
               </div>
             </div>
 
+          </div>
+        </section>
+
+        <!-- Sección Dinámica: Productos según la opción seleccionada debajo del carrusel -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-12" id="home-products-section">
+          <!-- Cuadrícula Dinámica de Productos -->
+          <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 transition-opacity duration-200">
+            ${featured.map(renderProductCard).join('')}
           </div>
         </section>
 
@@ -1570,44 +1585,6 @@
                 <p class="text-sm text-brand-leaf font-medium leading-relaxed">Respaldamos cada remedio con guías claras de uso seguro y tradicional.</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        <!-- Sección Dinámica: Productos Destacados, Más Vendidos y Nuevos -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="home-products-section">
-          <!-- Encabezado estilo imagen de referencia con subtítulo, título, pestañas y enlace Ver todos -->
-          <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 pb-4 border-b border-brand-olive/40">
-            <div>
-              <span id="home-products-subtitle" class="text-xs sm:text-sm font-extrabold text-brand-moss uppercase tracking-widest block mb-1">Selección Especial</span>
-              <h2 id="home-products-title" class="font-botanic text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-forest">Productos Destacados</h2>
-            </div>
-
-            <!-- Controles: Selector de Pestañas local y Botón Ver todos -->
-            <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-              <!-- Pestañas locales directas -->
-              <div class="inline-flex p-1 rounded-xl bg-brand-olive/30 border border-brand-forest/15">
-                <button type="button" data-product-tab="destacados" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer bg-brand-forest text-brand-cream shadow-xs">
-                  Destacados
-                </button>
-                <button type="button" data-product-tab="mas-vendidos" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer text-brand-forest hover:bg-white/40">
-                  Más Vendidos
-                </button>
-                <button type="button" data-product-tab="nuevos" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer text-brand-forest hover:bg-white/40">
-                  Nuevos
-                </button>
-              </div>
-
-              <!-- Enlace Ver todos idéntico a la imagen -->
-              <a id="home-products-link" href="#categoria.html?special=destacados" class="text-xs sm:text-sm font-bold text-brand-forest hover:text-brand-moss flex items-center gap-1.5 bg-[#CCD5AE]/40 hover:bg-[#CCD5AE]/70 px-4 py-2 rounded-xl border border-brand-forest/15 transition-all shadow-xs">
-                <span>Ver todos</span>
-                <i class="ph ph-arrow-right text-base"></i>
-              </a>
-            </div>
-          </div>
-
-          <!-- Cuadrícula Dinámica de Productos -->
-          <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 transition-opacity duration-200">
-            ${featured.map(renderProductCard).join('')}
           </div>
         </section>
       `;
@@ -3983,40 +3960,22 @@
     function setupHomeProductTabs() {
       const tabData = {
         'destacados': {
-          subtitle: 'Selección Especial',
-          title: 'Productos Destacados',
-          link: '#categoria.html?special=destacados',
           filter: (p) => p.isFeatured
         },
         'mas-vendidos': {
-          subtitle: 'Favoritos de la Tienda',
-          title: 'Los Más Vendidos',
-          link: '#categoria.html?special=mas-vendidos',
           filter: (p) => p.isBestSeller
         },
         'nuevos': {
-          subtitle: 'Cosechas Recientes',
-          title: 'Productos Nuevos',
-          link: '#categoria.html?special=nuevos',
           filter: (p) => p.isNew
         }
       };
 
-      function switchTab(tabKey, shouldScroll = false) {
+      function switchTab(tabKey) {
         const config = tabData[tabKey];
         if (!config) return;
 
-        // Actualizar Encabezado y Enlace
-        const subtitleEl = document.getElementById('home-products-subtitle');
-        const titleEl = document.getElementById('home-products-title');
-        const linkEl = document.getElementById('home-products-link');
-        const gridEl = document.getElementById('home-products-grid');
-
-        if (subtitleEl) subtitleEl.textContent = config.subtitle;
-        if (titleEl) titleEl.textContent = config.title;
-        if (linkEl) linkEl.setAttribute('href', config.link);
-
         // Actualizar Cuadrícula de Productos con suave transición
+        const gridEl = document.getElementById('home-products-grid');
         if (gridEl) {
           gridEl.classList.add('opacity-0');
           setTimeout(() => {
@@ -4026,7 +3985,7 @@
           }, 150);
         }
 
-        // Actualizar estilos en la barra superior (.tab-link-btn)
+        // Actualizar estilos en la barra de opciones (.tab-link-btn)
         document.querySelectorAll('.tab-link-btn').forEach(btn => {
           const isSelected = btn.getAttribute('data-product-tab') === tabKey;
           const dot = btn.querySelector('.tab-pulse-dot');
@@ -4047,25 +4006,7 @@
           }
         });
 
-        // Actualizar estilos en las pestañas locales (.tab-btn)
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-          const isSelected = btn.getAttribute('data-product-tab') === tabKey;
-          if (isSelected) {
-            btn.classList.add('bg-brand-forest', 'text-brand-cream', 'shadow-xs');
-            btn.classList.remove('text-brand-forest', 'hover:bg-white/40');
-          } else {
-            btn.classList.remove('bg-brand-forest', 'text-brand-cream', 'shadow-xs');
-            btn.classList.add('text-brand-forest', 'hover:bg-white/40');
-          }
-        });
-
-        // Desplazamiento suave si fue activado desde la barra de arriba
-        if (shouldScroll) {
-          const targetSection = document.getElementById('home-products-section');
-          if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
+        // Desplazamiento suave eliminado para evitar cualquier movimiento en la página
       }
 
       // Registrar eventos para la barra superior
@@ -4073,16 +4014,7 @@
         btn.onclick = (e) => {
           e.preventDefault();
           const tabKey = btn.getAttribute('data-product-tab');
-          switchTab(tabKey, true);
-        };
-      });
-
-      // Registrar eventos para los botones locales de la sección
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.onclick = (e) => {
-          e.preventDefault();
-          const tabKey = btn.getAttribute('data-product-tab');
-          switchTab(tabKey, false);
+          switchTab(tabKey);
         };
       });
     }
