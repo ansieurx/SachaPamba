@@ -792,6 +792,69 @@
     </div>
   </div>
 
+  <!-- Modal de Confirmación para Eliminar Producto al pulsar '-' -->
+  <div id="confirm-remove-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200">
+    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-sm sm:max-w-md overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
+      
+      <!-- Encabezado del modal -->
+      <div class="bg-brand-forest text-brand-cream p-5 relative">
+        <button 
+          type="button" 
+          onclick="closeConfirmRemoveModal()" 
+          class="absolute top-4 right-4 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
+          aria-label="Cerrar modal"
+        >
+          <i class="ph ph-x"></i>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
+            <i class="ph ph-warning-circle text-2xl"></i>
+          </span>
+          <div>
+            <h3 class="font-botanic font-bold text-lg text-brand-cream tracking-tight">¿Eliminar producto?</h3>
+            <p class="text-xs text-brand-cream/80">Confirmación de acción</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-3.5 bg-[#CCD5AE]/40 p-3 rounded-2xl border border-brand-forest/20">
+          <img id="confirm-remove-img" src="" alt="Producto" class="w-12 h-12 object-cover rounded-xl bg-white border border-brand-forest/20 flex-shrink-0">
+          <div class="min-w-0 flex-1">
+            <h4 id="confirm-remove-title" class="font-botanic font-bold text-brand-forest text-sm truncate">Producto</h4>
+            <p id="confirm-remove-meta" class="text-xs text-brand-leaf/80 font-medium">1 unidad · $0.00</p>
+          </div>
+        </div>
+
+        <p class="text-xs sm:text-sm text-brand-leaf/90 leading-relaxed font-medium">
+          Vas a eliminar este producto de tu carrito de compras. ¿Deseas continuar para realizar esta acción?
+        </p>
+
+        <!-- Botones de Acción -->
+        <div class="flex items-center justify-end gap-2.5 pt-2">
+          <button 
+            type="button" 
+            onclick="closeConfirmRemoveModal()" 
+            class="px-4 py-2.5 rounded-full border border-brand-forest/30 text-brand-forest font-bold hover:bg-brand-olive/30 text-xs sm:text-sm transition-all active:scale-95"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            onclick="confirmRemoveProduct()" 
+            class="px-5 py-2.5 rounded-full bg-brand-forest text-brand-cream hover:bg-[#1a2410] font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-xs inline-flex items-center gap-1.5"
+          >
+            <i class="ph ph-trash-simple text-base text-brand-sunflower"></i>
+            <span>Continuar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ==========================================
        2. CONTENEDOR DINÁMICO DE VISTAS (APP VIEW)
        ========================================== -->
@@ -881,12 +944,20 @@
   </footer>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-[#CCD5AE] text-brand-forest px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border-2 border-brand-forest/30">
-      <div id="toast-icon" class="text-brand-forest text-2xl">
+  <div id="toast" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-md">
+    <div class="bg-[#CCD5AE] text-brand-forest px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-2xl flex items-center gap-2.5 sm:gap-3 border-2 border-brand-forest/30 pointer-events-auto">
+      <div id="toast-icon" class="text-brand-forest text-xl sm:text-2xl flex-shrink-0">
         <i class="ph ph-check-circle"></i>
       </div>
-      <p id="toast-message" class="text-sm font-bold tracking-wide text-brand-forest">Mensaje del sistema</p>
+      <p id="toast-message" class="text-xs sm:text-sm font-bold tracking-wide text-brand-forest min-w-0 break-words flex-1">Mensaje del sistema</p>
+      <button 
+        id="toast-action" 
+        type="button" 
+        class="hidden flex-shrink-0 ml-1 sm:ml-2 px-3 py-1.5 bg-brand-forest hover:bg-[#1a2410] text-brand-sunflower rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer"
+      >
+        <i class="ph ph-arrow-u-up-left font-bold text-sm"></i>
+        <span>Deshacer</span>
+      </button>
     </div>
   </div>
 
@@ -1154,21 +1225,58 @@
       }
     }
 
-    function showToast(message, icon = 'ph-check-circle') {
+    let toastTimeout = null;
+
+    function hideToast() {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+        toastTimeout = null;
+      }
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-24', 'opacity-0');
+    }
+
+    function showToast(message, icon = 'ph-check-circle', action = null) {
       const toast = document.getElementById('toast');
       const msgEl = document.getElementById('toast-message');
       const iconEl = document.getElementById('toast-icon');
+      const actionBtn = document.getElementById('toast-action');
       if (!toast) return;
 
-      msgEl.textContent = message;
-      iconEl.innerHTML = `<i class="ph ${icon}"></i>`;
+      if (toastTimeout) {
+        clearTimeout(toastTimeout);
+        toastTimeout = null;
+      }
+
+      if (msgEl) msgEl.textContent = message;
+      if (iconEl) iconEl.innerHTML = `<i class="ph ${icon}"></i>`;
+
+      if (action && typeof action.onClick === 'function') {
+        if (actionBtn) {
+          actionBtn.classList.remove('hidden');
+          actionBtn.innerHTML = action.html || `<i class="ph ph-arrow-u-up-left font-bold text-sm"></i><span>${action.label || 'Deshacer'}</span>`;
+          actionBtn.onclick = (e) => {
+            e.stopPropagation();
+            hideToast();
+            action.onClick();
+          };
+        }
+      } else {
+        if (actionBtn) {
+          actionBtn.classList.add('hidden');
+          actionBtn.onclick = null;
+        }
+      }
+
       toast.classList.remove('translate-y-24', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
 
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-24', 'opacity-0');
-      }, 2800);
+      const duration = action ? (action.duration || 5000) : 2800;
+      toastTimeout = setTimeout(() => {
+        hideToast();
+      }, duration);
     }
 
     function addToCart(productId, quantity = 1, redirect = false) {
@@ -1196,24 +1304,131 @@
       }
     }
 
+    let lastRemovedCartItem = null;
+
     function removeFromCart(productId) {
-      cart = cart.filter(item => item.id !== productId);
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const removedItem = { ...cart[itemIndex] };
+      // Garantizar que la cantidad guardada para deshacer sea al menos 1 y nunca 0
+      if (!removedItem.quantity || removedItem.quantity <= 0) {
+        removedItem.quantity = 1;
+      }
+      lastRemovedCartItem = { item: removedItem, index: itemIndex };
+
+      cart.splice(itemIndex, 1);
       saveCart();
-      showToast('Producto retirado del carrito', 'ph-trash');
+
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
         renderCurrentRoute(currentHash);
       }
+
+      showToast(`"${removedItem.name}" retirado del carrito`, 'ph-trash');
+    }
+
+    function undoRemoveFromCart() {
+      if (!lastRemovedCartItem && !lastClearedCart) return;
+
+      if (lastClearedCart && (!lastRemovedCartItem || lastClearedCart.length > 0)) {
+        cart = lastClearedCart;
+        lastClearedCart = null;
+        lastRemovedCartItem = null;
+        saveCart();
+        renderCurrentRoute(window.location.hash || '#carrito.html');
+        showToast('Productos restaurados en el carrito', 'ph-arrow-u-up-left');
+        return;
+      }
+
+      const { item, index } = lastRemovedCartItem;
+
+      // Asegurar siempre que regrese con cantidad de al menos 1 y nunca 0
+      const restoredQuantity = Math.max(1, item.quantity || 1);
+      const itemToRestore = { ...item, quantity: restoredQuantity };
+
+      // Si el producto fue añadido nuevamente entretanto
+      const existing = cart.find(i => i.id === itemToRestore.id);
+      if (existing) {
+        existing.quantity += restoredQuantity;
+      } else {
+        if (typeof index === 'number' && index >= 0 && index <= cart.length) {
+          cart.splice(index, 0, itemToRestore);
+        } else {
+          cart.push(itemToRestore);
+        }
+      }
+
+      const restoredName = itemToRestore.name;
+      lastRemovedCartItem = null;
+      saveCart();
+
+      const currentHash = window.location.hash || '#index.html';
+      if (currentHash.includes('carrito.html')) {
+        renderCurrentRoute(currentHash);
+      }
+
+      showToast(`"${restoredName}" restaurado al carrito`, 'ph-arrow-u-up-left');
+    }
+
+    let pendingRemoveProductId = null;
+
+    function openConfirmRemoveModal(item) {
+      if (!item) return;
+      pendingRemoveProductId = item.id;
+
+      const modal = document.getElementById('confirm-remove-modal');
+      const titleEl = document.getElementById('confirm-remove-title');
+      const metaEl = document.getElementById('confirm-remove-meta');
+      const imgEl = document.getElementById('confirm-remove-img');
+
+      if (titleEl) titleEl.textContent = item.name;
+      if (metaEl) metaEl.textContent = `${item.size ? item.size + ' · ' : ''}$${Number(item.price).toFixed(2)}`;
+      if (imgEl) {
+        imgEl.src = item.image;
+        imgEl.alt = item.name;
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function closeConfirmRemoveModal() {
+      pendingRemoveProductId = null;
+      const modal = document.getElementById('confirm-remove-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function confirmRemoveProduct() {
+      if (!pendingRemoveProductId) {
+        closeConfirmRemoveModal();
+        return;
+      }
+      const idToRemove = pendingRemoveProductId;
+      closeConfirmRemoveModal();
+      removeFromCart(idToRemove);
     }
 
     function updateCartQuantity(productId, delta) {
       const item = cart.find(i => i.id === productId);
       if (!item) return;
-      item.quantity += delta;
-      if (item.quantity <= 0) {
+
+      // Si se hace clic sobre el '-' y la cantidad es 1 (o menor), mostrar ventana de advertencia
+      if (delta < 0 && item.quantity <= 1) {
+        openConfirmRemoveModal(item);
+        return;
+      }
+
+      const nextQuantity = item.quantity + delta;
+      if (nextQuantity <= 0) {
+        item.quantity = 1;
         removeFromCart(productId);
         return;
       }
+      item.quantity = nextQuantity;
       saveCart();
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
@@ -1221,11 +1436,17 @@
       }
     }
 
+    let lastClearedCart = null;
     function clearCart() {
+      if (!cart || cart.length === 0) return;
+      lastClearedCart = cart.map(item => ({
+        ...item,
+        quantity: Math.max(1, item.quantity || 1)
+      }));
       cart = [];
       saveCart();
-      showToast('Se ha vaciado el carrito');
       renderCurrentRoute(window.location.hash || '#carrito.html');
+      showToast('Se ha vaciado el carrito', 'ph-trash');
     }
 
     const navBtn = document.getElementById('nav-category-btn');
@@ -2714,10 +2935,24 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between mb-6 pb-4 border-b border-brand-forest/20">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-brand-forest/20">
             <div>
               <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Paso 1 de 4</span>
-              <h1 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest">Carrito de Compras</h1>
+              <div class="flex items-center flex-wrap gap-3 sm:gap-4">
+                <h1 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest">Carrito de Compras</h1>
+                ${(lastRemovedCartItem || lastClearedCart) ? `
+                  <button 
+                    type="button" 
+                    onclick="undoRemoveFromCart()" 
+                    class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm shadow-xs transition-transform active:scale-95 border border-brand-forest/20 cursor-pointer animate-in fade-in duration-200"
+                    title="${lastRemovedCartItem ? `Deshacer eliminación de ${escapeHtml(lastRemovedCartItem.item.name)}` : 'Deshacer vaciado del carrito'}"
+                    aria-label="Deshacer"
+                  >
+                    <i class="ph ph-arrow-u-up-left text-base sm:text-lg font-bold"></i>
+                    <span>Deshacer</span>
+                  </button>
+                ` : ''}
+              </div>
             </div>
           </div>
 
@@ -2771,7 +3006,7 @@
                       <button 
                         type="button" 
                         onclick="removeFromCart('${item.id}')" 
-                        class="cart-del-mobile md:hidden text-brand-leaf/40 hover:text-red-600 hover:bg-red-50 p-2 rounded-xl transition-colors active:scale-95 flex-shrink-0 self-start ml-auto" 
+                        class="cart-del-mobile md:hidden text-brand-leaf/40 hover:text-brand-sunflower hover:bg-brand-forest p-2 rounded-xl transition-colors active:scale-95 flex-shrink-0 self-start ml-auto" 
                         title="Eliminar del carrito" 
                         aria-label="Eliminar ${item.name}"
                       >
@@ -2809,7 +3044,7 @@
                       <button 
                         type="button" 
                         onclick="removeFromCart('${item.id}')" 
-                        class="cart-del-desktop hidden md:inline-flex text-brand-leaf/40 hover:text-red-600 hover:bg-red-50 p-2.5 rounded-xl transition-colors active:scale-95 flex-shrink-0" 
+                        class="cart-del-desktop hidden md:inline-flex text-brand-leaf/40 hover:text-brand-sunflower hover:bg-brand-forest p-2.5 rounded-xl transition-colors active:scale-95 flex-shrink-0" 
                         title="Eliminar del carrito" 
                         aria-label="Eliminar ${item.name}"
                       >
@@ -2820,20 +3055,11 @@
                   </div>
                 `).join('')}
 
-                <div class="flex justify-between items-center pt-3 flex-wrap gap-2">
-                  <button 
-                    type="button" 
-                    onclick="navigateTo('#categoria.html')" 
-                    class="text-xs sm:text-sm text-brand-forest hover:text-brand-moss font-bold inline-flex items-center gap-1.5 py-2 px-3 rounded-xl hover:bg-brand-olive/30 transition-colors"
-                  >
-                    <i class="ph ph-plus-circle text-base"></i>
-                    <span>Añadir más productos</span>
-                  </button>
-
+                <div class="flex justify-end items-center pt-3">
                   <button 
                     type="button" 
                     onclick="clearCart()" 
-                    class="text-xs sm:text-sm text-brand-cream bg-brand-forest hover:bg-[#1a2410] border border-brand-forest px-4 py-2 rounded-xl font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs ml-auto"
+                    class="text-xs sm:text-sm text-brand-cream bg-brand-forest hover:bg-[#1a2410] border border-brand-forest px-4 py-2 rounded-xl font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
                   >
                     <i class="ph ph-trash-simple text-base"></i>
                     <span>Vaciar carrito</span>
@@ -2853,10 +3079,6 @@
                     <span class="font-bold text-brand-forest whitespace-nowrap">$${subtotal.toFixed(2)}</span>
                   </div>
                   <div class="flex justify-between items-center gap-2">
-                    <span class="min-w-0">Modalidad de entrega</span>
-                    <span class="font-bold text-brand-moss whitespace-nowrap">Retiro en tienda ($0.00)</span>
-                  </div>
-                  <div class="flex justify-between items-center gap-2">
                     <span class="min-w-0">Impuestos (IVA 15% incluido)</span>
                     <span class="font-bold text-brand-leaf whitespace-nowrap">$${(subtotal * 0.15 / 1.15).toFixed(2)}</span>
                   </div>
@@ -2865,15 +3087,6 @@
                 <div class="pt-4 border-t border-brand-forest/20 flex justify-between items-baseline gap-2">
                   <span class="font-botanic font-bold text-lg sm:text-xl text-brand-forest">Total a Pagar</span>
                   <span class="font-botanic text-2xl sm:text-3xl font-black text-brand-forest whitespace-nowrap">$${total.toFixed(2)}</span>
-                </div>
-
-                <!-- Recuadro de Retiro en Tienda en Verde Oliva Claro (#CCD5AE) -->
-                <div class="bg-[#CCD5AE] rounded-2xl p-4 border-2 border-brand-forest/30 text-xs text-brand-forest space-y-1.5 shadow-xs">
-                  <p class="font-bold flex items-center gap-2 text-sm text-brand-forest">
-                    <i class="ph ph-storefront text-lg text-brand-forest flex-shrink-0"></i>
-                    Retiro en Tienda Física:
-                  </p>
-                  <p class="text-brand-forest/80 font-medium break-words">Av. González Suárez 420 y Coruña, Quito. Sin costo adicional.</p>
                 </div>
 
                 <a href="#checkout-retiro.html" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center">
@@ -4448,6 +4661,13 @@
     if (authModal) {
       authModal.addEventListener('click', (e) => {
         if (e.target === authModal) closeAuthModal();
+      });
+    }
+
+    const confirmRemoveModal = document.getElementById('confirm-remove-modal');
+    if (confirmRemoveModal) {
+      confirmRemoveModal.addEventListener('click', (e) => {
+        if (e.target === confirmRemoveModal) closeConfirmRemoveModal();
       });
     }
 
