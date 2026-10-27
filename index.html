@@ -262,6 +262,32 @@
         display: block !important;
       }
     }
+
+    /* Desplegable Lateral Delgado del Carrito (Solo imagen, Ultra Delgado) */
+    #cart-side-drawer {
+      width: 86px;
+      max-width: 90px;
+      height: 100vh;
+      height: 100dvh;
+      box-sizing: border-box;
+      overflow: visible;
+    }
+    @media (min-width: 1280px) {
+      body.cart-drawer-open {
+        padding-right: 86px;
+        transition: padding-right 0.3s ease;
+      }
+    }
+    #cart-drawer-items::-webkit-scrollbar {
+      width: 4px;
+    }
+    #cart-drawer-items::-webkit-scrollbar-track {
+      background: rgba(40, 54, 24, 0.05);
+    }
+    #cart-drawer-items::-webkit-scrollbar-thumb {
+      background: rgba(40, 54, 24, 0.25);
+      border-radius: 9999px;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest">
@@ -947,6 +973,70 @@
     </div>
   </footer>
 
+  <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
+  <aside id="cart-side-drawer" class="fixed top-0 right-0 h-full w-[86px] z-40 bg-[#FEFAE0] border-l-2 border-brand-forest shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out box-border" aria-label="Carrito de compras lateral">
+    <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
+    <button 
+      type="button" 
+      id="cart-drawer-toggle-btn"
+      onclick="toggleCartDrawer()" 
+      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#FEFAE0] hover:bg-brand-sunflower text-brand-forest border-2 border-r-0 border-brand-forest rounded-l-xl shadow-xl w-7 h-14 sm:w-8 sm:h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
+      aria-label="Desplegar u ocultar carrito"
+      title="Desplegar carrito"
+    >
+      <i id="cart-drawer-caret" class="ph ph-caret-left text-lg sm:text-xl font-bold text-brand-forest transition-transform"></i>
+    </button>
+
+    <!-- Encabezado superior (con la flecha al lado de la X y sin la palabra Carrito) -->
+    <div class="p-1.5 sm:p-2 bg-[#CCD5AE] border-b border-brand-forest/20 flex flex-col items-center gap-1.5 flex-shrink-0">
+      <!-- Botón de Flecha y Botón X en la parte superior -->
+      <div class="flex items-center justify-between w-full px-0.5">
+        <button 
+          type="button" 
+          onclick="collapseCartDrawer()" 
+          class="p-0.5 text-brand-forest/80 hover:text-brand-forest hover:bg-black/10 rounded transition-colors cursor-pointer flex items-center justify-center"
+          aria-label="Ocultar carrito"
+          title="Ocultar carrito"
+        >
+          <i class="ph ph-caret-right text-base font-bold"></i>
+        </button>
+
+        <button 
+          type="button" 
+          onclick="closeCartDrawer(true)" 
+          class="p-0.5 text-brand-forest/80 hover:text-brand-forest hover:bg-black/10 rounded transition-colors cursor-pointer flex items-center justify-center"
+          aria-label="Cerrar panel"
+          title="Cerrar panel"
+        >
+          <i class="ph ph-x text-sm font-bold"></i>
+        </button>
+      </div>
+
+      <!-- Botón en la parte superior para ir al carrito -->
+      <a 
+        href="#carrito.html" 
+        onclick="closeCartDrawer()" 
+        class="w-full py-1 bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 border border-brand-forest/20 cursor-pointer text-center"
+        title="Ir al Carrito"
+      >
+        <i class="ph ph-shopping-cart text-xs font-bold"></i>
+        <span>Ir</span>
+      </a>
+    </div>
+
+    <!-- Lista de productos añadidos (solo la imagen del producto con indicador de cantidad) -->
+    <div id="cart-drawer-items" class="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-2.5 min-h-0 flex flex-col items-center">
+      <!-- Inyectado dinámicamente -->
+    </div>
+
+    <!-- Pie del desplegable: Total a pagar esencial -->
+    <div id="cart-drawer-footer" class="p-1.5 sm:p-2 bg-[#CCD5AE]/70 border-t border-brand-forest/20 flex flex-col items-center text-center flex-shrink-0">
+      <span class="text-[9px] font-bold text-brand-forest uppercase leading-tight">Total</span>
+      <span id="cart-drawer-total" class="text-xs font-extrabold text-brand-forest whitespace-nowrap">$0.00</span>
+      <span class="text-[8px] text-brand-forest/70 font-medium leading-none mt-0.5">IVA incl.</span>
+    </div>
+  </aside>
+
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-md">
     <div class="bg-[#CCD5AE] text-brand-forest px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-2xl flex items-center gap-2.5 sm:gap-3 border-2 border-brand-forest/30 pointer-events-auto">
@@ -1249,6 +1339,7 @@
       sanitizeCart();
       localStorage.setItem('sacha_pamba_cart', JSON.stringify(cart));
       updateCartBadge();
+      updateCartDrawerUI();
     }
 
     function updateCartBadge() {
@@ -1258,6 +1349,139 @@
         badge.textContent = totalCount;
         badge.classList.add('scale-125');
         setTimeout(() => badge.classList.remove('scale-125'), 200);
+      }
+    }
+
+    function updateCartDrawerUI() {
+      const itemsContainer = document.getElementById('cart-drawer-items');
+      const countBadge = document.getElementById('cart-drawer-count');
+      const totalEl = document.getElementById('cart-drawer-total');
+      if (!itemsContainer) return;
+
+      const totalCount = cart.reduce((sum, item) => sum + (Math.max(1, parseInt(item.quantity, 10) || 1)), 0);
+      const totalCents = cart.reduce((sum, item) => {
+        const pCents = Math.round(Number(item.price) * 100);
+        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
+        return sum + (pCents * q);
+      }, 0);
+      const total = totalCents / 100;
+
+      if (countBadge) countBadge.textContent = totalCount;
+      if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+      if (!cart || cart.length === 0) {
+        itemsContainer.innerHTML = `
+          <div class="text-center py-6 px-2 space-y-1.5">
+            <i class="ph ph-shopping-bag text-2xl text-brand-forest/40 block mx-auto"></i>
+            <p class="text-xs font-bold text-brand-forest">Aún no hay productos</p>
+            <p class="text-[11px] text-brand-forest/70 font-medium">Tus productos añadidos aparecerán aquí.</p>
+          </div>
+        `;
+        return;
+      }
+
+      itemsContainer.innerHTML = cart.map(item => `
+        <div class="relative group flex-shrink-0" title="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} (${item.quantity} ud.)">
+          <img 
+            src="${item.image}" 
+            alt="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
+            class="w-14 h-14 object-cover rounded-xl border-2 border-brand-forest/20 bg-white shadow-xs group-hover:scale-105 transition-transform"
+            onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
+          >
+          ${item.quantity > 1 ? `
+            <span class="absolute -top-1 -right-1 bg-brand-forest text-brand-cream text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-xs border border-white">
+              ${item.quantity}
+            </span>
+          ` : ''}
+          <button 
+            type="button" 
+            onclick="removeFromCart('${item.id}')" 
+            class="absolute inset-0 bg-black/60 text-white rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+            title="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+            aria-label="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+          >
+            <i class="ph ph-trash text-base text-red-300"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('cart-side-drawer');
+      if (!drawer) return;
+      if (drawer.classList.contains('translate-x-0')) {
+        collapseCartDrawer();
+      } else {
+        openCartDrawer();
+      }
+    }
+
+    function openCartDrawer() {
+      updateCartDrawerUI();
+      const drawer = document.getElementById('cart-side-drawer');
+      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
+      if (!drawer) return;
+
+      sessionStorage.removeItem('sacha_cart_drawer_dismissed');
+      sessionStorage.removeItem('sacha_cart_drawer_collapsed');
+      drawer.classList.remove('translate-x-full');
+      drawer.classList.add('translate-x-0');
+      document.body.classList.add('cart-drawer-open');
+      sessionStorage.setItem('sacha_cart_drawer_open', 'true');
+
+      // Quitar el botón de la flecha del lado cuando el carrito está desplegado
+      if (toggleBtn) {
+        toggleBtn.classList.add('hidden');
+      }
+    }
+
+    function collapseCartDrawer() {
+      const drawer = document.getElementById('cart-side-drawer');
+      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
+      if (!drawer) return;
+
+      drawer.classList.remove('translate-x-0');
+      drawer.classList.add('translate-x-full');
+      document.body.classList.remove('cart-drawer-open');
+      sessionStorage.removeItem('sacha_cart_drawer_open');
+      sessionStorage.removeItem('sacha_cart_drawer_dismissed');
+      sessionStorage.setItem('sacha_cart_drawer_collapsed', 'true');
+
+      // Al colapsar con la flecha, sí se muestra la pestaña con la flecha en el lateral
+      const currentHash = window.location.hash || '#index.html';
+      if (toggleBtn && !currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+        toggleBtn.classList.remove('hidden');
+      }
+    }
+
+    function closeCartDrawer(dismissArrow = false) {
+      const drawer = document.getElementById('cart-side-drawer');
+      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
+      if (!drawer) return;
+
+      drawer.classList.remove('translate-x-0');
+      drawer.classList.add('translate-x-full');
+      document.body.classList.remove('cart-drawer-open');
+      sessionStorage.removeItem('sacha_cart_drawer_open');
+
+      if (dismissArrow) {
+        // Al hacer clic sobre la X, se cierra y NO se muestra la flecha en el desplegable
+        sessionStorage.setItem('sacha_cart_drawer_dismissed', 'true');
+        sessionStorage.removeItem('sacha_cart_drawer_collapsed');
+        if (toggleBtn) {
+          toggleBtn.classList.add('hidden');
+        }
+      } else {
+        const isDismissed = sessionStorage.getItem('sacha_cart_drawer_dismissed') === 'true';
+        const isCollapsed = sessionStorage.getItem('sacha_cart_drawer_collapsed') === 'true';
+        const currentHash = window.location.hash || '#index.html';
+        if (toggleBtn) {
+          if (!isDismissed && isCollapsed && !currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+            toggleBtn.classList.remove('hidden');
+          } else {
+            toggleBtn.classList.add('hidden');
+          }
+        }
       }
     }
 
@@ -1339,7 +1563,10 @@
       showToast(`${product.name} añadido al carrito`);
 
       if (redirect) {
+        closeCartDrawer(true);
         navigateTo('#carrito.html');
+      } else {
+        openCartDrawer();
       }
     }
 
@@ -2037,7 +2264,7 @@
       return `
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
-          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-8 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 shadow-xs">
+          <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-4 flex-wrap bg-[#CCD5AE] py-1.5 px-3.5 rounded-xl border border-brand-forest/20 shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
             ${!selectedCat && !selectedSpecial ? `
@@ -2077,109 +2304,111 @@
             ` : ''}
           </nav>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10 items-start">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
             
-            <aside class="lg:col-span-4 xl:col-span-3 bg-brand-cream p-3.5 sm:p-5 rounded-3xl border-[3px] border-brand-forest shadow-sm space-y-3">
-              <div class="flex items-center justify-between pb-2.5 border-b-2 border-brand-forest/20 gap-2">
-                <h3 class="font-botanic font-bold text-sm sm:text-base text-brand-forest uppercase tracking-wider flex items-center gap-2 min-w-0">
-                  <i class="ph ph-funnel text-base sm:text-lg text-brand-forest flex-shrink-0"></i>
+            <!-- Barra Lateral de Categorías (Organizada y con textos 100% visibles) -->
+            <aside class="lg:col-span-4 xl:col-span-3 min-w-0 bg-brand-cream p-3.5 sm:p-4.5 rounded-3xl border-[3px] border-brand-forest shadow-sm space-y-3">
+              <div class="flex items-center justify-between pb-2.5 border-b-2 border-brand-forest/20 gap-2 flex-wrap">
+                <h3 class="font-botanic font-bold text-xs sm:text-sm text-brand-forest uppercase tracking-wider flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+                  <i class="ph ph-funnel text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
                   <span>Categorías</span>
                 </h3>
-                <a href="#categoria.html" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0">Limpiar</a>
+                <a href="#categoria.html" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0 ml-auto whitespace-nowrap" title="Restablecer filtros">Limpiar</a>
               </div>
 
               <!-- Botón Ver Todos -->
               <a href="#categoria.html" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-forest font-semibold'} text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
-                <span class="flex items-center gap-2 min-w-0">
-                  <i class="ph ph-squares-four text-base sm:text-lg flex-shrink-0 text-brand-forest"></i>
-                  <span class="font-bold">Ver Todos</span>
-                </span>
+                <div class="flex items-center gap-2 min-w-0">
+                  <i class="ph ph-squares-four text-base flex-shrink-0 text-brand-forest"></i>
+                  <span class="font-bold whitespace-nowrap">Ver Todos</span>
+                </div>
                 <span class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${!selectedCat && !selectedSpecial ? 'bg-brand-forest text-brand-cream' : 'bg-brand-forest/20 text-brand-forest'} font-bold">${PRODUCTS.length}</span>
               </a>
 
               <!-- Acordeón 1: Selección Especial -->
               <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <div class="sidebar-cat-header flex items-center justify-between w-full px-3 py-2.5 sm:px-3.5 sm:py-3 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-2" data-cat="especiales">
-                  <span class="text-xs sm:text-sm font-bold text-brand-forest flex items-center gap-2 min-w-0">
-                    <i class="ph ph-sparkle text-base text-brand-forest flex-shrink-0"></i>
-                    <span>Selección Especial</span>
-                  </span>
-                  <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <span class="text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream">${allSpecialCount}</span>
-                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedSpecial ? 'rotate-180' : ''}"></i>
+                <div class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-1.5" data-cat="especiales">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <i class="ph ph-sparkle text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Selección Especial</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-shrink-0">
+                    <span class="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream flex-shrink-0">${allSpecialCount}</span>
+                    <i class="ph ph-caret-down text-xs sm:text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedSpecial ? 'rotate-180' : ''}"></i>
                   </div>
                 </div>
 
                 <div class="sidebar-cat-drawer ${selectedSpecial ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1">
                   <a href="#categoria.html?special=all" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
-                    <span>Ver Toda la Selección</span>
-                    <span class="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">${allSpecialCount}</span>
+                    <span class="whitespace-nowrap">Toda la Selección</span>
+                    <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">${allSpecialCount}</span>
                   </a>
                   <a href="#categoria.html?special=destacados" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'destacados' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span class="flex items-center gap-1.5 min-w-0">
+                    <div class="flex items-center gap-1.5 min-w-0">
                       <i class="ph ph-star text-sm ${selectedSpecial === 'destacados' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
-                      <span>Destacados</span>
-                    </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
+                      <span class="whitespace-nowrap">Destacados</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
                   </a>
                   <a href="#categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'mas-vendidos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span class="flex items-center gap-1.5 min-w-0">
+                    <div class="flex items-center gap-1.5 min-w-0">
                       <i class="ph ph-fire text-sm ${selectedSpecial === 'mas-vendidos' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
-                      <span>Más Vendidos</span>
-                    </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">6</span>
+                      <span class="whitespace-nowrap">Más Vendidos</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">6</span>
                   </a>
                   <a href="#categoria.html?special=nuevos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'nuevos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span class="flex items-center gap-1.5 min-w-0">
+                    <div class="flex items-center gap-1.5 min-w-0">
                       <i class="ph ph-plant text-sm ${selectedSpecial === 'nuevos' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
-                      <span>Nuevos</span>
-                    </span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
+                      <span class="whitespace-nowrap">Nuevos</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
                   </a>
                 </div>
               </div>
 
               <!-- Acordeón 2: Suplementos -->
               <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <div class="sidebar-cat-header flex items-center justify-between w-full px-3 py-2.5 sm:px-3.5 sm:py-3 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-2" data-cat="suplementos">
-                  <span class="text-xs sm:text-sm font-bold text-brand-forest flex items-center gap-2 min-w-0">
-                    <i class="ph ph-lightning text-base text-brand-forest flex-shrink-0"></i>
-                    <span>Suplementos</span>
-                  </span>
-                  <div class="flex items-center gap-1.5 flex-shrink-0">
-                    <span class="text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream">10</span>
-                    <i class="ph ph-caret-down text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedCat === 'suplementos' ? 'rotate-180' : ''}"></i>
+                <div class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-1.5" data-cat="suplementos">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <i class="ph ph-lightning text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Suplementos</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-shrink-0">
+                    <span class="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream flex-shrink-0">10</span>
+                    <i class="ph ph-caret-down text-xs sm:text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 ${selectedCat === 'suplementos' ? 'rotate-180' : ''}"></i>
                   </div>
                 </div>
 
                 <div class="sidebar-cat-drawer ${selectedCat === 'suplementos' ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1">
                   <a href="#categoria.html?cat=suplementos" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
-                    <span>Ver Todos</span>
-                    <span class="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
+                    <span class="whitespace-nowrap">Todos los Suplementos</span>
+                    <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
                   </a>
                   <a href="#categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'vitaminas-minerales' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span>Vitaminas &amp; Minerales</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">3</span>
+                    <span class="whitespace-nowrap">Vitaminas &amp; Minerales</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">3</span>
                   </a>
                   <a href="#categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'remedios' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span>Remedios</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">2</span>
+                    <span class="whitespace-nowrap">Remedios Tradicionales</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">2</span>
                   </a>
                   <a href="#categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'suplementos-polvo' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
-                    <span>En Polvo</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">5</span>
+                    <span class="whitespace-nowrap">En Polvo / Harinas</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">5</span>
                   </a>
                 </div>
               </div>
             </aside>
 
+            <!-- Columna Principal de Productos (Estructura de Redireccionamiento Inteligente en 3 Columnas) -->
             <div class="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0">
               <div class="flex items-center justify-between pb-4 border-b border-brand-olive/60">
                 <div class="min-w-0 pr-4">
-                  <h2 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest truncate">
+                  <h2 class="font-botanic text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-forest truncate">
                     ${subcatTitle ? subcatTitle : catTitle}
                   </h2>
-                  <p class="text-sm text-brand-leaf/70 mt-1 font-normal">Mostrando <strong class="font-bold text-base">${filtered.length}</strong> productos naturales</p>
+                  <p class="text-xs sm:text-sm text-brand-leaf/70 mt-1 font-normal">Mostrando <strong class="font-bold text-sm sm:text-base">${filtered.length}</strong> productos naturales</p>
                 </div>
               </div>
 
@@ -4432,6 +4661,19 @@
       app.innerHTML = html;
       setupDynamicListeners();
 
+      // Mantener el desplegable lateral del carrito abierto mientras se navega, cerrándolo solo en el carrito/checkout
+      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
+      if (path === 'carrito.html' || path.startsWith('checkout')) {
+        closeCartDrawer();
+        if (toggleBtn) toggleBtn.classList.add('hidden');
+      } else {
+        if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
+          openCartDrawer();
+        } else {
+          closeCartDrawer();
+        }
+      }
+
       // Posicionamiento de scroll según la ruta
       if (path === 'producto.html') {
         // En detalles de producto siempre mostrar directamente desde el inicio sin animación ni desplazamientos
@@ -4486,6 +4728,10 @@
       const currentRoute = parseRoute(window.location.hash);
       const targetRoute = parseRoute(targetHash);
 
+      if (targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
+        closeCartDrawer();
+      }
+
       // Si nos encontramos en Inicio y hacemos clic en el título o inicio, mantenerse donde está sin reiniciar ni mover el scroll
       if (currentRoute.path === 'index.html' && targetRoute.path === 'index.html') {
         return;
@@ -4517,6 +4763,9 @@
 
     window.addEventListener('hashchange', () => {
       const targetRoute = parseRoute(window.location.hash || '#index.html');
+      if (targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
+        closeCartDrawer();
+      }
       const isReturningToCatalog = targetRoute.path !== 'producto.html' && (
         sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
         sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
@@ -4966,6 +5215,17 @@
         history.scrollRestoration = 'manual';
       }
       updateCartBadge();
+      updateCartDrawerUI();
+      if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
+        const currentHash = window.location.hash || '#index.html';
+        if (!currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+          openCartDrawer();
+        } else {
+          closeCartDrawer();
+        }
+      } else {
+        closeCartDrawer();
+      }
       updateAuthUI();
       const initialHash = window.location.hash || '#index.html';
       renderCurrentRoute(initialHash);
