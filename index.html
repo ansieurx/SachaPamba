@@ -1495,6 +1495,7 @@
       }));
       cart = [];
       saveCart();
+      resetCheckoutProgress();
       renderCurrentRoute(window.location.hash || '#carrito.html');
       showToast('Se ha vaciado el carrito', 'ph-trash');
     }
@@ -2946,6 +2947,119 @@
       }, 250);
     }
 
+    // --- Gestión de progreso en el flujo de compra ---
+    function getMaxCheckoutStep() {
+      if (!cart || cart.length === 0) {
+        sessionStorage.removeItem('sacha_max_checkout_step');
+        return 1;
+      }
+      const val = parseInt(sessionStorage.getItem('sacha_max_checkout_step'), 10);
+      return (!isNaN(val) && val >= 1) ? val : 1;
+    }
+
+    function recordCheckoutStep(step) {
+      if (!cart || cart.length === 0) {
+        sessionStorage.removeItem('sacha_max_checkout_step');
+        return;
+      }
+      const current = getMaxCheckoutStep();
+      if (step > current) {
+        sessionStorage.setItem('sacha_max_checkout_step', String(step));
+      }
+    }
+
+    function resetCheckoutProgress() {
+      sessionStorage.removeItem('sacha_max_checkout_step');
+    }
+
+    function renderCheckoutStepper(currentStep) {
+      if (currentStep < 4 && cart && cart.length > 0) {
+        recordCheckoutStep(currentStep);
+      }
+      const maxReached = (currentStep === 4) ? 4 : getMaxCheckoutStep();
+
+      const steps = [
+        { id: 1, name: 'Carrito', hash: '#carrito.html' },
+        { id: 2, name: 'Retiro', hash: '#checkout-retiro.html' },
+        { id: 3, name: 'Pago', hash: '#checkout-pago.html' },
+        { id: 4, name: 'Confirmación', hash: '#checkout-confirmacion.html' }
+      ];
+
+      // En el proceso de confirmación no se permite volver a ningún paso
+      if (currentStep === 4) {
+        return `
+          <div class="flex items-center justify-center mb-8 sm:mb-10">
+            <div class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs select-none pointer-events-none cursor-default" title="Pedido finalizado. No se permite volver a pasos anteriores.">
+              ${steps.map((st, idx) => `
+                <div class="inline-flex items-center gap-1.5 sm:gap-2 ${st.id === 4 ? '' : 'opacity-75'}">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full ${st.id === 4 ? 'bg-brand-sunflower text-brand-leaf shadow-xs' : 'bg-brand-olive text-brand-forest'} flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
+                    ${st.id === 4 ? '4' : '<i class="ph ph-check font-bold"></i>'}
+                  </span>
+                  <span class="text-brand-forest ${st.id === 4 ? 'font-bold' : 'font-semibold'}">${st.name}</span>
+                </div>
+                ${idx < steps.length - 1 ? `<span class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>` : ''}
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Proceso de compra activo (Pasos 1, 2 y 3)
+      return `
+        <div class="flex items-center justify-center mb-8 sm:mb-10">
+          <div class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+            ${steps.map((st, idx) => {
+              const isCurrent = st.id === currentStep;
+              const isPast = st.id < currentStep;
+              // Puede avanzar directamente si ya llegó a este paso antes (hasta paso 3)
+              const canGoForward = !isCurrent && !isPast && st.id <= maxReached && st.id < 4 && cart && cart.length > 0;
+              const isClickable = isPast || canGoForward;
+
+              let stepHtml = '';
+
+              if (isCurrent) {
+                stepHtml = `
+                  <div class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">${st.id}</span>
+                    <span class="text-brand-forest font-bold">${st.name}</span>
+                  </div>
+                `;
+              } else if (isClickable) {
+                const actionTitle = isPast ? `Volver al Paso ${st.id}: ${st.name}` : `Avanzar directamente al Paso ${st.id}: ${st.name} (ya alcanzado previamente)`;
+                stepHtml = `
+                  <button 
+                    type="button" 
+                    onclick="navigateTo('${st.hash}')" 
+                    class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" 
+                    title="${actionTitle}"
+                  >
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                      ${isPast ? '<i class="ph ph-check font-bold"></i>' : st.id}
+                    </span>
+                    <span class="text-brand-forest font-semibold group-hover:underline">${st.name}</span>
+                  </button>
+                `;
+              } else {
+                stepHtml = `
+                  <div class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">${st.id}</span>
+                    <span class="text-brand-forest/60">${st.name}</span>
+                  </div>
+                `;
+              }
+
+              const separatorActive = (st.id < currentStep) || (st.id < maxReached);
+              const separatorHtml = idx < steps.length - 1 ? `
+                <span class="w-4 sm:w-8 h-0.5 ${separatorActive ? 'bg-brand-olive' : 'bg-brand-forest/20'} flex-shrink-0"></span>
+              ` : '';
+
+              return stepHtml + separatorHtml;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
     // --- Vista 4: Carrito de Compras (carrito.html) ---
     function renderCartView() {
       // Cálculo preciso en centavos para eliminar cualquier error de redondeo de punto flotante
@@ -2977,22 +3091,7 @@
             </button>
           </div>
 
-          <!-- Flujo de Pasos Completo -->
-          <div class="flex items-center justify-center mb-8 sm:mb-10">
-            <div class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
-              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm flex-shrink-0">1</span>
-              <span class="text-brand-forest font-bold">Carrito</span>
-              <span class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
-              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/70 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">2</span>
-              <span class="text-brand-forest/70">Retiro</span>
-              <span class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
-              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/70 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">3</span>
-              <span class="text-brand-forest/70">Pago</span>
-              <span class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
-              <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/70 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
-              <span class="text-brand-forest/70">Confirmación</span>
-            </div>
-          </div>
+          ${renderCheckoutStepper(1)}
 
           <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-brand-forest/20">
             <div>
@@ -3195,21 +3294,7 @@
             </button>
           </div>
 
-          <div class="flex items-center justify-center mb-10">
-            <div class="flex items-center gap-2 sm:gap-3 text-sm font-bold flex-wrap justify-center">
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Carrito</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-base">2</span>
-              <span class="text-brand-forest font-bold">Retiro</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive/40 text-brand-leaf/60 flex items-center justify-center text-base">3</span>
-              <span class="text-brand-leaf/60">Pago</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive/40 text-brand-leaf/60 flex items-center justify-center text-base">4</span>
-              <span class="text-brand-leaf/60">Confirmación</span>
-            </div>
-          </div>
+          ${renderCheckoutStepper(2)}
 
           <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
@@ -3270,9 +3355,15 @@
                   </div>
                 `).join('')}
               </div>
-              <div class="pt-4 border-t border-brand-forest/20 flex justify-between font-bold text-base text-brand-forest items-center">
-                <span>Total a pagar:</span>
-                <span class="font-botanic text-2xl">$${subtotal.toFixed(2)}</span>
+              <div class="pt-4 border-t border-brand-forest/20 space-y-1.5">
+                <div class="flex justify-between font-bold text-base text-brand-forest items-center">
+                  <span>Total a pagar:</span>
+                  <span class="font-botanic text-2xl">$${subtotal.toFixed(2)}</span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-brand-leaf/80 font-medium flex items-center gap-1.5 pt-0.5">
+                  <i class="ph ph-check-circle text-brand-forest text-sm flex-shrink-0"></i>
+                  <span>El IVA ya está incluido en el total</span>
+                </p>
               </div>
             </div>
 
@@ -3306,21 +3397,7 @@
             </button>
           </div>
 
-          <div class="flex items-center justify-center mb-10">
-            <div class="flex items-center gap-2 sm:gap-3 text-sm font-bold flex-wrap justify-center">
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Carrito</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Retiro</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-base">3</span>
-              <span class="text-brand-forest font-bold">Pago</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive/40 text-brand-leaf/60 flex items-center justify-center text-base">4</span>
-              <span class="text-brand-leaf/60">Confirmación</span>
-            </div>
-          </div>
+          ${renderCheckoutStepper(3)}
 
           <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
@@ -3429,9 +3506,15 @@
                   </div>
                 `).join('')}
               </div>
-              <div class="pt-4 border-t border-brand-forest/20 flex justify-between font-bold text-base text-brand-forest items-center">
-                <span>Total a liquidar:</span>
-                <span class="font-botanic text-2xl">$${subtotal.toFixed(2)}</span>
+              <div class="pt-4 border-t border-brand-forest/20 space-y-1.5">
+                <div class="flex justify-between font-bold text-base text-brand-forest items-center">
+                  <span>Total a pagar:</span>
+                  <span class="font-botanic text-2xl">$${subtotal.toFixed(2)}</span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-brand-leaf/80 font-medium flex items-center gap-1.5 pt-0.5">
+                  <i class="ph ph-check-circle text-brand-forest text-sm flex-shrink-0"></i>
+                  <span>El IVA ya está incluido en el total</span>
+                </p>
               </div>
             </div>
 
@@ -3504,6 +3587,7 @@
         localStorage.setItem('sacha_last_order', JSON.stringify(newOrder));
         cart = [];
         saveCart();
+        resetCheckoutProgress();
         navigateTo('#checkout-confirmacion.html');
       }, 700);
     }
@@ -3515,21 +3599,7 @@
       return `
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
           
-          <div class="flex items-center justify-center mb-10">
-            <div class="flex items-center gap-2 sm:gap-3 text-sm font-bold flex-wrap justify-center">
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Carrito</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Retiro</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-lg"><i class="ph ph-check"></i></span>
-              <span class="text-brand-forest font-semibold">Pago</span>
-              <span class="w-6 sm:w-10 h-0.5 bg-brand-olive"></span>
-              <span class="w-8 h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-base">4</span>
-              <span class="text-brand-forest font-bold">Confirmación</span>
-            </div>
-          </div>
+          ${renderCheckoutStepper(4)}
 
           <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-8 sm:p-10 shadow-xl text-center space-y-7">
             
