@@ -221,6 +221,10 @@
       }
     }
 
+    html {
+      scroll-behavior: auto !important;
+    }
+
     /* Ocultar flechas/spinners en inputs numéricos */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
@@ -2201,12 +2205,18 @@
     }
 
     function saveCatalogPosition(productId) {
-      const currentHash = window.location.hash || '#categoria.html';
+      const currentHash = window.location.hash || '#index.html';
       if (!currentHash.startsWith('#producto.html')) {
         sessionStorage.setItem('sacha_prev_route', currentHash);
-        sessionStorage.setItem('sacha_catalog_scroll_pos', String(window.scrollY || window.pageYOffset || 0));
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        sessionStorage.setItem('sacha_catalog_scroll_pos', String(scrollY));
         if (productId) {
           sessionStorage.setItem('sacha_last_inspected_product_id', productId);
+          const card = document.getElementById(`product-card-${productId}`);
+          if (card) {
+            const rect = card.getBoundingClientRect();
+            sessionStorage.setItem('sacha_card_viewport_offset', String(rect.top));
+          }
         }
       }
     }
@@ -2214,10 +2224,10 @@
     function handleBackToProducts() {
       const prevRoute = sessionStorage.getItem('sacha_prev_route');
       let targetRoute = '#categoria.html';
-      if (prevRoute && (prevRoute.startsWith('#categoria.html') || prevRoute.startsWith('#productos.html'))) {
+      if (prevRoute && (prevRoute.startsWith('#categoria.html') || prevRoute.startsWith('#productos.html') || prevRoute.startsWith('#index.html'))) {
         targetRoute = prevRoute;
       }
-      navigateTo(targetRoute, true);
+      navigateTo(targetRoute);
     }
 
     function handleProductCardClick(event, id) {
@@ -2225,7 +2235,7 @@
         return;
       }
       saveCatalogPosition(id);
-      window.location.hash = `#producto.html?id=${id}`;
+      navigateTo(`#producto.html?id=${id}`);
     }
 
     function renderProductCard(p) {
@@ -2310,7 +2320,7 @@
           <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-full shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
-            <a href="#categoria.html" class="hover:text-brand-forest" onclick="handleBackToProducts(); return false;">Productos</a>
+            <a href="#categoria.html" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Productos</a>
             <span>/</span>
             <a href="#categoria.html?cat=${product.category}" class="hover:text-brand-forest">${product.categoryName}</a>
             <span>/</span>
@@ -4422,29 +4432,48 @@
       app.innerHTML = html;
       setupDynamicListeners();
 
-      // Restaurar posición exacta al volver a la lista de productos
-      const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
-      const returningScroll = parseFloat(sessionStorage.getItem('sacha_catalog_scroll_pos'));
+      // Posicionamiento de scroll según la ruta
+      if (path === 'producto.html') {
+        // En detalles de producto siempre mostrar directamente desde el inicio sin animación ni desplazamientos
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } else {
+        // Al regresar de un producto a catálogo o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
+        const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
+        const rawScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+        const rawOffset = sessionStorage.getItem('sacha_card_viewport_offset');
 
-      if (returningProductId || !isNaN(returningScroll)) {
-        sessionStorage.removeItem('sacha_last_inspected_product_id');
-        sessionStorage.removeItem('sacha_catalog_scroll_pos');
+        if (returningProductId || rawScroll !== null) {
+          const returningScroll = rawScroll !== null ? parseFloat(rawScroll) : NaN;
+          const cardOffset = rawOffset !== null ? parseFloat(rawOffset) : NaN;
 
-        const restorePosition = () => {
-          if (returningProductId) {
-            const card = document.getElementById(`product-card-${returningProductId}`);
-            if (card) {
-              card.scrollIntoView({ block: 'center', behavior: 'instant' });
-              return;
+          sessionStorage.removeItem('sacha_last_inspected_product_id');
+          sessionStorage.removeItem('sacha_catalog_scroll_pos');
+          sessionStorage.removeItem('sacha_card_viewport_offset');
+          sessionStorage.removeItem('sacha_prev_route');
+
+          const restoreCardPosition = () => {
+            if (returningProductId) {
+              const card = document.getElementById(`product-card-${returningProductId}`);
+              if (card) {
+                if (!isNaN(cardOffset)) {
+                  const targetScroll = (card.getBoundingClientRect().top + window.scrollY) - cardOffset;
+                  window.scrollTo({ top: Math.max(0, targetScroll), left: 0, behavior: 'instant' });
+                } else {
+                  card.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+                }
+                return;
+              }
             }
-          }
-          if (!isNaN(returningScroll)) {
-            window.scrollTo({ top: returningScroll, behavior: 'instant' });
-          }
-        };
+            if (!isNaN(returningScroll)) {
+              window.scrollTo({ top: returningScroll, left: 0, behavior: 'instant' });
+            }
+          };
 
-        restorePosition();
-        requestAnimationFrame(restorePosition);
+          restoreCardPosition();
+          requestAnimationFrame(restoreCardPosition);
+          setTimeout(restoreCardPosition, 50);
+          setTimeout(restoreCardPosition, 150);
+        }
       }
     }
 
@@ -4467,28 +4496,39 @@
         return;
       }
 
-      const isReturningToProduct = !!sessionStorage.getItem('sacha_last_inspected_product_id');
+      const isReturningToCatalog = targetRoute.path !== 'producto.html' && (
+        sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
+        sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
+      );
+
+      if (targetRoute.path === 'producto.html') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
 
       if (window.location.hash !== targetHash) {
         window.location.hash = targetHash;
       } else {
+        if (!preventScroll && !isReturningToCatalog && targetRoute.path !== 'producto.html') {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
         renderCurrentRoute(targetHash);
-      }
-
-      if (!preventScroll && !isReturningToProduct) {
-        window.scrollTo(0, 0);
       }
     }
 
     window.addEventListener('hashchange', () => {
-      const isReturningToProduct = !!sessionStorage.getItem('sacha_last_inspected_product_id');
-      if (!isReturningToProduct) {
-        window.scrollTo(0, 0);
+      const targetRoute = parseRoute(window.location.hash || '#index.html');
+      const isReturningToCatalog = targetRoute.path !== 'producto.html' && (
+        sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
+        sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
+      );
+
+      if (targetRoute.path === 'producto.html') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } else if (!isReturningToCatalog) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
+
       renderCurrentRoute(window.location.hash || '#index.html');
-      if (!isReturningToProduct) {
-        window.scrollTo(0, 0);
-      }
     });
 
     let heroAutoplayTimer = null;
@@ -4896,6 +4936,7 @@
     }
 
     document.addEventListener('click', (e) => {
+      if (e.defaultPrevented) return;
       const anchor = e.target.closest('a');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
@@ -4921,6 +4962,9 @@
     });
 
     function initApp() {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
       updateCartBadge();
       updateAuthUI();
       const initialHash = window.location.hash || '#index.html';
