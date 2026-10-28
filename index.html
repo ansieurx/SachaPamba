@@ -74,24 +74,16 @@
       display: inline;
     }
 
-    /* Layout Fluido - Aprovechar el ancho total de la pantalla */
+    /* Layout Fluido y Adaptable - Aprovechar el ancho total con espaciado consistente */
     .max-w-4xl, 
     .max-w-5xl, 
     .max-w-6xl, 
     .max-w-7xl {
       max-width: 100% !important;
-      padding-left: 4vw !important;
-      padding-right: 4vw !important;
-    }
-    
-    @media (min-width: 1536px) {
-      .max-w-4xl, 
-      .max-w-5xl, 
-      .max-w-6xl, 
-      .max-w-7xl {
-        padding-left: 8vw !important;
-        padding-right: 8vw !important;
-      }
+      padding-left: clamp(1rem, 3.5vw, 2.5rem) !important;
+      padding-right: clamp(1rem, 3.5vw, 2.5rem) !important;
+      box-sizing: border-box !important;
+      transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     body {
@@ -140,7 +132,7 @@
       top: 0;
       z-index: 40;
       width: 100%;
-      max-width: 100vw;
+      max-width: 100%;
       box-sizing: border-box;
     }
 
@@ -182,32 +174,85 @@
       }
     }
 
-    /* Adaptabilidad de Tarjetas de Productos en Zoom */
+    /* Adaptabilidad de Tarjetas de Productos: Consistencia y Organización Uniforme en Zoom */
     .product-card {
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      overflow: hidden;
       container-type: inline-size;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @container (max-width: 220px) {
-      .product-card-footer {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 0.5rem !important;
-        padding: 0.65rem 0.75rem !important;
-      }
-      .product-card-price {
-        text-align: center !important;
-        width: 100% !important;
-      }
-      .product-card-actions {
-        width: 100% !important;
-        display: flex !important;
-        gap: 0.4rem !important;
-      }
-      .product-card-actions a,
-      .product-card-actions button {
-        flex: 1 1 0 !important;
-        justify-content: center !important;
-        text-align: center !important;
-      }
+
+    .product-card-footer {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: clamp(0.2rem, 0.8cqi, 0.45rem) !important;
+      padding: clamp(0.42rem, 1.2cqi, 0.58rem) clamp(0.45rem, 1.8cqi, 0.75rem) !important;
+      overflow: hidden !important;
+    }
+
+    .product-card-price {
+      min-width: 0 !important;
+      flex-shrink: 0 !important;
+    }
+    .product-card-price span {
+      font-size: clamp(0.95rem, 2.5cqi, 1.15rem) !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap !important;
+      color: #FEFAE0 !important;
+    }
+
+    .product-card-actions {
+      min-width: 0 !important;
+      display: inline-flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      gap: clamp(0.2rem, 0.8cqi, 0.35rem) !important;
+      margin-left: auto !important;
+      flex-shrink: 0 !important;
+    }
+
+    .product-card-actions a {
+      padding: clamp(0.25rem, 0.8cqi, 0.35rem) clamp(0.45rem, 1.2cqi, 0.65rem) !important;
+      font-size: clamp(0.75rem, 1.8cqi, 0.84rem) !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+      flex-shrink: 0 !important;
+      border-radius: 0.5rem !important;
+    }
+
+    .product-card-actions button {
+      padding: clamp(0.28rem, 0.9cqi, 0.38rem) clamp(0.5rem, 1.5cqi, 0.8rem) !important;
+      font-size: clamp(0.82rem, 2cqi, 0.92rem) !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+      flex-shrink: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: clamp(0.2rem, 0.6cqi, 0.3rem) !important;
+      border-radius: 0.5rem !important;
+    }
+
+    .product-card-actions button i {
+      font-size: clamp(0.85rem, 2cqi, 1rem) !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* Transición fluida y consistente en cuadrículas */
+    #home-products-grid {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Adaptabilidad de Detalles Botánicos en Zoom */
@@ -263,30 +308,93 @@
       }
     }
 
-    /* Desplegable Lateral Delgado del Carrito (Solo imagen, Ultra Delgado) */
-    #cart-side-drawer {
-      width: 86px;
-      max-width: 90px;
-      height: 100vh;
-      height: 100dvh;
-      box-sizing: border-box;
-      overflow: visible;
+    :root {
+      --cart-zoom: 1;
     }
-    @media (min-width: 1280px) {
-      body.cart-drawer-open {
-        padding-right: 86px;
-        transition: padding-right 0.3s ease;
+
+    /* Adaptación fluida del contenido de la página para que el carrito no se sobreponga */
+    body {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    body.is-sliding {
+      transition: padding-right 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    body.cart-drawer-open {
+      padding-right: calc(86px / var(--cart-zoom, 1)) !important;
+    }
+
+    body.cart-drawer-open #toast {
+      right: calc(1rem + (86px / var(--cart-zoom, 1))) !important;
+    }
+    @media (min-width: 640px) {
+      body.cart-drawer-open #toast {
+        right: calc(1.5rem + (86px / var(--cart-zoom, 1))) !important;
       }
     }
+
+    /* Desplegable Lateral Delgado del Carrito (Inmune a zoom: 100% estático, bordes idénticos de 1px) */
+    #cart-side-drawer {
+      width: 86px !important;
+      max-width: 86px !important;
+      height: calc(100vh * var(--cart-zoom, 1)) !important;
+      height: calc(100dvh * var(--cart-zoom, 1)) !important;
+      box-sizing: border-box !important;
+      overflow: visible;
+      border-left: 1px solid #5A6B4E !important;
+      box-shadow: -4px 0 16px -2px rgba(40, 54, 24, 0.15) !important;
+      zoom: calc(1 / var(--cart-zoom, 1));
+      transform: translateX(100%) !important;
+      transition: none !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #cart-side-drawer.is-open,
+    #cart-side-drawer.translate-x-0 {
+      transform: translateX(0) !important;
+      transition: none !important;
+    }
+
+    /* La animación de deslizamiento SOLO ocurre al interactuar con los botones de abrir/cerrar */
+    #cart-side-drawer.is-sliding {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    #cart-drawer-toggle-btn {
+      border: 1px solid #5A6B4E !important;
+      border-right: none !important;
+    }
+
+    /* Mismo tipo y grosor de borde en todos los elementos del desplegable (1px uniforme y constante) */
+    #cart-side-drawer .cart-drawer-header {
+      border-bottom: 1px solid #5A6B4E !important;
+    }
+    #cart-side-drawer .cart-drawer-btn-container {
+      border-bottom: 1px solid #5A6B4E !important;
+    }
+    #cart-side-drawer .cart-drawer-btn-ir {
+      border: 1px solid #b89535 !important;
+    }
+    #cart-side-drawer .cart-thumb-box {
+      border: 1px solid #5A6B4E !important;
+    }
+    #cart-side-drawer #cart-drawer-footer {
+      border-top: 1px solid #5A6B4E !important;
+    }
+
+    /* Ocultar barra de desplazamiento para mantener bordes 100% idénticos y limpios en cualquier nivel de zoom */
+    #cart-drawer-items {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
     #cart-drawer-items::-webkit-scrollbar {
-      width: 4px;
-    }
-    #cart-drawer-items::-webkit-scrollbar-track {
-      background: rgba(40, 54, 24, 0.05);
-    }
-    #cart-drawer-items::-webkit-scrollbar-thumb {
-      background: rgba(40, 54, 24, 0.25);
-      border-radius: 9999px;
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
   </style>
 </head>
@@ -974,49 +1082,50 @@
   </footer>
 
   <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
-  <aside id="cart-side-drawer" class="fixed top-0 right-0 h-full w-[86px] z-40 bg-[#FEFAE0] border-l-2 border-brand-forest shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out box-border" aria-label="Carrito de compras lateral">
+  <aside id="cart-side-drawer" class="fixed top-0 right-0 h-full w-[86px] z-40 bg-[#FEFAE0] flex flex-col transform translate-x-full box-border" aria-label="Carrito de compras lateral">
     <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
     <button 
       type="button" 
       id="cart-drawer-toggle-btn"
       onclick="toggleCartDrawer()" 
-      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#FEFAE0] hover:bg-brand-sunflower text-brand-forest border-2 border-r-0 border-brand-forest rounded-l-xl shadow-xl w-7 h-14 sm:w-8 sm:h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
+      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-7 h-14 sm:w-8 sm:h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
       aria-label="Desplegar u ocultar carrito"
       title="Desplegar carrito"
     >
-      <i id="cart-drawer-caret" class="ph ph-caret-left text-lg sm:text-xl font-bold text-brand-forest transition-transform"></i>
+      <i id="cart-drawer-caret" class="ph ph-caret-left text-lg sm:text-xl font-bold text-brand-cream transition-transform"></i>
     </button>
 
-    <!-- Encabezado superior (con la flecha al lado de la X y sin la palabra Carrito) -->
-    <div class="p-1.5 sm:p-2 bg-[#CCD5AE] border-b border-brand-forest/20 flex flex-col items-center gap-1.5 flex-shrink-0">
-      <!-- Botón de Flecha y Botón X en la parte superior -->
-      <div class="flex items-center justify-between w-full px-0.5">
-        <button 
-          type="button" 
-          onclick="collapseCartDrawer()" 
-          class="p-0.5 text-brand-forest/80 hover:text-brand-forest hover:bg-black/10 rounded transition-colors cursor-pointer flex items-center justify-center"
-          aria-label="Ocultar carrito"
-          title="Ocultar carrito"
-        >
-          <i class="ph ph-caret-right text-base font-bold"></i>
-        </button>
+    <!-- Recuadro verde hoja claro (#5A6B4E) que solo envuelve a la flecha y a la X -->
+    <div class="cart-drawer-header px-2 py-1.5 bg-[#5A6B4E] flex items-center justify-between w-full flex-shrink-0">
+      <!-- Botón de Flecha hacia la derecha para ocultar -->
+      <button 
+        type="button" 
+        onclick="collapseCartDrawer()" 
+        class="p-1 text-brand-cream hover:text-brand-sunflower hover:bg-white/10 rounded transition-colors cursor-pointer flex items-center justify-center"
+        aria-label="Ocultar carrito"
+        title="Ocultar carrito"
+      >
+        <i class="ph ph-caret-right text-base font-bold"></i>
+      </button>
 
-        <button 
-          type="button" 
-          onclick="closeCartDrawer(true)" 
-          class="p-0.5 text-brand-forest/80 hover:text-brand-forest hover:bg-black/10 rounded transition-colors cursor-pointer flex items-center justify-center"
-          aria-label="Cerrar panel"
-          title="Cerrar panel"
-        >
-          <i class="ph ph-x text-sm font-bold"></i>
-        </button>
-      </div>
+      <!-- Botón X para cerrar -->
+      <button 
+        type="button" 
+        onclick="closeCartDrawer(true)" 
+        class="p-1 text-brand-cream hover:text-brand-sunflower hover:bg-white/10 rounded transition-colors cursor-pointer flex items-center justify-center"
+        aria-label="Cerrar panel"
+        title="Cerrar panel"
+      >
+        <i class="ph ph-x text-sm font-bold"></i>
+      </button>
+    </div>
 
-      <!-- Botón en la parte superior para ir al carrito -->
+    <!-- Botón en la parte superior para ir al carrito (fuera del recuadro verde) -->
+    <div class="cart-drawer-btn-container p-1.5 sm:p-2 bg-brand-cream flex flex-col items-center w-full flex-shrink-0">
       <a 
         href="#carrito.html" 
         onclick="closeCartDrawer()" 
-        class="w-full py-1 bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 border border-brand-forest/20 cursor-pointer text-center"
+        class="cart-drawer-btn-ir w-full py-1 bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 cursor-pointer text-center"
         title="Ir al Carrito"
       >
         <i class="ph ph-shopping-cart text-xs font-bold"></i>
@@ -1030,10 +1139,10 @@
     </div>
 
     <!-- Pie del desplegable: Total a pagar esencial -->
-    <div id="cart-drawer-footer" class="p-1.5 sm:p-2 bg-[#CCD5AE]/70 border-t border-brand-forest/20 flex flex-col items-center text-center flex-shrink-0">
-      <span class="text-[9px] font-bold text-brand-forest uppercase leading-tight">Total</span>
-      <span id="cart-drawer-total" class="text-xs font-extrabold text-brand-forest whitespace-nowrap">$0.00</span>
-      <span class="text-[8px] text-brand-forest/70 font-medium leading-none mt-0.5">IVA incl.</span>
+    <div id="cart-drawer-footer" class="p-1.5 sm:p-2 bg-[#5A6B4E] flex flex-col items-center text-center flex-shrink-0">
+      <span class="cart-footer-title text-[9px] font-bold text-brand-cream/90 uppercase leading-tight">Total</span>
+      <span id="cart-drawer-total" class="text-xs font-extrabold text-brand-sunflower whitespace-nowrap">$0.00</span>
+      <span class="cart-footer-iva text-[8px] text-brand-cream/80 font-medium leading-none mt-0.5">IVA incl.</span>
     </div>
   </aside>
 
@@ -1381,55 +1490,128 @@
       }
 
       itemsContainer.innerHTML = cart.map(item => `
-        <div class="relative group flex-shrink-0" title="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} (${item.quantity} ud.)">
-          <img 
-            src="${item.image}" 
-            alt="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
-            class="w-14 h-14 object-cover rounded-xl border-2 border-brand-forest/20 bg-white shadow-xs group-hover:scale-105 transition-transform"
-            onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
-          >
+        <div class="relative flex-shrink-0" title="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} (${item.quantity} ud.)">
+          <div class="cart-thumb-box w-14 h-14 rounded-xl overflow-hidden bg-white shadow-xs group cursor-pointer relative">
+            <img 
+              src="${item.image}" 
+              alt="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
+            >
+            <button 
+              type="button" 
+              onclick="removeFromCart('${item.id}')" 
+              class="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+              title="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+              aria-label="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+            >
+              <i class="ph ph-trash text-base text-red-300"></i>
+            </button>
+          </div>
           ${item.quantity > 1 ? `
-            <span class="absolute -top-1 -right-1 bg-brand-forest text-brand-cream text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-xs border border-white">
-              ${item.quantity}
-            </span>
+            <svg class="cart-badge-svg absolute -top-1.5 -right-1.5 w-5 h-5 pointer-events-none drop-shadow-xs overflow-visible" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.5" fill="#283618" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="10" y="10" dominant-baseline="central" text-anchor="middle" fill="#FEFAE0" font-size="11" font-weight="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">${item.quantity}</text>
+            </svg>
           ` : ''}
-          <button 
-            type="button" 
-            onclick="removeFromCart('${item.id}')" 
-            class="absolute inset-0 bg-black/60 text-white rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
-            title="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
-            aria-label="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
-          >
-            <i class="ph ph-trash text-base text-red-300"></i>
-          </button>
         </div>
       `).join('');
     }
 
+    // Control del desplegable de carrito: Inmune a zoom del navegador (tamaño físico fijo y bordes uniformes de 1px)
+    function updateCartDrawerZoom() {
+      const drawer = document.getElementById('cart-side-drawer');
+      if (!drawer) return;
+
+      const currentDPR = window.devicePixelRatio || 1;
+      let baseDPR = parseFloat(sessionStorage.getItem('sacha_base_dpr'));
+
+      if (!baseDPR || isNaN(baseDPR) || baseDPR <= 0) {
+        let estimatedZoom = 1;
+        if (window.outerWidth && window.innerWidth) {
+          estimatedZoom = window.outerWidth / window.innerWidth;
+        }
+        if (estimatedZoom > 0.3 && estimatedZoom < 5) {
+          const rawBase = currentDPR / estimatedZoom;
+          const standardScales = [1, 1.25, 1.5, 1.75, 2, 2.25, 2.5];
+          let closest = standardScales[0];
+          let minDiff = Math.abs(rawBase - closest);
+          for (let i = 1; i < standardScales.length; i++) {
+            const diff = Math.abs(rawBase - standardScales[i]);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closest = standardScales[i];
+            }
+          }
+          baseDPR = closest;
+        } else {
+          baseDPR = currentDPR;
+        }
+        sessionStorage.setItem('sacha_base_dpr', String(baseDPR));
+      }
+
+      let zoom = currentDPR / baseDPR;
+      zoom = Math.max(0.3, Math.min(4.0, zoom));
+      const invZoom = 1 / zoom;
+
+      // Inmunidad total al zoom: el desplegable mantiene exactamente sus dimensiones y bordes idénticos en pantalla
+      drawer.style.zoom = String(invZoom);
+      document.documentElement.style.setProperty('--cart-zoom', String(zoom));
+    }
+
+    // Event listener único y síncrono para actualización instantánea sin saltos ni demoras
+    window.addEventListener('resize', updateCartDrawerZoom, { passive: true });
+
+    // Si el usuario restablece zoom (Ctrl + 0), recalibramos la base
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === '0' || e.code === 'Digit0' || e.code === 'Numpad0')) {
+        setTimeout(() => {
+          sessionStorage.setItem('sacha_base_dpr', String(window.devicePixelRatio || 1));
+          updateCartDrawerZoom();
+        }, 80);
+      }
+    });
+
     function toggleCartDrawer() {
       const drawer = document.getElementById('cart-side-drawer');
       if (!drawer) return;
-      if (drawer.classList.contains('translate-x-0')) {
+      if (drawer.classList.contains('translate-x-0') || drawer.classList.contains('is-open')) {
         collapseCartDrawer();
       } else {
         openCartDrawer();
       }
     }
 
+    let drawerSlideTimeout = null;
+    function triggerDrawerSlide(drawer) {
+      if (!drawer) return;
+      if (drawerSlideTimeout) clearTimeout(drawerSlideTimeout);
+      drawer.classList.add('is-sliding');
+      document.body.classList.add('is-sliding');
+      drawerSlideTimeout = setTimeout(() => {
+        drawer.classList.remove('is-sliding');
+        document.body.classList.remove('is-sliding');
+        drawerSlideTimeout = null;
+      }, 320);
+    }
+
     function openCartDrawer() {
       updateCartDrawerUI();
+      updateCartDrawerZoom();
       const drawer = document.getElementById('cart-side-drawer');
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!drawer) return;
 
       sessionStorage.removeItem('sacha_cart_drawer_dismissed');
       sessionStorage.removeItem('sacha_cart_drawer_collapsed');
+      
+      triggerDrawerSlide(drawer);
       drawer.classList.remove('translate-x-full');
-      drawer.classList.add('translate-x-0');
+      drawer.classList.add('translate-x-0', 'is-open');
       document.body.classList.add('cart-drawer-open');
       sessionStorage.setItem('sacha_cart_drawer_open', 'true');
 
-      // Quitar el botón de la flecha del lado cuando el carrito está desplegado
+      // Quitar el botón de la flecha del lado cuando el carrito esté desplegado
       if (toggleBtn) {
         toggleBtn.classList.add('hidden');
       }
@@ -1440,7 +1622,8 @@
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!drawer) return;
 
-      drawer.classList.remove('translate-x-0');
+      triggerDrawerSlide(drawer);
+      drawer.classList.remove('translate-x-0', 'is-open');
       drawer.classList.add('translate-x-full');
       document.body.classList.remove('cart-drawer-open');
       sessionStorage.removeItem('sacha_cart_drawer_open');
@@ -1459,7 +1642,8 @@
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!drawer) return;
 
-      drawer.classList.remove('translate-x-0');
+      triggerDrawerSlide(drawer);
+      drawer.classList.remove('translate-x-0', 'is-open');
       drawer.classList.add('translate-x-full');
       document.body.classList.remove('cart-drawer-open');
       sessionStorage.removeItem('sacha_cart_drawer_open');
@@ -2469,7 +2653,7 @@
 
     function renderProductCard(p) {
       return `
-        <div id="product-card-${p.id}" onclick="handleProductCardClick(event, '${p.id}')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-4 md:p-5 flex flex-col justify-between hover:shadow-xl transition-all group h-full cursor-pointer">
+        <div id="product-card-${p.id}" onclick="handleProductCardClick(event, '${p.id}')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl transition-all group h-full cursor-pointer">
           <div>
             <div class="relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs">
               <img 
@@ -2490,7 +2674,7 @@
                 <span class="text-brand-forest/80 text-[11px] font-medium">(${p.reviewsCount} reseñas)</span>
               </div>
 
-              <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1">
+              <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
                 <a href="#producto.html?id=${p.id}" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
                   ${p.name}
                 </a>
@@ -2498,7 +2682,7 @@
               
               <span class="text-xs sm:text-sm text-brand-moss font-bold block">${p.size}</span>
 
-              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium">
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
                 ${p.shortDesc}
               </p>
             </div>
@@ -5214,6 +5398,7 @@
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
+      updateCartDrawerZoom();
       updateCartBadge();
       updateCartDrawerUI();
       if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
