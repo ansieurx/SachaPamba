@@ -682,17 +682,14 @@
     }
 
 
-    /* Garantizar que los elementos en Mi Cuenta nunca desborden en zoom */
+    /* Garantizar que los contenedores en Mi Cuenta tengan espaciado limpio y nunca desborden en zoom */
     #account-tab-orders,
     #account-tab-personal {
       padding-left: 0 !important;
       padding-right: 0 !important;
-      overflow-x: hidden;
-    }
-    #account-tab-orders *,
-    #account-tab-personal * {
+      max-width: 100% !important;
       box-sizing: border-box !important;
-      max-width: 100%;
+      overflow-x: clip;
     }
   </style>
 </head>
@@ -4410,8 +4407,8 @@
 
       if (!tabPersonal || !tabOrders || !btnPersonal || !btnOrders) return;
 
-      const activeClass = "flex items-center justify-center gap-2.5 px-4 sm:px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[58px] text-center whitespace-nowrap";
-      const inactiveClass = "flex items-center justify-center gap-2.5 px-4 sm:px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[58px] text-center whitespace-nowrap";
+      const activeClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[52px] sm:min-h-[56px] text-center";
+      const inactiveClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[52px] sm:min-h-[56px] text-center";
 
       if (tabKey === 'personal') {
         tabPersonal.classList.remove('hidden');
@@ -4474,9 +4471,8 @@
 
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8 pb-4 border-b border-brand-olive/50">
             <div class="w-full md:flex-1">
-              <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Centro de Clientes</span>
               <h1 class="font-botanic text-[clamp(1.35rem,4vw,2.25rem)] font-bold text-brand-forest leading-tight break-normal">
-                Perfil <span class="amp-normal">&amp;</span> Seguimiento de pedidos
+                Cuenta de Cliente
               </h1>
             </div>
             <div class="flex-shrink-0 self-start md:self-auto">
@@ -4493,58 +4489,61 @@
           </div>
 
           <!-- Selector de Pestañas / Sub-páginas con botones de tamaño idéntico -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full max-w-xl mx-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full max-w-xl mx-auto box-border">
             <button 
               type="button" 
               id="tab-btn-personal" 
               onclick="switchAccountTab('personal')" 
-              class="flex items-center justify-center gap-2.5 px-4 sm:px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[58px] text-center whitespace-nowrap"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
-              <i class="ph ph-user text-lg sm:text-xl"></i>
+              <i class="ph ph-user text-lg sm:text-xl flex-shrink-0"></i>
               <span>Información Personal</span>
             </button>
             <button 
               type="button" 
               id="tab-btn-orders" 
               onclick="switchAccountTab('orders')" 
-              class="flex items-center justify-center gap-2.5 px-4 sm:px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[58px] text-center whitespace-nowrap"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
-              <i class="ph ph-package text-lg sm:text-xl"></i>
+              <i class="ph ph-package text-lg sm:text-xl flex-shrink-0"></i>
               <span>Historial de Compras</span>
             </button>
           </div>
 
-          <!-- Pestaña 1: Información Personal (Por defecto activa) -->
-          <div id="account-tab-personal" class="${currentAccountTab === 'personal' ? '' : 'hidden'} max-w-2xl mx-auto w-full">
-            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-7 md:p-9 shadow-sm space-y-5 text-left">
-              <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest border-b border-brand-forest/20 pb-3">
-                Información Personal
-              </h3>
+          <!-- Pestaña 1: Información Personal (Por defecto activa) - Elementos superiores y formulario aprovechando el ancho completo -->
+          <div id="account-tab-personal" class="${currentAccountTab === 'personal' ? '' : 'hidden'} max-w-5xl mx-auto w-full space-y-6 !px-0 box-border overflow-hidden">
 
-              <!-- Identificador por Defecto en Verde Oliva Claro (#CCD5AE) - 100% adaptable en cualquier nivel de zoom -->
-              <div class="p-3.5 sm:p-5 bg-[#CCD5AE] rounded-2xl border-2 border-brand-forest/30 text-sm shadow-xs space-y-3">
-                <div class="flex items-center gap-2.5 sm:gap-3 border-b border-brand-forest/15 pb-2.5 sm:pb-3">
-                  <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-lg sm:text-xl flex-shrink-0 shadow-xs">
-                    <i class="ph ph-identification-card"></i>
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <span class="text-[clamp(0.68rem,2.8vw,0.875rem)] text-brand-forest uppercase tracking-tight sm:tracking-normal font-extrabold block leading-tight">
-                      Identificador por Defecto
-                    </span>
-                    <span class="text-[11px] sm:text-xs text-brand-forest/80 font-bold block pt-0.5">
-                      Documento: ${escapeHtml(user.docType || 'Cédula')}
-                    </span>
+            <!-- Fila Superior: Identificador por Defecto y Seguridad & Privacidad organizados encima del formulario (adaptables sin desbordes) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-stretch w-full box-border">
+
+              <!-- Tarjeta 1: Identificador por Defecto en Verde Oliva Claro (#CCD5AE) - 100% adaptable en cualquier nivel de zoom -->
+              <div class="p-4 sm:p-5 bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/30 text-sm shadow-sm flex flex-col justify-between space-y-3.5 box-border w-full">
+                <div class="space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-brand-forest/15 pb-2.5 sm:pb-3">
+                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                      <div class="w-10 h-10 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-xl flex-shrink-0 shadow-xs">
+                        <i class="ph ph-identification-card"></i>
+                      </div>
+                      <div class="min-w-0">
+                        <span class="text-xs sm:text-sm text-brand-forest uppercase tracking-wide font-extrabold block leading-tight">
+                          Identificador por Defecto
+                        </span>
+                        <span class="text-[11px] sm:text-xs text-brand-forest/80 font-bold block pt-0.5">
+                          Documento: ${escapeHtml(user.docType || 'Cédula')}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="self-start sm:self-center flex-shrink-0">
+                      <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs bg-[#5a6b4e] text-brand-sunflower font-bold px-3 py-1.5 rounded-full shadow-2xs whitespace-nowrap">
+                        <i class="ph ph-check-circle text-xs flex-shrink-0"></i>
+                        <span>Para Retiro en Tienda</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <span class="inline-flex items-center gap-1.5 text-xs bg-brand-forest text-brand-sunflower font-bold px-3 py-1.5 rounded-full shadow-2xs">
-                    <i class="ph ph-check-circle text-xs"></i>
-                    <span>Para Retiro en Tienda</span>
-                  </span>
-                </div>
-
-                <div class="bg-[#FEFAE0] rounded-xl p-3 sm:p-3.5 border border-brand-forest/20">
+                <div class="bg-[#FEFAE0] rounded-xl p-3 sm:p-3.5 border border-brand-forest/20 mt-auto">
                   <span class="text-[11px] text-brand-forest/70 uppercase tracking-wider font-bold block mb-0.5">
                     Número Registrado:
                   </span>
@@ -4554,21 +4553,59 @@
                 </div>
               </div>
 
+              <!-- Tarjeta 2: Seguridad y Privacidad en Verde Oliva Suave -->
+              <div class="p-4 sm:p-5 bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/30 text-xs sm:text-sm shadow-sm flex flex-col justify-between space-y-3 text-left box-border w-full">
+                <div class="space-y-2.5">
+                  <div class="flex items-center gap-2.5 sm:gap-3 border-b border-brand-forest/15 pb-2.5 sm:pb-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center text-lg sm:text-xl flex-shrink-0 shadow-xs">
+                      <i class="ph ph-shield-check"></i>
+                    </div>
+                    <div>
+                      <span class="text-xs sm:text-sm font-extrabold text-brand-forest uppercase tracking-wide block leading-tight">
+                        Seguridad y Privacidad
+                      </span>
+                      <span class="text-[11px] sm:text-xs text-brand-forest/80 font-bold block pt-0.5">
+                        Protección de Datos Sacha &amp; Pamba
+                      </span>
+                    </div>
+                  </div>
+
+                  <p class="text-brand-forest/90 text-xs sm:text-sm leading-relaxed font-medium">
+                    Tus datos se encuentran resguardados con cifrado seguro y se utilizan exclusivamente para validar tus retiros presenciales en Quito.
+                  </p>
+                </div>
+
+                <div class="bg-[#FEFAE0] rounded-xl p-2.5 sm:p-3 border border-brand-forest/20 flex items-center gap-2 text-xs font-bold text-brand-forest">
+                  <i class="ph ph-lock-key text-base text-brand-forest flex-shrink-0"></i>
+                  <span>Validación estricta con documento de identidad original</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Formulario de Información Personal a ancho completo -->
+            <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-7 md:p-8 shadow-sm space-y-5 text-left w-full box-border">
+              <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest border-b border-brand-forest/20 pb-3">
+                Información Personal
+              </h3>
+
               <div class="space-y-4 text-sm font-medium">
                 <div>
                   <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Nombre Completo</label>
                   <input type="text" id="acc-name" value="${escapeHtml(user.name ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
                 </div>
-                <div>
-                  <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Correo Electrónico</label>
-                  <input type="email" id="acc-email" value="${escapeHtml(user.email ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
-                </div>
-                <div>
-                  <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Teléfono</label>
-                  <input type="tel" id="acc-phone" value="${escapeHtml(user.phone ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div>
+                    <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Correo Electrónico</label>
+                    <input type="email" id="acc-email" value="${escapeHtml(user.email ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                  </div>
+                  <div>
+                    <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Teléfono</label>
+                    <input type="tel" id="acc-phone" value="${escapeHtml(user.phone ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                  </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
                     <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Documento</label>
                     <select id="acc-doc-type" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-bold text-sm">
@@ -4576,7 +4613,7 @@
                       <option value="Pasaporte" ${user.docType === 'Pasaporte' ? 'selected' : ''}>Pasaporte</option>
                     </select>
                   </div>
-                  <div class="sm:col-span-2">
+                  <div class="md:col-span-2">
                     <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Número de Identificación</label>
                     <input type="text" id="acc-id" value="${escapeHtml(user.idNumber ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-mono text-sm">
                   </div>
@@ -4673,152 +4710,138 @@
           </div>
 
           <!-- Pestaña 2: Historial de Compras -->
-          <div id="account-tab-orders" class="${currentAccountTab === 'orders' ? '' : 'hidden'} max-w-3xl mx-auto w-full space-y-6 sm:space-y-8 !px-0">
+          <div id="account-tab-orders" class="${currentAccountTab === 'orders' ? '' : 'hidden'} max-w-5xl mx-auto w-full space-y-5 sm:space-y-6 !px-0 box-border overflow-hidden">
             
-            <!-- Banner de Estado del Último Pedido en Verde Oscuro (#283618) -->
-            <div class="bg-brand-forest text-brand-cream rounded-3xl p-4 sm:p-6 lg:p-7 shadow-xl border-2 border-brand-forest text-left space-y-5 sm:space-y-6">
+            <!-- Banner de Estado del Último Pedido en Verde Oscuro (#283618) - Compacto y Adaptable -->
+            <div class="bg-brand-forest text-brand-cream rounded-3xl p-4 sm:p-5 shadow-lg border-2 border-brand-forest text-left space-y-3 sm:space-y-3.5 box-border w-full">
               
-              <!-- Fila 1: Título de orden, número y precio -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/15">
-                <div class="space-y-1.5 min-w-0">
-                  <span class="text-xs uppercase tracking-widest text-brand-sunflower font-extrabold flex items-center gap-2">
-                    <i class="ph ph-package text-lg"></i>
-                    Estado del Último Pedido
+              <!-- Fila Superior: Datos de Orden + Precio a la izquierda, Selector de Estado y Ver Productos a la derecha -->
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4 pb-3 border-b border-white/15 w-full box-border">
+                <div class="space-y-1 min-w-0 max-w-full">
+                  <span class="text-[11px] uppercase tracking-wider text-brand-sunflower font-extrabold flex items-center gap-1.5">
+                    <i class="ph ph-package text-sm flex-shrink-0"></i>
+                    <span>Estado del Último Pedido</span>
                   </span>
-                  <h3 class="font-mono text-2xl sm:text-3xl font-black text-brand-cream break-all">
-                    ${lastOrder.number}
-                  </h3>
-                  <p class="text-xs sm:text-sm text-brand-cream/90 font-medium">
-                    Fecha: <strong>${escapeHtml(lastOrder.date || 'Reciente')}</strong> • Modalidad: <strong>${escapeHtml(lastOrder.method || 'Retiro en Tienda')}</strong>
+                  <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                    <h3 class="font-mono text-xl sm:text-2xl font-black text-brand-cream break-all">
+                      ${lastOrder.number}
+                    </h3>
+                    <span class="bg-[#FEFAE0] text-brand-forest font-black text-xs sm:text-sm px-3 py-1 rounded-full shadow-2xs whitespace-nowrap">
+                      $${Number(lastOrder.total).toFixed(2)} USD
+                    </span>
+                  </div>
+                  <p class="text-[11px] sm:text-xs text-brand-cream/80 font-medium pt-0.5">
+                    Fecha: <strong class="text-brand-cream">${escapeHtml(lastOrder.date || 'Reciente')}</strong> • Modalidad: <strong class="text-brand-cream">${escapeHtml(lastOrder.method || 'Retiro en Tienda')}</strong>
                   </p>
                 </div>
 
-                <div class="self-start sm:self-center flex-shrink-0">
-                  <span class="font-botanic text-xl sm:text-2xl font-bold text-brand-forest bg-[#FEFAE0] px-4 py-2 rounded-2xl border border-white/20 shadow-xs block text-center">
-                    $${Number(lastOrder.total).toFixed(2)} USD
-                  </span>
-                </div>
-              </div>
-
-              <!-- Fila 2: Selector de Estado y Botón Ver Productos (Diseño 100% adaptable y sin desbordes) -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-5 border-b border-white/15">
-                <div class="space-y-1.5 w-full sm:w-auto max-w-full">
-                  <span class="text-xs font-bold uppercase tracking-wider text-brand-sunflower flex items-center gap-1.5">
-                    <i class="ph ph-arrows-clockwise text-sm"></i>
-                    <span>Cambiar Estado:</span>
-                  </span>
-                  <div class="relative inline-block w-full sm:w-auto max-w-full" id="dropdown-wrapper-latest">
-                    <button 
-                      type="button" 
-                      onclick="toggleStatusDropdown('latest', event)" 
-                      class="w-full sm:w-auto max-w-full inline-flex items-center justify-between gap-2.5 px-3.5 py-2 rounded-xl bg-[#FEFAE0] text-brand-forest text-xs sm:text-sm font-bold border-2 border-brand-sunflower/50 shadow-xs hover:bg-white transition-colors cursor-pointer text-left focus:outline-none"
-                      id="status-btn-latest"
-                      aria-haspopup="listbox"
-                      aria-expanded="false"
-                    >
-                      <span class="truncate">${lastOrder.status}</span>
-                      <i class="ph ph-caret-down text-brand-forest text-sm font-bold flex-shrink-0 transition-transform duration-200"></i>
-                    </button>
-                    <div 
-                      id="status-menu-latest" 
-                      class="hidden absolute z-30 left-0 top-full mt-1.5 w-full sm:w-auto sm:min-w-[190px] max-w-full bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/50 shadow-xl overflow-hidden py-1"
-                      role="listbox"
-                    >
-                      ${['Recibido', 'En Tienda', 'Listo para Retiro', 'Entregado'].map(st => `
-                        <button 
-                          type="button" 
-                          onclick="selectCustomOrderStatus('${lastOrder.number}', '${st}')" 
-                          class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-2 hover:bg-brand-forest transition-colors ${lastOrder.status === st ? 'text-brand-sunflower bg-brand-forest/60' : 'text-brand-cream'}"
-                          role="option"
-                          aria-selected="${lastOrder.status === st}"
-                        >
-                          <span class="truncate">${st}</span>
-                          ${lastOrder.status === st ? '<i class="ph ph-check text-brand-sunflower text-sm flex-shrink-0"></i>' : ''}
-                        </button>
-                      `).join('')}
+                <!-- Controles: Selector de Estado y Botón Ver Productos organizados y 100% contenidos sin desbordar el contenedor -->
+                <div class="flex flex-wrap items-center lg:items-end justify-start lg:justify-end gap-2.5 max-w-full">
+                  <div class="flex items-center gap-2 max-w-full flex-wrap">
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-sunflower flex items-center gap-1.5 flex-shrink-0">
+                      <i class="ph ph-arrows-clockwise text-sm flex-shrink-0"></i>
+                      <span>Estado:</span>
+                    </span>
+                    <div class="relative inline-block" id="dropdown-wrapper-latest">
+                      <button 
+                        type="button" 
+                        onclick="toggleStatusDropdown('latest', event)" 
+                        class="inline-flex items-center justify-between gap-2.5 px-3.5 py-1.5 rounded-xl bg-[#FEFAE0] text-brand-forest text-xs sm:text-sm font-bold border border-brand-sunflower/50 shadow-xs hover:bg-white transition-colors cursor-pointer text-left focus:outline-none whitespace-nowrap"
+                        id="status-btn-latest"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                      >
+                        <span class="font-black text-brand-forest">${lastOrder.status}</span>
+                        <i class="ph ph-caret-down text-brand-forest text-xs font-bold flex-shrink-0 transition-transform duration-200"></i>
+                      </button>
+                      <div 
+                        id="status-menu-latest" 
+                        class="hidden absolute z-50 left-0 lg:left-auto lg:right-0 top-full mt-1.5 min-w-full w-max max-w-[90vw] bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/60 shadow-2xl py-1.5"
+                        role="listbox"
+                      >
+                        ${['Recibido', 'En Tienda', 'Listo para Retiro', 'Entregado'].map(st => `
+                          <button 
+                            type="button" 
+                            onclick="selectCustomOrderStatus('${lastOrder.number}', '${st}')" 
+                            class="w-full px-3.5 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors ${lastOrder.status === st ? 'text-brand-sunflower bg-brand-forest/60' : 'text-brand-cream'}"
+                            role="option"
+                            aria-selected="${lastOrder.status === st}"
+                          >
+                            <span class="whitespace-nowrap flex-shrink-0">${st}</span>
+                            ${lastOrder.status === st ? '<i class="ph ph-check text-brand-sunflower text-xs flex-shrink-0"></i>' : ''}
+                          </button>
+                        `).join('')}
+                      </div>
                     </div>
                   </div>
+
+                  <button 
+                    type="button" 
+                    onclick="toggleOrderItemsView('latest-order-items', this)" 
+                    class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs transition-transform active:scale-95 shadow-xs border border-brand-forest/20 whitespace-nowrap flex-shrink-0"
+                  >
+                    <i class="ph ph-package text-sm flex-shrink-0"></i>
+                    <span class="whitespace-nowrap flex-shrink-0">Ver productos (${(lastOrder.items || []).length})</span>
+                    <i class="ph ph-caret-down text-xs transition-transform duration-200 flex-shrink-0"></i>
+                  </button>
                 </div>
-
-                <button 
-                  type="button" 
-                  onclick="toggleOrderItemsView('latest-order-items', this)" 
-                  class="w-full sm:w-auto max-w-full inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm transition-transform active:scale-95 shadow-xs border border-brand-forest/20"
-                >
-                  <i class="ph ph-package text-base"></i>
-                  <span class="truncate">Ver productos (${(lastOrder.items || []).length})</span>
-                  <i class="ph ph-caret-down text-sm transition-transform duration-200"></i>
-                </button>
               </div>
 
-              <!-- Fila 3: Punto de Retiro informativo -->
-              <div class="p-4 bg-black/25 backdrop-blur-xs rounded-2xl border border-white/10 text-xs space-y-1">
-                <span class="font-bold text-brand-sunflower flex items-center gap-1.5 uppercase tracking-wide">
-                  <i class="ph ph-map-pin text-sm"></i>
-                  Punto de Retiro Sacha &amp; Pamba
-                </span>
-                <p class="text-brand-cream/90 font-medium leading-relaxed">
-                  Av. Amazonas N24-196 y Luis Cordero, Sector Mariscal, Quito. • Lun - Sáb: 09:00 - 18:30
-                </p>
-              </div>
-
-              <!-- Productos desplegables de la última orden -->
-              <div id="latest-order-items" class="hidden pt-2 space-y-3">
-                <span class="text-xs sm:text-sm font-bold text-brand-sunflower uppercase tracking-wider block">
+              <!-- Productos desplegables de la última orden (oculto por defecto) -->
+              <div id="latest-order-items" class="hidden pt-1 space-y-2.5">
+                <span class="text-xs font-bold text-brand-sunflower uppercase tracking-wider block">
                   Productos en esta orden:
                 </span>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   ${(lastOrder.items || []).map(item => `
-                    <div class="flex items-center gap-3 bg-[#FEFAE0] rounded-2xl p-3 border-2 border-brand-forest/20 shadow-xs text-brand-forest">
-                      <img src="${item.image}" alt="${item.name}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
+                    <div class="flex items-center gap-3 bg-[#FEFAE0] rounded-xl p-2.5 border border-brand-forest/20 shadow-xs text-brand-forest">
+                      <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-lg object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
                       <div class="flex-1 min-w-0 text-left">
-                        <a href="#producto.html?id=${item.id}" class="text-xs sm:text-sm font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
+                        <a href="#producto.html?id=${item.id}" class="text-xs font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
                           ${item.name}
                         </a>
-                        <p class="text-[11px] sm:text-xs text-brand-leaf/70 font-medium truncate">${item.size || 'Unidad'} • Cant: <strong>${item.quantity}</strong></p>
-                        <p class="text-xs sm:text-sm text-brand-forest font-extrabold mt-0.5">$${(item.price * item.quantity).toFixed(2)} USD</p>
+                        <p class="text-[11px] text-brand-leaf/70 font-medium truncate">${item.size || 'Unidad'} • Cant: <strong>${item.quantity}</strong></p>
+                        <p class="text-xs text-brand-forest font-extrabold mt-0.5">$${(item.price * item.quantity).toFixed(2)} USD</p>
                       </div>
                     </div>
                   `).join('')}
                 </div>
               </div>
 
-              <!-- Fila 4: Línea de Tiempo de 4 Pasos -->
-              <div class="pt-4 border-t border-white/15">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-left">
-                  <div class="space-y-1 ${currentLevel >= 1 ? 'opacity-100' : 'opacity-40'}">
-                    <div class="flex items-center gap-2 font-bold ${currentLevel >= 1 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-sm sm:text-base">
-                      <i class="ph ${currentLevel >= 1 ? 'ph-check-circle' : 'ph-circle-dashed'} text-lg sm:text-xl ${currentLevel >= 1 ? 'text-brand-sunflower' : ''}"></i>
-                      <span>1. Recibido</span>
-                    </div>
-                    <p class="text-xs text-brand-cream/80 font-medium leading-relaxed pl-1">Orden registrada y validada.</p>
+              <!-- Línea de Tiempo de 4 Pasos Compacta -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 text-sm text-left">
+                <div class="space-y-0.5 ${currentLevel >= 1 ? 'opacity-100' : 'opacity-40'}">
+                  <div class="flex items-center gap-1.5 font-bold ${currentLevel >= 1 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-xs sm:text-sm">
+                    <i class="ph ${currentLevel >= 1 ? 'ph-check-circle' : 'ph-circle-dashed'} text-base ${currentLevel >= 1 ? 'text-brand-sunflower' : ''}"></i>
+                    <span>1. Recibido</span>
                   </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">Orden registrada.</p>
+                </div>
 
-                  <div class="space-y-1 ${currentLevel >= 2 ? 'opacity-100' : 'opacity-40'}">
-                    <div class="flex items-center gap-2 font-bold ${currentLevel >= 2 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-sm sm:text-base">
-                      <i class="ph ${currentLevel >= 2 ? 'ph-check-circle' : 'ph-circle-dashed'} text-lg sm:text-xl ${currentLevel >= 2 ? 'text-brand-sunflower' : ''}"></i>
-                      <span>2. En Tienda</span>
-                    </div>
-                    <p class="text-xs text-brand-cream/80 font-medium leading-relaxed pl-1">Empacado en empaques biodegradables.</p>
+                <div class="space-y-0.5 ${currentLevel >= 2 ? 'opacity-100' : 'opacity-40'}">
+                  <div class="flex items-center gap-1.5 font-bold ${currentLevel >= 2 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-xs sm:text-sm">
+                    <i class="ph ${currentLevel >= 2 ? 'ph-check-circle' : 'ph-circle-dashed'} text-base ${currentLevel >= 2 ? 'text-brand-sunflower' : ''}"></i>
+                    <span>2. En Tienda</span>
                   </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">Empaque biodegradable.</p>
+                </div>
 
-                  <div class="space-y-1 ${currentLevel >= 3 ? 'opacity-100' : 'opacity-40'}">
-                    <div class="flex items-center gap-2 font-bold ${currentLevel >= 3 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-sm sm:text-base">
-                      <i class="ph ${currentLevel >= 3 ? 'ph-storefront' : 'ph-circle-dashed'} text-lg sm:text-xl ${currentLevel >= 3 ? 'text-brand-sunflower' : ''}"></i>
-                      <span>3. Listo para Retiro</span>
-                    </div>
-                    <p class="text-xs text-brand-cream/80 font-medium leading-relaxed pl-1">Esperándote en González Suárez 420.</p>
+                <div class="space-y-0.5 ${currentLevel >= 3 ? 'opacity-100' : 'opacity-40'}">
+                  <div class="flex items-center gap-1.5 font-bold ${currentLevel >= 3 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-xs sm:text-sm">
+                    <i class="ph ${currentLevel >= 3 ? 'ph-storefront' : 'ph-circle-dashed'} text-base ${currentLevel >= 3 ? 'text-brand-sunflower' : ''}"></i>
+                    <span>3. Listo para Retiro</span>
                   </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">González Suárez 420, Quito.</p>
+                </div>
 
-                  <div class="space-y-1 ${currentLevel >= 4 ? 'opacity-100' : 'opacity-40'}">
-                    <div class="flex items-center gap-2 font-bold ${currentLevel >= 4 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-sm sm:text-base">
-                      <i class="ph ${currentLevel >= 4 ? 'ph-check-circle' : 'ph-circle-dashed'} text-lg sm:text-xl ${currentLevel >= 4 ? 'text-brand-sunflower' : ''}"></i>
-                      <span>4. Entregado</span>
-                    </div>
-                    <p class="text-xs text-brand-cream/80 font-medium leading-relaxed pl-1">
-                      ${currentLevel >= 4 ? 'Entregado en mostrador. ¡Gracias por tu visita!' : 'Firma y recepción conforme.'}
-                    </p>
+                <div class="space-y-0.5 ${currentLevel >= 4 ? 'opacity-100' : 'opacity-40'}">
+                  <div class="flex items-center gap-1.5 font-bold ${currentLevel >= 4 ? 'text-brand-sunflower' : 'text-brand-cream/60'} text-xs sm:text-sm">
+                    <i class="ph ${currentLevel >= 4 ? 'ph-check-circle' : 'ph-circle-dashed'} text-base ${currentLevel >= 4 ? 'text-brand-sunflower' : ''}"></i>
+                    <span>4. Entregado</span>
                   </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">
+                    ${currentLevel >= 4 ? 'Entregado en mostrador.' : 'Firma y recepción conforme.'}
+                  </p>
                 </div>
               </div>
 
@@ -4867,7 +4890,7 @@
                     </div>
 
                     <!-- Fila de Estado: Selector limpio, 100% adaptable y sin desbordes -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-brand-forest/20">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-brand-forest/20 flex-wrap">
                       <div class="space-y-1 w-full sm:w-auto max-w-full">
                         <span class="text-[11px] sm:text-xs font-extrabold text-brand-forest uppercase tracking-wider flex items-center gap-1">
                           <i class="ph ph-tag text-xs"></i>
@@ -4877,28 +4900,28 @@
                           <button 
                             type="button" 
                             onclick="toggleStatusDropdown('${idx}', event)" 
-                            class="w-full sm:w-auto max-w-full inline-flex items-center justify-between gap-2.5 px-3 py-1.5 rounded-xl bg-brand-forest text-brand-cream text-xs sm:text-sm font-bold border border-brand-forest shadow-xs hover:bg-[#1f2b13] transition-colors cursor-pointer text-left focus:outline-none"
+                            class="w-full sm:w-auto max-w-full min-w-[160px] inline-flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-xl bg-brand-forest text-brand-cream text-xs sm:text-sm font-bold border border-brand-forest shadow-xs hover:bg-[#1f2b13] transition-colors cursor-pointer text-left focus:outline-none whitespace-nowrap"
                             id="status-btn-${idx}"
                             aria-haspopup="listbox"
                             aria-expanded="false"
                           >
-                            <span class="truncate">${ord.status}</span>
+                            <span class="whitespace-nowrap flex-shrink-0">${ord.status}</span>
                             <i class="ph ph-caret-down text-brand-sunflower text-xs font-bold flex-shrink-0 transition-transform duration-200"></i>
                           </button>
                           <div 
                             id="status-menu-${idx}" 
-                            class="hidden absolute z-30 left-0 top-full mt-1.5 w-full sm:w-auto sm:min-w-[170px] max-w-full bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/50 shadow-xl overflow-hidden py-1"
+                            class="hidden absolute z-50 left-0 top-full mt-1.5 min-w-full w-max max-w-[90vw] bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/60 shadow-2xl py-1.5"
                             role="listbox"
                           >
                             ${['Recibido', 'En Tienda', 'Listo para Retiro', 'Entregado'].map(st => `
                               <button 
                                 type="button" 
                                 onclick="selectCustomOrderStatus('${ord.number}', '${st}')" 
-                                class="w-full px-3 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-2 hover:bg-brand-forest transition-colors ${ord.status === st ? 'text-brand-sunflower bg-brand-forest/60' : 'text-brand-cream'}"
+                                class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors ${ord.status === st ? 'text-brand-sunflower bg-brand-forest/60' : 'text-brand-cream'}"
                                 role="option"
                                 aria-selected="${ord.status === st}"
                               >
-                                <span class="truncate">${st}</span>
+                                <span class="whitespace-nowrap">${st}</span>
                                 ${ord.status === st ? '<i class="ph ph-check text-brand-sunflower text-xs flex-shrink-0"></i>' : ''}
                               </button>
                             `).join('')}
@@ -4909,11 +4932,11 @@
                       <button 
                         type="button" 
                         onclick="toggleOrderItemsView('order-items-${idx}', this)" 
-                        class="w-full sm:w-auto max-w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs sm:text-sm font-bold transition-transform active:scale-95 shadow-xs border border-brand-forest/20"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs sm:text-sm font-bold transition-transform active:scale-95 shadow-xs border border-brand-forest/20 flex-shrink-0"
                       >
-                        <i class="ph ph-shopping-cart text-sm"></i>
-                        <span class="truncate">Ver productos (${(ord.items || []).length})</span>
-                        <i class="ph ph-caret-down text-xs transition-transform duration-200"></i>
+                        <i class="ph ph-shopping-cart text-base flex-shrink-0"></i>
+                        <span class="whitespace-nowrap">Ver productos (${(ord.items || []).length})</span>
+                        <i class="ph ph-caret-down text-xs transition-transform duration-200 flex-shrink-0"></i>
                       </button>
                     </div>
 
@@ -4922,7 +4945,7 @@
                       <span class="text-[11px] font-bold text-brand-forest uppercase tracking-wider block mb-2">
                         Productos incluidos en este pedido:
                       </span>
-                      <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
                         ${(ord.items || []).map(prod => `
                           <div class="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-brand-cream border border-brand-forest/20 text-sm shadow-2xs">
                             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
