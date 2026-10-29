@@ -324,22 +324,22 @@
     }
 
     body.cart-drawer-open {
-      padding-right: calc(86px / var(--cart-zoom, 1)) !important;
+      padding-right: calc(140px / var(--cart-zoom, 1)) !important;
     }
 
     body.cart-drawer-open #toast {
-      right: calc(1rem + (86px / var(--cart-zoom, 1))) !important;
+      right: calc(1rem + (140px / var(--cart-zoom, 1))) !important;
     }
     @media (min-width: 640px) {
       body.cart-drawer-open #toast {
-        right: calc(1.5rem + (86px / var(--cart-zoom, 1))) !important;
+        right: calc(1.5rem + (140px / var(--cart-zoom, 1))) !important;
       }
     }
 
     /* Desplegable Lateral Delgado del Carrito (Inmune a zoom: 100% estático, bordes idénticos de 1px) */
     #cart-side-drawer {
-      width: 86px !important;
-      max-width: 86px !important;
+      width: 140px !important;
+      max-width: 140px !important;
       height: calc(100vh * var(--cart-zoom, 1)) !important;
       height: calc(100dvh * var(--cart-zoom, 1)) !important;
       box-sizing: border-box !important;
@@ -369,27 +369,294 @@
       border-right: none !important;
     }
 
-    /* Mismo tipo y grosor de borde en todos los elementos del desplegable (1px uniforme y constante) */
+    /* Mismo tipo y grosor de borde en todos los elementos del desplegable (1px uniforme y constante)
+       y dimensiones fijadas para prevenir cualquier movimiento o subpixel jitter al hacer zoom */
     #cart-side-drawer .cart-drawer-header {
+      height: 36px !important;
+      min-height: 36px !important;
+      max-height: 36px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
       border-bottom: 1px solid #5A6B4E !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      padding: 0 !important;
+      background-color: #5A6B4E !important;
+      color: #FEFAE0 !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: background-color 0.15s ease, color 0.15s ease !important;
+      user-select: none !important;
+    }
+    #cart-side-drawer .cart-drawer-header:hover {
+      background-color: #4d5c42 !important;
+      color: #E9C46A !important;
+    }
+    #cart-side-drawer .cart-drawer-header:hover i {
+      color: #E9C46A !important;
+      transform: translateX(1px) !important;
+    }
+    #cart-side-drawer .cart-drawer-header:active {
+      background-color: #3e4a2f !important;
+    }
+    #cart-side-drawer .cart-drawer-header:active i {
+      transform: translateX(2px) !important;
     }
     #cart-side-drawer .cart-drawer-btn-container {
-      border-bottom: 1px solid #5A6B4E !important;
+      height: 44px !important;
+      min-height: 44px !important;
+      max-height: 44px !important;
+      padding: 7px 14px !important;
+      box-sizing: border-box !important;
+      border-bottom: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
     #cart-side-drawer .cart-drawer-btn-ir {
+      height: 30px !important;
+      min-height: 30px !important;
+      max-height: 30px !important;
+      width: 112px !important;
       border: 1px solid #b89535 !important;
+      box-sizing: border-box !important;
+    }
+    #cart-side-drawer .cart-item-card {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      flex-shrink: 0 !important;
+    }
+    #cart-side-drawer .cart-item-row {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      flex-shrink: 0 !important;
+    }
+    #cart-side-drawer .cart-item-info {
+      width: 100% !important;
+      margin-top: 6px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+    }
+    #cart-side-drawer .cart-item-qty {
+      font-size: 16.5px !important;
+      line-height: 1.2 !important;
+      font-weight: 800 !important;
+      color: #283618 !important;
+      display: inline-flex !important;
+      align-items: baseline !important;
+      justify-content: center !important;
+      gap: 4px !important;
+    }
+    #cart-side-drawer .cart-item-qty-num {
+      font-size: 21px !important;
+      font-weight: 900 !important;
+      color: #131A0B !important;
+      line-height: 1 !important;
+    }
+    #cart-side-drawer .cart-item-price {
+      font-size: 18px !important;
+      line-height: 1.2 !important;
+      font-weight: 900 !important;
+      color: #131A0B !important;
+      margin-top: 3px !important;
+      display: block !important;
+    }
+    #cart-side-drawer .cart-qty-btn {
+      width: 20px !important;
+      height: 28px !important;
+      min-width: 20px !important;
+      min-height: 28px !important;
+      max-width: 20px !important;
+      max-height: 28px !important;
+      box-sizing: border-box !important;
+      border: 1px solid #283618 !important;
+      border-radius: 6px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      background-color: #283618 !important;
+      color: #FEFAE0 !important;
+      line-height: 1 !important;
+      user-select: none !important;
+      transition: background-color 0.15s, transform 0.1s !important;
+      cursor: pointer !important;
+    }
+    #cart-side-drawer .cart-qty-btn:hover {
+      background-color: #3e4a2f !important;
+    }
+    #cart-side-drawer .cart-qty-btn:active {
+      transform: scale(0.92) !important;
+    }
+    #cart-side-drawer .cart-qty-btn i {
+      font-weight: 900 !important;
+      font-size: 13px !important;
+      -webkit-text-stroke: 0.6px currentColor !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #cart-side-drawer .cart-thumb-wrapper {
+      width: 64px !important;
+      height: 64px !important;
+      min-width: 64px !important;
+      min-height: 64px !important;
+      position: relative !important;
+      flex-shrink: 0 !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      overflow: visible !important;
     }
     #cart-side-drawer .cart-thumb-box {
+      width: 64px !important;
+      height: 64px !important;
+      min-width: 64px !important;
+      min-height: 64px !important;
       border: 1px solid #5A6B4E !important;
+      box-sizing: border-box !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn {
+      position: absolute !important;
+      top: -6px !important;
+      right: -6px !important;
+      left: auto !important;
+      width: 26px !important;
+      height: 26px !important;
+      min-width: 26px !important;
+      min-height: 26px !important;
+      max-width: 26px !important;
+      max-height: 26px !important;
+      box-sizing: border-box !important;
+      border: 2.5px solid #283618 !important;
+      border-radius: 9999px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      background-color: #CCD5AE !important;
+      color: #283618 !important;
+      cursor: pointer !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+      z-index: 30 !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn i {
+      font-size: 14px !important;
+      font-weight: 900 !important;
+      -webkit-text-stroke: 1.3px currentColor !important;
+      color: #283618 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      transition: color 0.15s ease !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:hover {
+      background-color: #E9C46A !important;
+      color: #283618 !important;
+      border-color: #283618 !important;
+      box-shadow: 0 2px 6px rgba(233, 196, 106, 0.6) !important;
+      transform: scale(1.08) !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:hover i {
+      color: #283618 !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:active {
+      transform: scale(0.92) !important;
+    }
+    #cart-side-drawer .cart-qty-badge {
+      width: 24px !important;
+      height: 24px !important;
+      min-width: 24px !important;
+      min-height: 24px !important;
+      max-width: 24px !important;
+      max-height: 24px !important;
+      box-sizing: border-box !important;
+      border: 1.5px solid #FFFFFF !important;
+      border-radius: 9999px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      background-color: #283618 !important;
+      color: #FFFFFF !important;
+      font-size: 15px !important;
+      font-weight: 900 !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      pointer-events: none !important;
+      user-select: none !important;
+      letter-spacing: -0.5px !important;
+      text-align: center !important;
     }
     #cart-side-drawer #cart-drawer-footer {
+      height: 64px !important;
+      min-height: 64px !important;
+      max-height: 64px !important;
+      box-sizing: border-box !important;
+      padding: 6px 6px !important;
       border-top: 1px solid #5A6B4E !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #cart-side-drawer #cart-drawer-footer .cart-footer-title {
+      font-size: 15.5px !important;
+      line-height: 1.15 !important;
+      color: #E9C46A !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+    }
+    #cart-side-drawer #cart-drawer-footer #cart-drawer-total {
+      font-size: 20px !important;
+      line-height: 1.15 !important;
+      color: #FEFAE0 !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+      margin-top: 3px !important;
     }
 
-    /* Ocultar barra de desplazamiento para mantener bordes 100% idénticos y limpios en cualquier nivel de zoom */
+    /* Lista de productos en desplegable: alineación estricta en píxeles enteros para evitar desplazamientos al hacer zoom */
     #cart-drawer-items {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 26px 11px 20px 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 22px !important;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
+    }
+    #cart-drawer-items > * {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      flex-shrink: 0 !important;
     }
     #cart-drawer-items::-webkit-scrollbar {
       display: none !important;
@@ -1082,50 +1349,36 @@
   </footer>
 
   <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
-  <aside id="cart-side-drawer" class="fixed top-0 right-0 h-full w-[86px] z-40 bg-[#FEFAE0] flex flex-col transform translate-x-full box-border" aria-label="Carrito de compras lateral">
+  <aside id="cart-side-drawer" class="fixed top-0 right-0 h-full w-[140px] z-40 bg-[#FEFAE0] flex flex-col transform translate-x-full box-border" aria-label="Carrito de compras lateral">
     <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
     <button 
       type="button" 
       id="cart-drawer-toggle-btn"
       onclick="toggleCartDrawer()" 
-      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-7 h-14 sm:w-8 sm:h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
+      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-8 h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
       aria-label="Desplegar u ocultar carrito"
       title="Desplegar carrito"
     >
-      <i id="cart-drawer-caret" class="ph ph-caret-left text-lg sm:text-xl font-bold text-brand-cream transition-transform"></i>
+      <i id="cart-drawer-caret" class="ph ph-caret-left text-xl font-bold text-brand-cream transition-transform"></i>
     </button>
 
-    <!-- Recuadro verde hoja claro (#5A6B4E) que solo envuelve a la flecha y a la X -->
-    <div class="cart-drawer-header px-2 py-1.5 bg-[#5A6B4E] flex items-center justify-between w-full flex-shrink-0">
-      <!-- Botón de Flecha hacia la derecha para ocultar -->
-      <button 
-        type="button" 
-        onclick="collapseCartDrawer()" 
-        class="p-1 text-brand-cream hover:text-brand-sunflower hover:bg-white/10 rounded transition-colors cursor-pointer flex items-center justify-center"
-        aria-label="Ocultar carrito"
-        title="Ocultar carrito"
-      >
-        <i class="ph ph-caret-right text-base font-bold"></i>
-      </button>
-
-      <!-- Botón X para cerrar -->
-      <button 
-        type="button" 
-        onclick="closeCartDrawer(true)" 
-        class="p-1 text-brand-cream hover:text-brand-sunflower hover:bg-white/10 rounded transition-colors cursor-pointer flex items-center justify-center"
-        aria-label="Cerrar panel"
-        title="Cerrar panel"
-      >
-        <i class="ph ph-x text-sm font-bold"></i>
-      </button>
-    </div>
+    <!-- Barra verde superior (#5A6B4E) completamente clickeable para ocultar/colapsar el carrito -->
+    <button 
+      type="button" 
+      onclick="collapseCartDrawer()" 
+      class="cart-drawer-header w-full bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream hover:text-brand-sunflower flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors group select-none" 
+      aria-label="Ocultar carrito" 
+      title="Ocultar carrito"
+    >
+      <i class="ph-bold ph-caret-right text-base transition-transform group-hover:translate-x-0.5 group-active:translate-x-1"></i>
+    </button>
 
     <!-- Botón en la parte superior para ir al carrito (fuera del recuadro verde) -->
-    <div class="cart-drawer-btn-container p-1.5 sm:p-2 bg-brand-cream flex flex-col items-center w-full flex-shrink-0">
+    <div class="cart-drawer-btn-container bg-brand-cream flex flex-col items-center w-full flex-shrink-0">
       <a 
         href="#carrito.html" 
         onclick="closeCartDrawer()" 
-        class="cart-drawer-btn-ir w-full py-1 bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 cursor-pointer text-center"
+        class="cart-drawer-btn-ir w-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 cursor-pointer text-center"
         title="Ir al Carrito"
       >
         <i class="ph ph-shopping-cart text-xs font-bold"></i>
@@ -1134,15 +1387,14 @@
     </div>
 
     <!-- Lista de productos añadidos (solo la imagen del producto con indicador de cantidad) -->
-    <div id="cart-drawer-items" class="flex-1 overflow-y-auto overflow-x-hidden p-2 space-y-2.5 min-h-0 flex flex-col items-center">
+    <div id="cart-drawer-items" class="flex-1 overflow-y-auto overflow-x-hidden min-h-0 flex flex-col items-center">
       <!-- Inyectado dinámicamente -->
     </div>
 
-    <!-- Pie del desplegable: Total a pagar esencial -->
-    <div id="cart-drawer-footer" class="p-1.5 sm:p-2 bg-[#5A6B4E] flex flex-col items-center text-center flex-shrink-0">
-      <span class="cart-footer-title text-[9px] font-bold text-brand-cream/90 uppercase leading-tight">Total</span>
-      <span id="cart-drawer-total" class="text-xs font-extrabold text-brand-sunflower whitespace-nowrap">$0.00</span>
-      <span class="cart-footer-iva text-[8px] text-brand-cream/80 font-medium leading-none mt-0.5">IVA incl.</span>
+    <!-- Pie del desplegable: Solo el total con precio grande -->
+    <div id="cart-drawer-footer" class="bg-[#5A6B4E] flex flex-col items-center justify-center text-center flex-shrink-0">
+      <span class="cart-footer-title text-sm sm:text-base font-black text-brand-sunflower tracking-widest uppercase leading-tight">TOTAL</span>
+      <span id="cart-drawer-total" class="text-xl font-black text-brand-cream whitespace-nowrap leading-none mt-1">$0.00</span>
     </div>
   </aside>
 
@@ -1490,30 +1742,69 @@
       }
 
       itemsContainer.innerHTML = cart.map(item => `
-        <div class="relative flex-shrink-0" title="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} (${item.quantity} ud.)">
-          <div class="cart-thumb-box w-14 h-14 rounded-xl overflow-hidden bg-white shadow-xs group cursor-pointer relative">
-            <img 
-              src="${item.image}" 
-              alt="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-              onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
-            >
+        <div class="cart-item-card" title="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} (${item.quantity} ud.)">
+          <div class="cart-item-row">
+            <!-- Botón restar (-) fuera del recuadro -->
             <button 
               type="button" 
-              onclick="removeFromCart('${item.id}')" 
-              class="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
-              title="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
-              aria-label="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+              onclick="event.stopPropagation(); updateCartQuantity('${item.id}', -1)" 
+              class="cart-qty-btn cart-qty-minus"
+              title="Quitar una unidad"
+              aria-label="Quitar una unidad de ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
             >
-              <i class="ph ph-trash text-base text-red-300"></i>
+              <i class="ph-bold ph-minus"></i>
+            </button>
+
+            <!-- Recuadro del producto con lupa en hover y botón circular X para eliminar -->
+            <div class="cart-thumb-wrapper">
+              <!-- Botón circular en la esquina derecha con una X para eliminar -->
+              <button 
+                type="button" 
+                onclick="event.stopPropagation(); removeFromCart('${item.id}')" 
+                class="cart-delete-x-btn" 
+                title="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
+                aria-label="Eliminar ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name} del carrito"
+              >
+                <i class="ph-bold ph-x"></i>
+              </button>
+
+              <div class="cart-thumb-box w-16 h-16 rounded-xl overflow-hidden bg-white shadow-xs group cursor-pointer relative">
+                <img 
+                  src="${item.image}" 
+                  alt="${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
+                >
+                <!-- Capa con icono de lupa visible al hacer hover para ver el producto -->
+                <a 
+                  href="#producto.html?id=${item.id}" 
+                  onclick="event.stopPropagation(); navigateTo('#producto.html?id=${item.id}');"
+                  class="cart-hover-zoom absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-20"
+                  title="Ver ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+                  aria-label="Ver detalle de ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+                >
+                  <i class="ph ph-magnifying-glass text-2xl text-brand-cream hover:text-brand-sunflower hover:scale-110 active:scale-95 transition-all"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Botón sumar (+) fuera del recuadro -->
+            <button 
+              type="button" 
+              onclick="event.stopPropagation(); updateCartQuantity('${item.id}', 1)" 
+              class="cart-qty-btn cart-qty-plus"
+              title="Añadir una unidad"
+              aria-label="Añadir una unidad de ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
+            >
+              <i class="ph-bold ph-plus"></i>
             </button>
           </div>
-          ${item.quantity > 1 ? `
-            <svg class="cart-badge-svg absolute -top-1.5 -right-1.5 w-5 h-5 pointer-events-none drop-shadow-xs overflow-visible" viewBox="0 0 20 20" aria-hidden="true">
-              <circle cx="10" cy="10" r="8.5" fill="#283618" stroke="#FFFFFF" stroke-width="1.5" />
-              <text x="10" y="10" dominant-baseline="central" text-anchor="middle" fill="#FEFAE0" font-size="11" font-weight="900" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">${item.quantity}</text>
-            </svg>
-          ` : ''}
+
+          <!-- Debajo del recuadro: cant: y el número, seguido del precio -->
+          <div class="cart-item-info">
+            <span class="cart-item-qty">cant: <strong class="cart-item-qty-num">${item.quantity}</strong></span>
+            <span class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
+          </div>
         </div>
       `).join('');
     }
@@ -1531,7 +1822,7 @@
         if (window.outerWidth && window.innerWidth) {
           estimatedZoom = window.outerWidth / window.innerWidth;
         }
-        if (estimatedZoom > 0.3 && estimatedZoom < 5) {
+        if (estimatedZoom >= 0.2 && estimatedZoom <= 6.0) {
           const rawBase = currentDPR / estimatedZoom;
           const standardScales = [1, 1.25, 1.5, 1.75, 2, 2.25, 2.5];
           let closest = standardScales[0];
@@ -1551,7 +1842,8 @@
       }
 
       let zoom = currentDPR / baseDPR;
-      zoom = Math.max(0.3, Math.min(4.0, zoom));
+      // Amplio rango continuo de zoom (de 15% a 800%) para cubrir cualquier nivel extremo sin saltos ni descalibración
+      zoom = Math.max(0.15, Math.min(8.0, zoom));
       const invZoom = 1 / zoom;
 
       // Inmunidad total al zoom: el desplegable mantiene exactamente sus dimensiones y bordes idénticos en pantalla
