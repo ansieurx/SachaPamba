@@ -949,41 +949,35 @@
   <div id="nav-category-backdrop" class="hidden fixed inset-0 bg-black/20 z-30"></div>
 
   <!-- Modal de Iniciar Sesión y Registro -->
-  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200">
-    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-md overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200 overflow-y-auto">
+    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
       
-      <!-- Encabezado del Modal -->
-      <div class="bg-brand-forest text-brand-cream p-6 pb-5 relative">
+      <!-- Encabezado del Modal - Siempre uniforme y compacto como en imagen 1 -->
+      <div class="bg-brand-forest text-brand-cream p-5 sm:p-6 pb-4 sm:pb-5 relative flex-shrink-0">
         <button 
           type="button" 
           id="auth-modal-close" 
-          class="absolute top-5 right-5 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
+          class="absolute top-4 right-4 sm:top-5 sm:right-5 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
           aria-label="Cerrar modal"
         >
           <i class="ph ph-x"></i>
         </button>
 
-        <div class="flex items-center gap-2.5 mb-2">
-          <span class="w-10 h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower">
-            <i class="ph ph-plant text-2xl"></i>
+        <div class="flex items-center gap-2.5 mb-1.5">
+          <span class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
+            <i class="ph ph-plant text-xl sm:text-2xl"></i>
           </span>
           <h3 class="font-botanic font-bold text-xl text-brand-cream tracking-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba</h3>
         </div>
-        <p class="text-sm text-brand-cream/80">Tu tienda naturista de confianza en Quito</p>
-
-        <!-- Mensaje condicional checkout -->
-        <div id="auth-checkout-notice" class="hidden mt-4 p-3 rounded-xl bg-[#CCD5AE] border border-brand-forest/30 text-brand-forest text-sm font-bold flex items-center gap-2">
-          <i class="ph ph-shopping-cart text-lg flex-shrink-0 text-brand-forest"></i>
-          <span id="auth-checkout-notice-text">Inicia sesión o regístrate para continuar con tu pedido.</span>
-        </div>
+        <p class="text-xs sm:text-sm text-brand-cream/80">Tu tienda naturista de confianza en Quito</p>
 
         <!-- Pestañas -->
-        <div class="grid grid-cols-2 gap-2 mt-5 bg-white/10 p-1.5 rounded-2xl border border-white/15 text-sm font-bold">
+        <div class="grid grid-cols-2 gap-2 mt-4 bg-white/10 p-1.5 rounded-2xl border border-white/15 text-sm font-bold">
           <button 
             type="button" 
             id="tab-login-btn" 
             onclick="switchAuthTab('login')" 
-            class="py-2.5 rounded-xl text-center transition-all bg-brand-sunflower text-brand-leaf shadow-sm"
+            class="py-2 sm:py-2.5 rounded-xl text-center transition-all bg-brand-sunflower text-brand-leaf shadow-sm"
           >
             Iniciar Sesión
           </button>
@@ -991,7 +985,7 @@
             type="button" 
             id="tab-register-btn" 
             onclick="switchAuthTab('register')" 
-            class="py-2.5 rounded-xl text-center transition-all text-brand-cream/80 hover:text-white"
+            class="py-2 sm:py-2.5 rounded-xl text-center transition-all text-brand-cream/80 hover:text-white"
           >
             Registrarse
           </button>
@@ -999,12 +993,12 @@
       </div>
 
       <!-- Cuerpo del Formulario -->
-      <div class="p-6 bg-[#FEFAE0]">
+      <div class="p-5 sm:p-6 bg-[#FEFAE0] overflow-y-auto flex-1 min-h-0">
         
         <!-- Formulario 1: Iniciar Sesión -->
-        <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 sm:space-y-4">
           <div>
-            <label class="block text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico</label>
             <div class="relative">
               <input 
                 type="email" 
@@ -1012,14 +1006,14 @@
                 required 
                 placeholder="ejemplo@sachaypamba.ec" 
                 value="maria.morales@ejemplo.ec"
-                class="w-full text-sm p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="w-full text-xs sm:text-sm p-3 sm:p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
               >
-              <i class="ph ph-envelope absolute left-3.5 top-3.5 text-lg text-brand-forest/60"></i>
+              <i class="ph ph-envelope absolute left-3.5 top-3 sm:top-3.5 text-base sm:text-lg text-brand-forest/60"></i>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-bold text-brand-forest mb-1.5">Contraseña</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Contraseña</label>
             <div class="relative">
               <input 
                 type="password" 
@@ -1027,13 +1021,13 @@
                 required 
                 placeholder="••••••••" 
                 value="123456"
-                class="w-full text-sm p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="w-full text-xs sm:text-sm p-3 sm:p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
               >
-              <i class="ph ph-lock-key absolute left-3.5 top-3.5 text-lg text-brand-forest/60"></i>
+              <i class="ph ph-lock-key absolute left-3.5 top-3 sm:top-3.5 text-base sm:text-lg text-brand-forest/60"></i>
             </div>
           </div>
 
-          <div class="flex items-center justify-between text-xs text-brand-leaf/70 pt-2">
+          <div class="flex items-center justify-between text-xs text-brand-leaf/70 pt-1">
             <label class="flex items-center gap-1.5 cursor-pointer font-medium">
               <input type="checkbox" checked class="rounded accent-brand-forest w-4 h-4">
               <span>Recordar mis datos</span>
@@ -1043,94 +1037,92 @@
 
           <button 
             type="submit" 
-            class="w-full py-3.5 mt-2 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
+            class="w-full py-3 sm:py-3.5 mt-2 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
           >
-            <i class="ph ph-sign-in text-xl"></i>
+            <i class="ph ph-sign-in text-lg sm:text-xl"></i>
             <span>Ingresar a mi cuenta</span>
           </button>
         </form>
 
         <!-- Formulario 2: Registrarse -->
-        <form id="form-register" onsubmit="handleRegisterSubmit(event)" novalidate class="hidden space-y-4">
+        <form id="form-register" onsubmit="handleRegisterSubmit(event)" novalidate class="hidden space-y-3 sm:space-y-3.5">
           <div>
-            <label class="block text-sm font-bold text-brand-forest mb-1.5">Nombre Completo</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Nombre Completo</label>
             <div class="relative">
               <input 
                 type="text" 
                 id="reg-name" 
                 placeholder="Ej. María Emilia Morales" 
-                class="w-full text-sm p-3 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
               >
-              <i class="ph ph-user absolute left-3.5 top-3 text-lg text-brand-forest/60"></i>
+              <i class="ph ph-user absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Correo Electrónico</label>
             <div class="relative">
               <input 
                 type="email" 
                 id="reg-email" 
                 placeholder="tu@correo.ec" 
-                class="w-full text-sm p-3 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
               >
-              <i class="ph ph-envelope absolute left-3.5 top-3 text-lg text-brand-forest/60"></i>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <label class="block text-sm font-bold text-brand-forest mb-1.5">Teléfono / Celular</label>
-              <input 
-                type="tel" 
-                id="reg-phone" 
-                placeholder="099 876 5432" 
-                class="w-full text-sm p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
-              >
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="sm:col-span-1">
-                <label class="block text-sm font-bold text-brand-forest mb-1.5">Documento</label>
-                <select 
-                  id="reg-doc-type" 
-                  class="w-full text-sm p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
-                >
-                  <option value="Cédula" selected>Cédula</option>
-                  <option value="Pasaporte">Pasaporte</option>
-                </select>
-              </div>
-              <div class="sm:col-span-2">
-                <label class="block text-sm font-bold text-brand-forest mb-1.5">Número de Identificación</label>
-                <input 
-                  type="text" 
-                  id="reg-id" 
-                  placeholder="Ej. 1723456789" 
-                  class="w-full text-sm p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono"
-                >
-              </div>
+              <i class="ph ph-envelope absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-bold text-brand-forest mb-1.5">Contraseña</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Teléfono / Celular</label>
+            <input 
+              type="tel" 
+              id="reg-phone" 
+              placeholder="099 876 5432" 
+              class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+            >
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            <div class="sm:col-span-1">
+              <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Documento</label>
+              <select 
+                id="reg-doc-type" 
+                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
+              >
+                <option value="Cédula" selected>Cédula</option>
+                <option value="Pasaporte">Pasaporte</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Número de Identificación</label>
+              <input 
+                type="text" 
+                id="reg-id" 
+                placeholder="Ej. 1723456789" 
+                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono"
+              >
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Contraseña</label>
             <div class="relative">
               <input 
                 type="password" 
                 id="reg-password" 
                 placeholder="Mínimo 6 caracteres" 
-                class="w-full text-sm p-3 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
               >
-              <i class="ph ph-lock-key absolute left-3.5 top-3 text-lg text-brand-forest/60"></i>
+              <i class="ph ph-lock-key absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
             </div>
           </div>
 
-          <div class="pt-2">
+          <div class="pt-1.5 sm:pt-2">
             <button 
               type="submit" 
-              class="w-full py-3.5 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
+              class="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
             >
-              <i class="ph ph-user-plus text-xl"></i>
+              <i class="ph ph-user-plus text-lg sm:text-xl"></i>
               <span>Crear Cuenta y Continuar</span>
             </button>
           </div>
@@ -2425,13 +2417,12 @@
                   </h2>
                   
                   <p class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center">
-                    Cosechas seleccionadas de comunidades campesinas y recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
+                    Cosechas seleccionadas de comunidades campesinas de la región andina y de la sierra, junto a recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
                   </p>
                   
                   <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-3.5 w-full">
-                    <a href="#mas-vendidos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center">
+                    <a href="#categoria.html?special=mas-vendidos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center text-center">
                       <span>Ver más vendidos</span>
-                      <i class="ph ph-arrow-down text-base"></i>
                     </a>
                     <a href="#categoria.html" class="px-6 py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center">
                       <i class="ph ph-magnifying-glass text-base text-brand-sunflower"></i>
@@ -2607,7 +2598,13 @@
 
             <!-- Barra de Pestañas Interactivas (Destacados, Más Vendidos, Nuevos) -->
             <div class="py-2.5 px-4 text-center">
-              <div class="flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-xs sm:text-sm uppercase tracking-wider text-brand-forest">
+              <div class="flex items-center justify-center gap-2 sm:gap-3.5 flex-wrap text-xs sm:text-sm uppercase tracking-wider text-brand-forest">
+                <!-- Label a la izquierda indicando que es una Selección Especial -->
+                <span class="inline-flex items-center gap-1.5 sm:gap-2 text-base sm:text-lg md:text-xl font-black text-brand-forest uppercase tracking-wider flex-shrink-0 select-none py-1 mr-0.5 sm:mr-2">
+                  <i class="ph ph-sparkle text-lg sm:text-xl md:text-2xl text-brand-forest flex-shrink-0"></i>
+                  <span>Selección Especial:</span>
+                </span>
+
                 <button 
                   type="button" 
                   data-product-tab="destacados" 
@@ -3715,6 +3712,26 @@
       sessionStorage.removeItem('sacha_max_checkout_step');
     }
 
+    function handleProceedToCheckout(e) {
+      if (e) e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) {
+        pendingCheckoutRedirect = '#checkout-retiro.html';
+        openAuthModal('register', 'Inicia sesión o regístrate para proceder con tu compra.');
+        return;
+      }
+      navigateTo('#checkout-retiro.html');
+    }
+
+    function handleStepperNav(hash) {
+      if (hash.startsWith('#checkout') && !getCurrentUser()) {
+        pendingCheckoutRedirect = hash;
+        openAuthModal('register', 'Inicia sesión o regístrate para proceder con tu compra.');
+        return;
+      }
+      navigateTo(hash);
+    }
+
     function renderCheckoutStepper(currentStep) {
       if (currentStep < 4 && cart && cart.length > 0) {
         recordCheckoutStep(currentStep);
@@ -3772,7 +3789,7 @@
                 stepHtml = `
                   <button 
                     type="button" 
-                    onclick="navigateTo('${st.hash}')" 
+                    onclick="handleStepperNav('${st.hash}')" 
                     class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" 
                     title="${actionTitle}"
                   >
@@ -4000,7 +4017,7 @@
                   </p>
                 </div>
 
-                <a href="#checkout-retiro.html" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center">
+                <a href="#checkout-retiro.html" onclick="handleProceedToCheckout(event)" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center cursor-pointer">
                   <span>Continuar a Retiro</span>
                   <i class="ph ph-arrow-right text-lg"></i>
                 </a>
@@ -5405,11 +5422,13 @@
         const user = getCurrentUser();
         if (!user) {
           pendingCheckoutRedirect = hashUrl;
-          const noticeMsg = (path === 'cuenta.html' || path === 'seguimiento-pedidos.html')
-            ? 'Inicia sesión o regístrate para acceder al seguimiento de tus pedidos.'
-            : 'Inicia sesión o regístrate para proceder con tu compra.';
-          openAuthModal('login', noticeMsg);
-          showToast('Inicia sesión o regístrate para ver tus pedidos', 'ph-user');
+          const isCheckout = path.startsWith('checkout');
+          const noticeMsg = isCheckout
+            ? 'Inicia sesión o regístrate para proceder con tu compra.'
+            : (path === 'seguimiento-pedidos.html'
+                ? 'Inicia sesión o regístrate para acceder al seguimiento de tus pedidos.'
+                : 'Inicia sesión o regístrate para acceder a tu cuenta.');
+          openAuthModal(isCheckout ? 'register' : 'login', noticeMsg);
           return;
         }
       }
@@ -5837,18 +5856,10 @@
       if (!authModal) return;
       switchAuthTab(tab);
 
-      const notice = document.getElementById('auth-checkout-notice');
-      const noticeTextEl = document.getElementById('auth-checkout-notice-text');
-      if (notice) {
-        if (customNotice) {
-          if (noticeTextEl) noticeTextEl.textContent = customNotice;
-          notice.classList.remove('hidden');
-        } else if (pendingCheckoutRedirect) {
-          if (noticeTextEl) noticeTextEl.textContent = 'Inicia sesión o regístrate para continuar.';
-          notice.classList.remove('hidden');
-        } else {
-          notice.classList.add('hidden');
-        }
+      if (customNotice) {
+        showToast(customNotice, 'ph-shopping-cart');
+      } else if (pendingCheckoutRedirect) {
+        showToast('Inicia sesión o regístrate para continuar con tu pedido.', 'ph-shopping-cart');
       }
 
       authModal.classList.remove('hidden');
@@ -5857,7 +5868,16 @@
     function closeAuthModal() {
       if (!authModal) return;
       authModal.classList.add('hidden');
-      pendingCheckoutRedirect = null;
+      if (pendingCheckoutRedirect) {
+        const currentPath = parseRoute(window.location.hash).path;
+        if (currentPath.startsWith('checkout') || currentPath === 'cuenta.html' || currentPath === 'seguimiento-pedidos.html') {
+          const fallbackHash = currentPath.startsWith('checkout') ? '#carrito.html' : '#index.html';
+          if (window.location.hash !== fallbackHash) {
+            history.replaceState(null, '', fallbackHash);
+          }
+        }
+        pendingCheckoutRedirect = null;
+      }
     }
 
     function switchAuthTab(tab) {
