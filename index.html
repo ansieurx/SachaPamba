@@ -2744,10 +2744,6 @@
                       <span>Comprar Superalimentos</span>
                       <i class="ph ph-arrow-right text-base"></i>
                     </a>
-                    <a href="#categoria.html" class="px-6 py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center">
-                      <i class="ph ph-users-three text-base text-brand-sunflower"></i>
-                      <span>Directo de Familias Productoras</span>
-                    </a>
                   </div>
                 </div>
               </div>
@@ -3171,10 +3167,10 @@
             </div>
 
             <div class="space-y-1.5 text-left mb-3 sm:mb-4">
-              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs">
-                <i class="ph-fill ph-star text-amber-600 text-sm"></i>
-                <span class="font-extrabold text-brand-forest">${p.rating.toFixed(1)}</span>
-                <span class="text-brand-forest/80 text-[11px] font-medium">(${p.reviewsCount} reseñas)</span>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full">
+                <i class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">${p.rating.toFixed(1)}</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(${p.reviewsCount} reseñas)</span>
               </div>
 
               <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
@@ -3255,8 +3251,8 @@
             </button>
           </div>
 
-          <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest shadow-md p-6 sm:p-8 mb-10">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest shadow-md p-4 sm:p-6 md:p-8 mb-10 overflow-hidden box-border">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
               
               <!-- Columna Galería -->
               <div class="md:col-span-5 space-y-4">
@@ -3295,26 +3291,34 @@
               </div>
 
               <!-- Columna Info -->
-              <div class="md:col-span-7 space-y-5 text-left">
-                <div class="flex items-center gap-2.5">
-                  <div class="flex text-amber-500 text-2xl">
-                    <i class="ph-fill ph-star"></i>
-                    <i class="ph-fill ph-star"></i>
-                    <i class="ph-fill ph-star"></i>
-                    <i class="ph-fill ph-star"></i>
-                    <i class="ph-fill ph-star"></i>
+              <div class="md:col-span-7 space-y-4 sm:space-y-5 text-left min-w-0">
+                <!-- Reseñas y Calificación Adaptables sin descuadres en zoom -->
+                <div class="flex flex-wrap items-center gap-x-2.5 sm:gap-x-3 gap-y-1.5 max-w-full">
+                  <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                    <div class="flex text-amber-500 text-base sm:text-lg md:text-xl">
+                      <i class="ph-fill ph-star"></i>
+                      <i class="ph-fill ph-star"></i>
+                      <i class="ph-fill ph-star"></i>
+                      <i class="ph-fill ph-star"></i>
+                      <i class="ph-fill ph-star"></i>
+                    </div>
+                    <span class="text-base sm:text-lg md:text-xl font-extrabold text-brand-forest">${product.rating.toFixed(1)}</span>
                   </div>
-                  <span class="text-xl font-extrabold text-brand-forest">${product.rating.toFixed(1)}</span>
-                  <span class="text-sm text-brand-leaf/60 font-medium">(${product.reviewsCount} reseñas verificadas)</span>
+                  <span class="text-xs sm:text-sm text-brand-leaf/70 font-medium whitespace-nowrap">(${product.reviewsCount} reseñas verificadas)</span>
                 </div>
 
                 <div>
                   <h1 class="font-botanic text-2xl sm:text-4xl font-bold text-brand-forest leading-snug">
                     ${product.name}
                   </h1>
-                  <div class="inline-flex flex-wrap items-baseline gap-2.5 sm:gap-3 mt-3 bg-brand-olive px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-brand-forest/20 shadow-xs max-w-full">
+
+                  <!-- Presentación del producto directamente sobre el fondo sin recuadro ni icono -->
+                  <p class="text-xs sm:text-sm md:text-base text-brand-leaf/80 font-medium mt-1.5 sm:mt-2">
+                    Presentación: <strong class="text-brand-forest font-bold">${product.size}</strong>
+                  </p>
+
+                  <div class="inline-flex flex-wrap items-baseline gap-2.5 sm:gap-3 mt-3.5 bg-brand-olive px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-brand-forest/20 shadow-xs max-w-full">
                     <span class="text-2xl sm:text-3xl font-black text-brand-forest">$${product.price.toFixed(2)}</span>
-                    <span class="text-xs sm:text-sm text-brand-forest/90 font-medium">Presentación: <strong>${product.size}</strong></span>
                     <span class="text-[11px] sm:text-xs text-brand-forest font-bold bg-brand-cream/70 px-2.5 py-1 rounded-full border border-brand-forest/15">(IVA incluido)</span>
                   </div>
                 </div>
@@ -3323,16 +3327,18 @@
                   ${product.shortDesc}
                 </p>
 
-                <div class="flex flex-wrap items-center gap-3 sm:gap-4 bg-[#FEFAE0] p-3.5 sm:p-4 rounded-2xl border border-brand-forest/10">
-                  <label for="detail-qty" class="text-sm font-bold text-brand-forest">Cantidad:</label>
-                  <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs flex-shrink-0">
-                    <button type="button" onclick="adjustProductQty(-1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">-</button>
-                    <input type="text" inputmode="numeric" id="detail-qty" value="1" class="w-10 text-center text-sm sm:text-base font-bold bg-transparent text-brand-leaf focus:outline-none select-none cursor-default" readonly aria-label="Cantidad">
-                    <button type="button" onclick="adjustProductQty(1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50">+</button>
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 bg-[#FEFAE0] p-3.5 sm:p-4 rounded-2xl border border-brand-forest/10 max-w-full">
+                  <div class="flex items-center gap-2.5 flex-shrink-0">
+                    <label for="detail-qty" class="text-sm font-bold text-brand-forest">Cantidad:</label>
+                    <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs">
+                      <button type="button" onclick="adjustProductQty(-1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50 cursor-pointer">-</button>
+                      <input type="text" inputmode="numeric" id="detail-qty" value="1" class="w-10 text-center text-sm sm:text-base font-bold bg-transparent text-brand-leaf focus:outline-none select-none cursor-default" readonly aria-label="Cantidad">
+                      <button type="button" onclick="adjustProductQty(1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50 cursor-pointer">+</button>
+                    </div>
                   </div>
-                  <span class="text-xs text-brand-forest font-bold inline-flex items-center gap-1.5 bg-[#CCD5AE] px-3 py-1.5 rounded-xl border border-brand-forest/15 shadow-2xs">
+                  <span class="text-xs text-brand-forest font-bold inline-flex items-center gap-1.5 bg-[#CCD5AE] px-3 py-1.5 rounded-xl border border-brand-forest/15 shadow-2xs max-w-full">
                     <i class="ph ph-check-circle text-brand-forest text-base flex-shrink-0"></i>
-                    <span>Disponible para retiro en Quito</span>
+                    <span class="break-words">Disponible para retiro en Quito</span>
                   </span>
                 </div>
 
@@ -3465,7 +3471,7 @@
             </div>
 
             <!-- Resumen de Puntuación General con Fondo Verde Oliva Claro (#CCD5AE) -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs box-border overflow-hidden">
               <div class="md:col-span-4 text-center md:border-r border-brand-forest/20 pr-0 md:pr-5">
                 <span class="font-botanic text-4xl sm:text-5xl md:text-6xl font-black text-brand-forest block leading-none">
                   ${product.rating.toFixed(1)}
