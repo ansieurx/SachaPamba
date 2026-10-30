@@ -686,9 +686,11 @@
       background: rgba(254, 250, 224, 0.5);
     }
 
-    /* Animación de despliegue para requisitos y confirmación de contraseña en Mi Cuenta */
+    /* Animación de despliegue para requisitos y confirmación de contraseña en Mi Cuenta y Registro */
     #acc-password-reqs:not(.hidden),
-    #acc-confirm-password-wrapper:not(.hidden) {
+    #acc-confirm-password-wrapper:not(.hidden),
+    #reg-password-reqs:not(.hidden),
+    #reg-confirm-password-wrapper:not(.hidden) {
       display: block;
       animation: accPasswordSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -1058,37 +1060,52 @@
       <div id="auth-modal-body" class="p-5 sm:p-6 bg-[#FEFAE0]">
         
         <!-- Formulario 1: Iniciar Sesión -->
-        <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 sm:space-y-4">
+        <form id="form-login" onsubmit="handleLoginSubmit(event)" novalidate class="space-y-3.5 sm:space-y-4">
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
                 type="email" 
                 id="login-email" 
-                required 
                 placeholder="ejemplo@sachaypamba.ec" 
                 value="maria.morales@ejemplo.ec"
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                oninput="clearFieldValidation('login-email')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
+            <p id="login-email-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu correo electrónico.</span>
+            </p>
           </div>
 
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Contraseña</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Contraseña <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
                 type="password" 
                 id="login-password" 
-                required 
                 placeholder="••••••••" 
                 value="123456"
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                oninput="clearFieldValidation('login-password')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('login-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar contraseña"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i class="ph ph-eye text-lg"></i>
+              </button>
             </div>
+            <p id="login-password-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu contraseña.</span>
+            </p>
           </div>
 
           <div class="flex items-center justify-between text-xs text-brand-leaf/70 pt-1">
@@ -1111,31 +1128,39 @@
         <!-- Formulario 2: Registrarse -->
         <form id="form-register" onsubmit="handleRegisterSubmit(event)" novalidate class="hidden space-y-3 sm:space-y-3.5">
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Nombre Completo</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Nombre Completo <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
                 type="text" 
                 id="reg-name" 
                 placeholder="Ej. María Emilia Morales" 
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                oninput="clearFieldValidation('reg-name')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
+            <p id="reg-name-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu nombre completo.</span>
+            </p>
           </div>
 
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Correo Electrónico</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Correo Electrónico <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
                 type="email" 
                 id="reg-email" 
                 placeholder="tu@correo.ec" 
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                oninput="clearFieldValidation('reg-email')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
+            <p id="reg-email-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa un correo electrónico válido.</span>
+            </p>
           </div>
 
           <div>
@@ -1148,7 +1173,7 @@
                 type="text" 
                 id="reg-username" 
                 placeholder="Ej. maria_morales" 
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
@@ -1156,49 +1181,125 @@
           </div>
 
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Teléfono / Celular</label>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Teléfono / Celular <span class="text-red-500">*</span></label>
             <input 
               type="tel" 
               id="reg-phone" 
               placeholder="099 876 5432" 
-              class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+              oninput="clearFieldValidation('reg-phone')"
+              class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
             >
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
-            <div class="sm:col-span-1">
-              <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Documento</label>
-              <select 
-                id="reg-doc-type" 
-                class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
-              >
-                <option value="Cédula" selected>Cédula</option>
-                <option value="Pasaporte">Pasaporte</option>
-              </select>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Número de Identificación</label>
-              <input 
-                type="text" 
-                id="reg-id" 
-                placeholder="Ej. 1723456789" 
-                class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono font-medium"
-              >
-            </div>
+            <p id="reg-phone-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu número de teléfono o celular.</span>
+            </p>
           </div>
 
           <div>
-            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Contraseña</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+              <div class="sm:col-span-1">
+                <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Documento <span class="text-red-500">*</span></label>
+                <select 
+                  id="reg-doc-type" 
+                  class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
+                  onchange="clearFieldValidation('reg-id')"
+                >
+                  <option value="Cédula" selected>Cédula</option>
+                  <option value="Pasaporte">Pasaporte</option>
+                </select>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Número de Identificación <span class="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  id="reg-id" 
+                  placeholder="Ej. 1723456789" 
+                  oninput="clearFieldValidation('reg-id')"
+                  class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono font-medium transition-colors"
+                >
+              </div>
+            </div>
+            <p id="reg-id-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa un número de identificación válido.</span>
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Contraseña <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
                 type="password" 
                 id="reg-password" 
-                placeholder="Mínimo 6 caracteres" 
-                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                placeholder="Crea una contraseña segura" 
+                autocomplete="new-password"
+                oninput="handleRegPasswordInputChange(this.value)"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
               >
               <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('reg-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar contraseña"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i class="ph ph-eye text-lg"></i>
+              </button>
             </div>
+
+            <!-- Lista de requisitos de contraseña: solo visible al escribir algo -->
+            <div id="reg-password-reqs" class="hidden space-y-1.5 p-3 rounded-xl bg-[#FEFAE0] border border-[#283618] text-xs select-none shadow-2xs mt-2">
+              <span class="block font-bold text-brand-forest mb-1">Requisitos de la contraseña:</span>
+              <div id="reg-req-length" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Tener al menos 8 caracteres</span>
+              </div>
+              <div id="reg-req-uppercase" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos una letra mayúscula</span>
+              </div>
+              <div id="reg-req-number" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos un número</span>
+              </div>
+              <div id="reg-req-special" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos un carácter especial (ej. !@#$%*.-)</span>
+              </div>
+            </div>
+            <p id="reg-password-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i class="ph-bold ph-warning-circle"></i> <span>La contraseña debe cumplir con todos los requisitos.</span>
+            </p>
+          </div>
+
+          <!-- Campo desplegable para confirmar contraseña: SOLO se despliega cuando se cumplen todos los requisitos -->
+          <div id="reg-confirm-password-wrapper" class="hidden space-y-1.5 pt-1">
+            <label class="block text-brand-leaf/80 text-xs font-bold flex items-center gap-1.5">
+              <i class="ph ph-shield-check text-brand-forest"></i>
+              <span>Confirmar Contraseña <span class="text-red-500">*</span></span>
+            </label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="reg-confirm-password" 
+                placeholder="Repite tu contraseña" 
+                oninput="validateRegPasswordMatch()"
+                autocomplete="new-password"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('reg-confirm-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar confirmación de contraseña"
+                aria-label="Mostrar u ocultar confirmación de contraseña"
+              >
+                <i class="ph ph-eye text-lg"></i>
+              </button>
+            </div>
+            <p id="reg-password-match-msg" class="text-xs font-bold min-h-[1.25rem] hidden"></p>
           </div>
 
           <div class="pt-1.5 sm:pt-2">
@@ -5987,6 +6088,7 @@
     }
 
     function switchAuthTab(tab) {
+      if (typeof clearAuthFormErrors === 'function') clearAuthFormErrors();
       const formLogin = document.getElementById('form-login');
       const formRegister = document.getElementById('form-register');
       const btnLogin = document.getElementById('tab-login-btn');
@@ -6045,9 +6147,169 @@
       });
     }
 
+    function showFieldError(inputId, errId, message) {
+      const input = document.getElementById(inputId);
+      const err = document.getElementById(errId);
+      if (input) {
+        input.classList.remove('border-brand-olive', 'border-brand-forest');
+        input.classList.add('border-red-500');
+        input.focus();
+      }
+      if (err) {
+        if (message) {
+          const span = err.querySelector('span');
+          if (span) span.textContent = message;
+          else err.textContent = message;
+        }
+        err.classList.remove('hidden');
+      }
+    }
+
+    function clearFieldValidation(inputId) {
+      const input = document.getElementById(inputId);
+      const err = document.getElementById(inputId + '-err');
+      if (input) {
+        input.classList.remove('border-red-500');
+        input.classList.add('border-brand-olive');
+      }
+      if (err) {
+        err.classList.add('hidden');
+      }
+    }
+
+    function clearAuthFormErrors() {
+      ['login-email', 'login-password', 'reg-name', 'reg-email', 'reg-phone', 'reg-id', 'reg-password', 'reg-confirm-password'].forEach(id => {
+        clearFieldValidation(id);
+      });
+      const matchMsg = document.getElementById('reg-password-match-msg');
+      if (matchMsg) {
+        matchMsg.classList.add('hidden');
+        matchMsg.textContent = '';
+      }
+      const pass = document.getElementById('reg-password');
+      if (!pass || !pass.value) {
+        const reqs = document.getElementById('reg-password-reqs');
+        if (reqs) reqs.classList.add('hidden');
+        const confirmWrapper = document.getElementById('reg-confirm-password-wrapper');
+        if (confirmWrapper) confirmWrapper.classList.add('hidden');
+      }
+    }
+
+    function updateRegPasswordRequirements(val) {
+      const hasLength = val.length >= 8;
+      const hasUpper = /[A-Z]/.test(val);
+      const hasNumber = /[0-9]/.test(val);
+      const hasSpecial = /[^A-Za-z0-9]/.test(val);
+
+      setReqStatus('reg-req-length', hasLength);
+      setReqStatus('reg-req-uppercase', hasUpper);
+      setReqStatus('reg-req-number', hasNumber);
+      setReqStatus('reg-req-special', hasSpecial);
+
+      return hasLength && hasUpper && hasNumber && hasSpecial;
+    }
+
+    function handleRegPasswordInputChange(val) {
+      const reqsContainer = document.getElementById('reg-password-reqs');
+      const wrapper = document.getElementById('reg-confirm-password-wrapper');
+      const confirmInput = document.getElementById('reg-confirm-password');
+      const matchMsg = document.getElementById('reg-password-match-msg');
+      const passErr = document.getElementById('reg-password-err');
+      if (passErr) passErr.classList.add('hidden');
+      const passInput = document.getElementById('reg-password');
+      if (passInput) {
+        passInput.classList.remove('border-red-500');
+        passInput.classList.add('border-brand-olive');
+      }
+
+      if (val.length > 0) {
+        if (reqsContainer) reqsContainer.classList.remove('hidden');
+      } else {
+        if (reqsContainer) reqsContainer.classList.add('hidden');
+      }
+
+      const allMet = updateRegPasswordRequirements(val);
+
+      if (allMet && val.length > 0) {
+        if (wrapper && wrapper.classList.contains('hidden')) {
+          wrapper.classList.remove('hidden');
+        }
+        validateRegPasswordMatch();
+      } else {
+        if (wrapper) wrapper.classList.add('hidden');
+        if (confirmInput) {
+          confirmInput.value = '';
+          confirmInput.classList.remove('border-green-600', 'border-red-500');
+          confirmInput.classList.add('border-brand-olive');
+        }
+        if (matchMsg) {
+          matchMsg.classList.add('hidden');
+          matchMsg.textContent = '';
+        }
+      }
+    }
+
+    function validateRegPasswordMatch() {
+      const passInput = document.getElementById('reg-password');
+      const confirmInput = document.getElementById('reg-confirm-password');
+      const matchMsg = document.getElementById('reg-password-match-msg');
+      if (!passInput || !confirmInput || !matchMsg) return false;
+
+      const pass = passInput.value;
+      const confirmPass = confirmInput.value;
+
+      matchMsg.classList.remove('hidden');
+
+      if (confirmPass.length === 0) {
+        matchMsg.innerHTML = '<i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i> <span>Las contraseñas deben coincidir</span>';
+        matchMsg.className = 'text-xs font-bold text-red-600 min-h-[1.25rem] flex items-center gap-1.5 pt-0.5';
+        confirmInput.classList.remove('border-green-600', 'border-brand-olive');
+        confirmInput.classList.add('border-red-500');
+        return false;
+      }
+
+      if (pass === confirmPass) {
+        matchMsg.innerHTML = '<i class="ph-bold ph-check text-green-600 text-sm flex-shrink-0"></i> <span>Las contraseñas coinciden</span>';
+        matchMsg.className = 'text-xs font-bold text-green-800 min-h-[1.25rem] flex items-center gap-1.5 pt-0.5';
+        confirmInput.classList.remove('border-red-500', 'border-brand-olive');
+        confirmInput.classList.add('border-green-600');
+        return true;
+      } else {
+        matchMsg.innerHTML = '<i class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i> <span>Las contraseñas no coinciden</span>';
+        matchMsg.className = 'text-xs font-bold text-red-600 min-h-[1.25rem] flex items-center gap-1.5 pt-0.5';
+        confirmInput.classList.remove('border-green-600', 'border-brand-olive');
+        confirmInput.classList.add('border-red-500');
+        return false;
+      }
+    }
+
     function handleLoginSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
+      const emailInput = document.getElementById('login-email');
+      const passInput = document.getElementById('login-password');
+      const email = emailInput ? emailInput.value.trim() : '';
+      const password = passInput ? passInput.value.trim() : '';
+
+      let hasError = false;
+
+      if (!password) {
+        showFieldError('login-password', 'login-password-err', 'Por favor, ingresa tu contraseña.');
+        hasError = true;
+      }
+
+      if (!email) {
+        showFieldError('login-email', 'login-email-err', 'Por favor, ingresa tu correo electrónico.');
+        hasError = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('login-email', 'login-email-err', 'Por favor, ingresa un formato de correo válido.');
+        hasError = true;
+      }
+
+      if (hasError) {
+        showToast('Completa todos los campos obligatorios para iniciar sesión.', 'ph-warning-circle');
+        return;
+      }
+
       const existingUser = getCurrentUser();
       const user = {
         name: (existingUser && existingUser.email === email && existingUser.name) ? existingUser.name : email.split('@')[0].replace('.', ' ').toUpperCase(),
@@ -6072,13 +6334,78 @@
 
     function handleRegisterSubmit(e) {
       e.preventDefault();
-      const name = document.getElementById('reg-name').value.trim() || 'Cliente Tienda';
-      const email = document.getElementById('reg-email').value.trim() || 'usuario@sachaypamba.ec';
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
       const usernameInput = document.getElementById('reg-username');
       const username = usernameInput ? usernameInput.value.trim() : '';
-      const phone = document.getElementById('reg-phone').value.trim() || '+593 99 876 5432';
+      const phone = document.getElementById('reg-phone').value.trim();
       const docType = document.getElementById('reg-doc-type').value;
-      const idNumber = document.getElementById('reg-id').value.trim() || '1723456789';
+      const idNumber = document.getElementById('reg-id').value.trim();
+      const passInput = document.getElementById('reg-password');
+      const password = passInput ? passInput.value : '';
+      const confirmPassInput = document.getElementById('reg-confirm-password');
+      const confirmPassword = confirmPassInput ? confirmPassInput.value : '';
+
+      let hasError = false;
+
+      // 1. Validar confirmación de contraseña
+      const allPassMet = updateRegPasswordRequirements(password);
+      if (!allPassMet) {
+        showFieldError('reg-password', 'reg-password-err', 'La contraseña debe cumplir con todos los 4 requisitos.');
+        const reqs = document.getElementById('reg-password-reqs');
+        if (reqs) reqs.classList.remove('hidden');
+        hasError = true;
+      } else if (!validateRegPasswordMatch()) {
+        showFieldError('reg-confirm-password', 'reg-password-match-msg', 'Las contraseñas deben coincidir exactamente.');
+        hasError = true;
+      }
+
+      // 2. Validar contraseña vacía
+      if (!password) {
+        showFieldError('reg-password', 'reg-password-err', 'Por favor, crea una contraseña.');
+        hasError = true;
+      }
+
+      // 3. Validar identificación
+      if (!idNumber) {
+        showFieldError('reg-id', 'reg-id-err', 'Por favor, ingresa tu número de identificación.');
+        hasError = true;
+      } else if (docType === 'Cédula' && !/^\d{10}$/.test(idNumber)) {
+        showFieldError('reg-id', 'reg-id-err', 'La cédula debe tener exactamente 10 dígitos numéricos.');
+        hasError = true;
+      }
+
+      // 4. Validar teléfono
+      if (!phone) {
+        showFieldError('reg-phone', 'reg-phone-err', 'Por favor, ingresa tu número de teléfono o celular.');
+        hasError = true;
+      } else if (phone.replace(/\D/g, '').length < 9) {
+        showFieldError('reg-phone', 'reg-phone-err', 'Por favor, ingresa un número de teléfono válido (al menos 9-10 dígitos).');
+        hasError = true;
+      }
+
+      // 5. Validar correo
+      if (!email) {
+        showFieldError('reg-email', 'reg-email-err', 'Por favor, ingresa tu correo electrónico.');
+        hasError = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('reg-email', 'reg-email-err', 'Por favor, ingresa un formato de correo electrónico válido.');
+        hasError = true;
+      }
+
+      // 6. Validar nombre
+      if (!name) {
+        showFieldError('reg-name', 'reg-name-err', 'Por favor, ingresa tu nombre completo.');
+        hasError = true;
+      } else if (name.length < 3) {
+        showFieldError('reg-name', 'reg-name-err', 'El nombre debe tener al menos 3 caracteres.');
+        hasError = true;
+      }
+
+      if (hasError) {
+        showToast('Por favor, completa todos los campos obligatorios correctamente.', 'ph-warning-circle');
+        return;
+      }
 
       const user = { name, email, username, phone, docType, idNumber };
       setCurrentUser(user);
