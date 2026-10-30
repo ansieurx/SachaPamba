@@ -4739,8 +4739,8 @@
                     </div>
 
                     <div class="self-start sm:self-center flex-shrink-0">
-                      <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs bg-[#5a6b4e] text-brand-sunflower font-bold px-3 py-1.5 rounded-full shadow-2xs whitespace-nowrap">
-                        <i class="ph ph-check-circle text-xs flex-shrink-0"></i>
+                      <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs bg-[#FEFAE0] text-brand-forest border border-brand-forest/25 font-bold px-3 py-1.5 rounded-full shadow-2xs whitespace-nowrap">
+                        <i class="ph ph-check-circle text-xs text-brand-forest flex-shrink-0"></i>
                         <span>Para Retiro en Tienda</span>
                       </span>
                     </div>
@@ -4788,9 +4788,15 @@
 
             <!-- Formulario de Información Personal a ancho completo -->
             <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-7 md:p-8 shadow-sm space-y-5 text-left w-full box-border">
-              <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest border-b border-brand-forest/20 pb-3">
-                Información Personal
-              </h3>
+              <div class="border-b border-brand-forest/20 pb-3 space-y-1">
+                <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">
+                  Información Personal
+                </h3>
+                <p class="text-xs sm:text-sm text-brand-leaf/80 font-medium flex items-center gap-1.5 pt-0.5">
+                  <i class="ph ph-info text-brand-forest text-base flex-shrink-0"></i>
+                  <span>Solo debes llenar los campos que deseas cambiar, no es necesario completar todos.</span>
+                </p>
+              </div>
 
               <div class="space-y-4 text-sm font-medium">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -4799,12 +4805,9 @@
                     <input type="text" id="acc-name" value="${escapeHtml(user.name ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
                   </div>
                   <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                      <label class="block text-brand-leaf/80 font-bold text-xs sm:text-sm">Usuario</label>
-                      <span class="text-xs text-brand-leaf/60 italic font-normal">(Opcional)</span>
-                    </div>
+                    <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Usuario</label>
                     <div class="relative">
-                      <input type="text" id="acc-username" value="${escapeHtml(user.username ?? '')}" placeholder="Ej. maria_morales" class="w-full p-3 !pl-10 pr-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                      <input type="text" id="acc-username" value="${escapeHtml(user.username ?? '')}" placeholder="Ej. maria_morales" class="auth-input-with-icon w-full p-3 pl-11 pr-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" style="padding-left: 2.75rem !important;">
                       <i class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-forest/60 pointer-events-none"></i>
                     </div>
                   </div>
@@ -6556,12 +6559,12 @@
       const confirmPasswordInput = document.getElementById('acc-confirm-password');
 
       const user = getCurrentUser() || {};
-      user.name = name;
-      user.username = username;
-      user.email = email;
-      user.phone = phone;
+      if (name) user.name = name;
+      if (usernameInput) user.username = username;
+      if (email) user.email = email;
+      if (phone) user.phone = phone;
       if (docTypeSelect) user.docType = docTypeSelect.value;
-      if (idInput) user.idNumber = idInput.value.trim();
+      if (idInput && idInput.value.trim()) user.idNumber = idInput.value.trim();
 
       let passwordUpdated = false;
       if (newPasswordInput && newPasswordInput.value.trim().length > 0) {
