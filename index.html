@@ -194,8 +194,8 @@
       flex-wrap: nowrap !important;
       align-items: center !important;
       justify-content: space-between !important;
-      gap: clamp(0.2rem, 0.8cqi, 0.45rem) !important;
-      padding: clamp(0.42rem, 1.2cqi, 0.58rem) clamp(0.45rem, 1.8cqi, 0.75rem) !important;
+      gap: clamp(0.35rem, 2cqi, 0.75rem) !important;
+      padding: clamp(0.45rem, 1.4cqi, 0.65rem) clamp(0.5rem, 2cqi, 0.85rem) !important;
       overflow: hidden !important;
     }
 
@@ -204,7 +204,7 @@
       flex-shrink: 0 !important;
     }
     .product-card-price span {
-      font-size: clamp(0.95rem, 2.5cqi, 1.15rem) !important;
+      font-size: clamp(0.92rem, 2.4cqi, 1.18rem) !important;
       font-weight: 800 !important;
       line-height: 1.1 !important;
       white-space: nowrap !important;
@@ -216,33 +216,39 @@
       display: inline-flex !important;
       flex-direction: row !important;
       flex-wrap: nowrap !important;
-      align-items: center !important;
-      gap: clamp(0.2rem, 0.8cqi, 0.35rem) !important;
+      align-items: stretch !important;
+      gap: clamp(0.35rem, 2.4cqi, 0.7rem) !important;
       margin-left: auto !important;
       flex-shrink: 0 !important;
     }
 
     .product-card-actions a {
-      padding: clamp(0.25rem, 0.8cqi, 0.35rem) clamp(0.45rem, 1.2cqi, 0.65rem) !important;
-      font-size: clamp(0.75rem, 1.8cqi, 0.84rem) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: clamp(0.3rem, 1.1cqi, 0.44rem) clamp(0.48rem, 2.4cqi, 0.8rem) !important;
+      font-size: clamp(0.8rem, 1.9cqi, 0.92rem) !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       line-height: 1.2 !important;
       flex-shrink: 0 !important;
       border-radius: 0.5rem !important;
+      box-sizing: border-box !important;
     }
 
     .product-card-actions button {
-      padding: clamp(0.28rem, 0.9cqi, 0.38rem) clamp(0.5rem, 1.5cqi, 0.8rem) !important;
-      font-size: clamp(0.82rem, 2cqi, 0.92rem) !important;
+      padding: clamp(0.3rem, 1.1cqi, 0.44rem) clamp(0.55rem, 2.8cqi, 0.95rem) !important;
+      font-size: clamp(0.8rem, 1.9cqi, 0.92rem) !important;
       font-weight: 700 !important;
       white-space: nowrap !important;
       line-height: 1.2 !important;
       flex-shrink: 0 !important;
       display: inline-flex !important;
       align-items: center !important;
-      gap: clamp(0.2rem, 0.6cqi, 0.3rem) !important;
+      justify-content: center !important;
+      gap: clamp(0.25rem, 0.8cqi, 0.38rem) !important;
       border-radius: 0.5rem !important;
+      box-sizing: border-box !important;
     }
 
     .product-card-actions button i {
@@ -664,6 +670,22 @@
       height: 0 !important;
     }
 
+    /* Scrollbar sutil para el modal de autenticación */
+    #auth-modal::-webkit-scrollbar {
+      width: 6px;
+    }
+    #auth-modal::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 9999px;
+    }
+    #auth-modal::-webkit-scrollbar-thumb {
+      background: rgba(254, 250, 224, 0.3);
+      border-radius: 9999px;
+    }
+    #auth-modal::-webkit-scrollbar-thumb:hover {
+      background: rgba(254, 250, 224, 0.5);
+    }
+
     /* Animación de despliegue para requisitos y confirmación de contraseña en Mi Cuenta */
     #acc-password-reqs:not(.hidden),
     #acc-confirm-password-wrapper:not(.hidden) {
@@ -690,6 +712,39 @@
       max-width: 100% !important;
       box-sizing: border-box !important;
       overflow-x: clip;
+    }
+
+    /* Espaciado garantizado para inputs con icono a la izquierda para evitar solapamientos */
+    .auth-input-with-icon {
+      padding-left: 2.85rem !important;
+    }
+
+    /* Garantizar que el encabezado del modal de autenticación mantenga su fila superior separada y sin solapamientos */
+    .auth-header-top {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 0.75rem !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .auth-header-title-box {
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+      overflow: hidden !important;
+    }
+    #auth-modal-close {
+      flex-shrink: 0 !important;
+      position: static !important;
+    }
+
+    /* Adaptabilidad de desplazamiento del modal de autenticación en cualquier nivel de zoom */
+    @media (max-height: 680px) {
+      #auth-modal-wrapper {
+        align-items: flex-start !important;
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+      }
     }
   </style>
 </head>
@@ -949,27 +1004,34 @@
   <div id="nav-category-backdrop" class="hidden fixed inset-0 bg-black/20 z-30"></div>
 
   <!-- Modal de Iniciar Sesión y Registro -->
-  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200 overflow-y-auto">
-    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
-      
-      <!-- Encabezado del Modal - Siempre uniforme y compacto como en imagen 1 -->
-      <div class="bg-brand-forest text-brand-cream p-5 sm:p-6 pb-4 sm:pb-5 relative flex-shrink-0">
-        <button 
-          type="button" 
-          id="auth-modal-close" 
-          class="absolute top-4 right-4 sm:top-5 sm:right-5 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
-          aria-label="Cerrar modal"
-        >
-          <i class="ph ph-x"></i>
-        </button>
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-black/60 backdrop-blur-xs transition-opacity duration-200 p-3 sm:p-6 text-center">
+    <div id="auth-modal-wrapper" class="min-h-full flex items-center justify-center p-0">
+      <div id="auth-modal-card" class="relative w-full max-w-md my-auto bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest overflow-hidden text-left transform transition-all animate-in fade-in zoom-in duration-200">
+        
+        <!-- Encabezado del Modal - Se queda en su sitio, arriba, y no sigue el desplazamiento hacia abajo al hacer scroll -->
+        <div id="auth-modal-header" class="bg-brand-forest text-brand-cream p-4 sm:p-6 pb-4 sm:pb-5 relative">
+          <!-- Fila Superior: Marca y Botón Cerrar en contenedor flex asegurado -->
+          <div class="auth-header-top flex items-center justify-between gap-3 mb-1.5 w-full">
+            <div class="auth-header-title-box flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 overflow-hidden">
+              <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
+                <i class="ph ph-plant text-lg sm:text-xl"></i>
+              </span>
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-cream tracking-tight flex items-center flex-wrap leading-tight">
+                <span>Sacha</span><span class="font-hand text-brand-sunflower text-[1.25em] font-bold mx-1.5 inline-block transform -rotate-12 align-baseline">&amp;</span><span>Pamba</span>
+              </h3>
+            </div>
 
-        <div class="flex items-center gap-2.5 mb-1.5">
-          <span class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
-            <i class="ph ph-plant text-xl sm:text-2xl"></i>
-          </span>
-          <h3 class="font-botanic font-bold text-xl text-brand-cream tracking-tight flex items-center">Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba</h3>
-        </div>
-        <p class="text-xs sm:text-sm text-brand-cream/80">Tu tienda naturista de confianza en Quito</p>
+            <button 
+              type="button" 
+              id="auth-modal-close" 
+              onclick="closeAuthModal()"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-brand-cream/80 hover:text-brand-sunflower transition-all flex items-center justify-center flex-shrink-0 cursor-pointer text-lg"
+              aria-label="Cerrar modal"
+            >
+              <i class="ph ph-x"></i>
+            </button>
+          </div>
+          <p class="text-xs sm:text-sm text-brand-cream/80">Tu tienda naturista de confianza en Quito</p>
 
         <!-- Pestañas -->
         <div class="grid grid-cols-2 gap-2 mt-4 bg-white/10 p-1.5 rounded-2xl border border-white/15 text-sm font-bold">
@@ -992,8 +1054,8 @@
         </div>
       </div>
 
-      <!-- Cuerpo del Formulario -->
-      <div class="p-5 sm:p-6 bg-[#FEFAE0] overflow-y-auto flex-1 min-h-0">
+      <!-- Cuerpo del Formulario continuo sin scroll interno cortado -->
+      <div id="auth-modal-body" class="p-5 sm:p-6 bg-[#FEFAE0]">
         
         <!-- Formulario 1: Iniciar Sesión -->
         <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 sm:space-y-4">
@@ -1006,9 +1068,10 @@
                 required 
                 placeholder="ejemplo@sachaypamba.ec" 
                 value="maria.morales@ejemplo.ec"
-                class="w-full text-xs sm:text-sm p-3 sm:p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
               >
-              <i class="ph ph-envelope absolute left-3.5 top-3 sm:top-3.5 text-base sm:text-lg text-brand-forest/60"></i>
+              <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
           </div>
 
@@ -1021,9 +1084,10 @@
                 required 
                 placeholder="••••••••" 
                 value="123456"
-                class="w-full text-xs sm:text-sm p-3 sm:p-3.5 pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
               >
-              <i class="ph ph-lock-key absolute left-3.5 top-3 sm:top-3.5 text-base sm:text-lg text-brand-forest/60"></i>
+              <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
           </div>
 
@@ -1037,7 +1101,7 @@
 
           <button 
             type="submit" 
-            class="w-full py-3 sm:py-3.5 mt-2 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
+            class="w-full py-3 sm:py-3.5 mt-2 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 cursor-pointer"
           >
             <i class="ph ph-sign-in text-lg sm:text-xl"></i>
             <span>Ingresar a mi cuenta</span>
@@ -1053,9 +1117,10 @@
                 type="text" 
                 id="reg-name" 
                 placeholder="Ej. María Emilia Morales" 
-                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
               >
-              <i class="ph ph-user absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
+              <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
           </div>
 
@@ -1066,9 +1131,27 @@
                 type="email" 
                 id="reg-email" 
                 placeholder="tu@correo.ec" 
-                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
               >
-              <i class="ph ph-envelope absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
+              <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs sm:text-sm font-bold text-brand-forest">Usuario</label>
+              <span class="text-[11px] font-semibold text-brand-leaf/60 italic">(Opcional)</span>
+            </div>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="reg-username" 
+                placeholder="Ej. maria_morales" 
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
           </div>
 
@@ -1078,7 +1161,7 @@
               type="tel" 
               id="reg-phone" 
               placeholder="099 876 5432" 
-              class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+              class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
             >
           </div>
 
@@ -1087,7 +1170,7 @@
               <label class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Documento</label>
               <select 
                 id="reg-doc-type" 
-                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
+                class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
               >
                 <option value="Cédula" selected>Cédula</option>
                 <option value="Pasaporte">Pasaporte</option>
@@ -1099,7 +1182,7 @@
                 type="text" 
                 id="reg-id" 
                 placeholder="Ej. 1723456789" 
-                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono"
+                class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono font-medium"
               >
             </div>
           </div>
@@ -1111,16 +1194,17 @@
                 type="password" 
                 id="reg-password" 
                 placeholder="Mínimo 6 caracteres" 
-                class="w-full text-xs sm:text-sm p-2.5 sm:p-3 pl-9 sm:pl-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium"
+                style="padding-left: 2.85rem !important;"
               >
-              <i class="ph ph-lock-key absolute left-3 top-2.5 sm:top-3 text-base sm:text-lg text-brand-forest/60"></i>
+              <i class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
           </div>
 
           <div class="pt-1.5 sm:pt-2">
             <button 
               type="submit" 
-              class="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95"
+              class="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 cursor-pointer"
             >
               <i class="ph ph-user-plus text-lg sm:text-xl"></i>
               <span>Crear Cuenta y Continuar</span>
@@ -1131,6 +1215,7 @@
       </div>
     </div>
   </div>
+</div>
 
   <!-- Modal de Calificar y Comentar Producto -->
   <div id="review-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200">
@@ -3005,19 +3090,19 @@
             </div>
           </div>
 
-          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-1.5 sm:gap-2 shadow-xs">
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
             <div class="product-card-price min-w-0 flex-shrink-0">
               <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$${p.price.toFixed(2)}</span>
             </div>
 
-            <div class="product-card-actions flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              <a href="#producto.html?id=${p.id}" class="px-2.5 py-1.5 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-all shadow-xs border border-brand-forest/20 text-center">
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="#producto.html?id=${p.id}" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-all shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
                 Ver
               </a>
               <button 
                 type="button" 
                 onclick="event.stopPropagation(); addToCart('${p.id}', 1)" 
-                class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1 transition-transform active:scale-95 shadow-xs whitespace-nowrap"
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap"
                 aria-label="Añadir ${p.name} al carrito"
               >
                 <i class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
@@ -4444,6 +4529,7 @@
     function renderCuentaView() {
       const user = getCurrentUser() || {
         name: 'Cliente Sacha & Pamba',
+        username: 'cliente_sacha',
         email: 'usuario@sachaypamba.ec',
         phone: '+593 99 876 5432',
         docType: 'Cédula',
@@ -4606,9 +4692,21 @@
               </h3>
 
               <div class="space-y-4 text-sm font-medium">
-                <div>
-                  <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Nombre Completo</label>
-                  <input type="text" id="acc-name" value="${escapeHtml(user.name ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div>
+                    <label class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Nombre Completo</label>
+                    <input type="text" id="acc-name" value="${escapeHtml(user.name ?? '')}" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                      <label class="block text-brand-leaf/80 font-bold text-xs sm:text-sm">Usuario</label>
+                      <span class="text-xs text-brand-leaf/60 italic font-normal">(Opcional)</span>
+                    </div>
+                    <div class="relative">
+                      <input type="text" id="acc-username" value="${escapeHtml(user.username ?? '')}" placeholder="Ej. maria_morales" class="w-full p-3 !pl-10 pr-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm">
+                      <i class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-forest/60 pointer-events-none"></i>
+                    </div>
+                  </div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -5549,6 +5647,9 @@
 
       // Si ya nos encontramos en la misma ruta con los mismos parámetros, no hacer nada
       if (currentRoute.path === targetRoute.path && JSON.stringify(currentRoute.params) === JSON.stringify(targetRoute.params)) {
+        if (targetRoute.path === 'cuenta.html' || targetRoute.path === 'seguimiento-pedidos.html') {
+          showToast('Ya te encuentras en Mi Cuenta', 'ph-user');
+        }
         return;
       }
 
@@ -5862,12 +5963,17 @@
         showToast('Inicia sesión o regístrate para continuar con tu pedido.', 'ph-shopping-cart');
       }
 
+      authModal.scrollTop = 0;
+      const modalBody = document.getElementById('auth-modal-body');
+      if (modalBody) modalBody.scrollTop = 0;
       authModal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
     }
 
     function closeAuthModal() {
       if (!authModal) return;
       authModal.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
       if (pendingCheckoutRedirect) {
         const currentPath = parseRoute(window.location.hash).path;
         if (currentPath.startsWith('checkout') || currentPath === 'cuenta.html' || currentPath === 'seguimiento-pedidos.html') {
@@ -5897,6 +6003,9 @@
         btnRegister.className = 'py-2.5 rounded-xl text-center transition-all bg-brand-sunflower text-brand-leaf shadow-sm';
         btnLogin.className = 'py-2.5 rounded-xl text-center transition-all text-brand-cream/80 hover:text-white';
       }
+      if (authModal) authModal.scrollTop = 0;
+      const modalBody = document.getElementById('auth-modal-body');
+      if (modalBody) modalBody.scrollTop = 0;
     }
 
     if (navAuthBtn) {
@@ -5904,6 +6013,11 @@
         e.preventDefault();
         const user = getCurrentUser();
         if (user) {
+          const currentPath = parseRoute(window.location.hash).path;
+          if (currentPath === 'cuenta.html' || currentPath === 'seguimiento-pedidos.html') {
+            showToast('Ya te encuentras en Mi Cuenta', 'ph-user');
+            return;
+          }
           navigateTo('#cuenta.html');
         } else {
           openAuthModal('login');
@@ -5914,9 +6028,15 @@
     if (authCloseBtn) authCloseBtn.addEventListener('click', closeAuthModal);
     if (authModal) {
       authModal.addEventListener('click', (e) => {
-        if (e.target === authModal) closeAuthModal();
+        if (!e.target.closest('#auth-modal-card')) closeAuthModal();
       });
     }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && authModal && !authModal.classList.contains('hidden')) {
+        closeAuthModal();
+      }
+    });
 
     const confirmRemoveModal = document.getElementById('confirm-remove-modal');
     if (confirmRemoveModal) {
@@ -5928,12 +6048,14 @@
     function handleLoginSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
+      const existingUser = getCurrentUser();
       const user = {
-        name: email.split('@')[0].replace('.', ' ').toUpperCase(),
+        name: (existingUser && existingUser.email === email && existingUser.name) ? existingUser.name : email.split('@')[0].replace('.', ' ').toUpperCase(),
         email: email,
-        phone: '+593 99 876 5432',
-        docType: 'Cédula',
-        idNumber: '1723456789'
+        username: (existingUser && existingUser.email === email && existingUser.username) ? existingUser.username : '',
+        phone: (existingUser && existingUser.email === email && existingUser.phone) ? existingUser.phone : '+593 99 876 5432',
+        docType: (existingUser && existingUser.email === email && existingUser.docType) ? existingUser.docType : 'Cédula',
+        idNumber: (existingUser && existingUser.email === email && existingUser.idNumber) ? existingUser.idNumber : '1723456789'
       };
       setCurrentUser(user);
       const destination = pendingCheckoutRedirect;
@@ -5952,11 +6074,13 @@
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim() || 'Cliente Tienda';
       const email = document.getElementById('reg-email').value.trim() || 'usuario@sachaypamba.ec';
+      const usernameInput = document.getElementById('reg-username');
+      const username = usernameInput ? usernameInput.value.trim() : '';
       const phone = document.getElementById('reg-phone').value.trim() || '+593 99 876 5432';
       const docType = document.getElementById('reg-doc-type').value;
       const idNumber = document.getElementById('reg-id').value.trim() || '1723456789';
 
-      const user = { name, email, phone, docType, idNumber };
+      const user = { name, email, username, phone, docType, idNumber };
       setCurrentUser(user);
       const destination = pendingCheckoutRedirect;
       pendingCheckoutRedirect = null;
@@ -6095,6 +6219,8 @@
 
     function updateAccountDetails() {
       const name = document.getElementById('acc-name').value.trim();
+      const usernameInput = document.getElementById('acc-username');
+      const username = usernameInput ? usernameInput.value.trim() : '';
       const email = document.getElementById('acc-email').value.trim();
       const phone = document.getElementById('acc-phone').value.trim();
       const docTypeSelect = document.getElementById('acc-doc-type');
@@ -6104,6 +6230,7 @@
 
       const user = getCurrentUser() || {};
       user.name = name;
+      user.username = username;
       user.email = email;
       user.phone = phone;
       if (docTypeSelect) user.docType = docTypeSelect.value;
