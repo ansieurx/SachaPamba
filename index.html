@@ -2256,6 +2256,11 @@
 
       if (redirect) {
         closeCartDrawer(true);
+        sessionStorage.removeItem('sacha_last_inspected_product_id');
+        sessionStorage.removeItem('sacha_catalog_scroll_pos');
+        sessionStorage.removeItem('sacha_card_viewport_offset');
+        sessionStorage.removeItem('sacha_prev_route');
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         navigateTo('#carrito.html');
       } else {
         openCartDrawer();
@@ -3576,6 +3581,13 @@
     function handleAddToCartFromDetail(productId, redirect) {
       const input = document.getElementById('detail-qty');
       const qty = input ? (parseInt(input.value) || 1) : 1;
+      if (redirect) {
+        sessionStorage.removeItem('sacha_last_inspected_product_id');
+        sessionStorage.removeItem('sacha_catalog_scroll_pos');
+        sessionStorage.removeItem('sacha_card_viewport_offset');
+        sessionStorage.removeItem('sacha_prev_route');
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
       addToCart(productId, qty, redirect);
     }
 
@@ -5707,18 +5719,22 @@
       }
 
       // Posicionamiento de scroll según la ruta
-      if (path === 'producto.html') {
-        // En detalles de producto siempre mostrar directamente desde el inicio sin animación ni desplazamientos
+      const isCatalogRoute = (path === '' || path === 'index.html' || path === 'categoria.html' || path === 'productos.html');
+
+      if (path === 'producto.html' || path === 'carrito.html' || path.startsWith('checkout')) {
+        // En detalles de producto, carrito y checkout siempre mostrar directamente desde el inicio (arriba)
+        sessionStorage.removeItem('sacha_last_inspected_product_id');
+        sessionStorage.removeItem('sacha_catalog_scroll_pos');
+        sessionStorage.removeItem('sacha_card_viewport_offset');
+        sessionStorage.removeItem('sacha_prev_route');
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      } else {
+      } else if (isCatalogRoute) {
         // Al regresar de un producto a catálogo o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
         const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
         const rawScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
-        const rawOffset = sessionStorage.getItem('sacha_card_viewport_offset');
 
         if (returningProductId || rawScroll !== null) {
           const returningScroll = rawScroll !== null ? parseFloat(rawScroll) : NaN;
-          const cardOffset = rawOffset !== null ? parseFloat(rawOffset) : NaN;
 
           sessionStorage.removeItem('sacha_last_inspected_product_id');
           sessionStorage.removeItem('sacha_catalog_scroll_pos');
@@ -5738,6 +5754,8 @@
 
           restoreCardPosition();
         }
+      } else {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
 
       previousRoutePath = path;
@@ -5769,19 +5787,19 @@
         return;
       }
 
-      const isReturningToCatalog = targetRoute.path !== 'producto.html' && (
+      const isReturningToCatalog = (targetRoute.path === '' || targetRoute.path === 'index.html' || targetRoute.path === 'categoria.html' || targetRoute.path === 'productos.html') && (
         sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
         sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
       );
 
-      if (targetRoute.path === 'producto.html') {
+      if (targetRoute.path === 'producto.html' || targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
 
       if (window.location.hash !== targetHash) {
         window.location.hash = targetHash;
       } else {
-        if (!preventScroll && !isReturningToCatalog && targetRoute.path !== 'producto.html') {
+        if (!preventScroll && !isReturningToCatalog) {
           window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }
         renderCurrentRoute(targetHash);
@@ -5793,12 +5811,12 @@
       if (targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
         closeCartDrawer();
       }
-      const isReturningToCatalog = targetRoute.path !== 'producto.html' && (
+      const isReturningToCatalog = (targetRoute.path === '' || targetRoute.path === 'index.html' || targetRoute.path === 'categoria.html' || targetRoute.path === 'productos.html') && (
         sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
         sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
       );
 
-      if (targetRoute.path === 'producto.html') {
+      if (targetRoute.path === 'producto.html' || targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       } else if (!isReturningToCatalog) {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
