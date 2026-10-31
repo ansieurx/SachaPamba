@@ -363,14 +363,44 @@
       zoom: calc(1 / var(--cart-zoom, 1));
       transform: translateX(100%) !important;
       transition: none !important;
+      z-index: 70 !important;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
+    body.cart-drawer-open #cart-side-drawer,
     #cart-side-drawer.is-open,
     #cart-side-drawer.translate-x-0 {
       transform: translateX(0) !important;
       transition: none !important;
+    }
+
+    body.cart-drawer-open #cart-drawer-toggle-btn,
+    #cart-side-drawer.is-open #cart-drawer-toggle-btn,
+    #cart-side-drawer.translate-x-0 #cart-drawer-toggle-btn {
+      display: none !important;
+    }
+
+    /* Evitar que el desplazamiento por teclado herede scroll-margin-top dentro del desplegable */
+    #cart-side-drawer,
+    #cart-side-drawer *,
+    #cart-side-drawer a,
+    #cart-side-drawer button,
+    #cart-side-drawer input,
+    #cart-side-drawer [tabindex="0"] {
+      scroll-margin-top: 0 !important;
+      scroll-margin-bottom: 0 !important;
+    }
+
+    /* Capas modales y avisos por encima del desplegable */
+    #auth-modal,
+    #review-modal,
+    #confirm-remove-modal,
+    #image-lightbox-modal {
+      z-index: 100 !important;
+    }
+    #toast {
+      z-index: 110 !important;
     }
 
     /* La animación de deslizamiento SOLO ocurre al interactuar con los botones de abrir/cerrar */
@@ -1042,6 +1072,56 @@
     .faq-btn[aria-expanded="true"]:focus-visible,
     body.user-is-tabbing .faq-btn[aria-expanded="true"]:focus {
       border-radius: 1.35rem 1.35rem 0 0 !important;
+    }
+
+    /* Enfoque visible de alta visibilidad para elementos del desplegable del carrito */
+    #cart-drawer-toggle-btn:focus-visible,
+    body.user-is-tabbing #cart-drawer-toggle-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.75rem 0 0 0.75rem !important;
+    }
+
+    #cart-side-drawer .cart-drawer-header:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-drawer-header:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+    }
+
+    #cart-side-drawer .cart-drawer-btn-ir:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-drawer-btn-ir:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 6px !important;
+    }
+
+    #cart-side-drawer .cart-qty-btn:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-qty-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 6px !important;
+    }
+
+    #cart-side-drawer .cart-delete-x-btn:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-delete-x-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 9999px !important;
+    }
+
+    #cart-side-drawer .cart-hover-zoom:focus,
+    #cart-side-drawer .cart-hover-zoom:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-hover-zoom:focus {
+      opacity: 1 !important;
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 12px !important;
     }
   </style>
 </head>
@@ -1943,7 +2023,7 @@
   </footer>
 
   <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
-  <aside id="cart-side-drawer" role="dialog" aria-modal="true" aria-label="Carrito de compras lateral" aria-hidden="true" class="fixed top-0 right-0 h-full w-[140px] z-40 bg-[#FEFAE0] flex flex-col transform translate-x-full box-border">
+  <aside id="cart-side-drawer" role="dialog" aria-modal="true" aria-label="Carrito de compras lateral" aria-hidden="true" class="fixed top-0 right-0 h-full w-[140px] z-[70] bg-[#FEFAE0] flex flex-col transform translate-x-full box-border">
     <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
     <button 
       type="button" 
@@ -2507,9 +2587,15 @@
       if (toggleBtn) {
         toggleBtn.classList.add('hidden');
       }
+
+      // Si se abre mediante navegación por teclado, enfocar la flecha para ocultar
+      if (document.body.classList.contains('user-is-tabbing')) {
+        const closeBtn = drawer.querySelector('.cart-drawer-header');
+        if (closeBtn) closeBtn.focus();
+      }
     }
 
-    function collapseCartDrawer() {
+    function collapseCartDrawer(dismissArrow = false, returnFocus = false) {
       const drawer = document.getElementById('cart-side-drawer');
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!drawer) return;
@@ -2526,6 +2612,11 @@
       const currentHash = window.location.hash || '#index.html';
       if (toggleBtn && !currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
         toggleBtn.classList.remove('hidden');
+      }
+
+      // Si se cierra explícitamente pulsando Enter en la flecha de ocultar, devolver el foco a la flecha de despliegue
+      if (returnFocus && toggleBtn) {
+        toggleBtn.focus();
       }
     }
 
@@ -8111,6 +8202,53 @@
       const initialHash = window.location.hash || '#index.html';
       renderCurrentRoute(initialHash);
 
+      // Sincronización del desplegable lateral del carrito al navegar con tecla Tab
+      const cartDrawerEl = document.getElementById('cart-side-drawer');
+      const toggleBtnEl = document.getElementById('cart-drawer-toggle-btn');
+      const drawerHeaderBtn = cartDrawerEl ? cartDrawerEl.querySelector('.cart-drawer-header') : null;
+
+      if (toggleBtnEl) {
+        toggleBtnEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            openCartDrawer();
+          }
+        });
+      }
+
+      if (drawerHeaderBtn) {
+        drawerHeaderBtn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            collapseCartDrawer(false, true);
+          }
+        });
+      }
+
+      if (cartDrawerEl) {
+        cartDrawerEl.addEventListener('focusin', (e) => {
+          // Si el elemento enfocado es la flecha de despliegue (#cart-drawer-toggle-btn),
+          // NO debe abrirse ni cerrarse el resumen automáticamente a menos que se pulse Enter
+          if (e.target && e.target.id === 'cart-drawer-toggle-btn') {
+            return;
+          }
+          // Cuando se seleccione cualquier elemento del resumen con Tab, mostrar el carrito normalmente
+          if (document.body.classList.contains('user-is-tabbing')) {
+            document.body.classList.add('cart-drawer-open');
+          }
+        });
+
+        cartDrawerEl.addEventListener('focusout', () => {
+          setTimeout(() => {
+            if (!cartDrawerEl.contains(document.activeElement)) {
+              if (document.body.classList.contains('user-is-tabbing')) {
+                collapseCartDrawer(false, false);
+              }
+            }
+          }, 25);
+        });
+      }
+
       // Activar borde amarillo al navegar mediante tecla Tab
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Tab') {
@@ -8119,6 +8257,13 @@
       });
       window.addEventListener('mousedown', () => {
         document.body.classList.remove('user-is-tabbing');
+        if (sessionStorage.getItem('sacha_cart_drawer_open') !== 'true') {
+          setTimeout(() => {
+            if (!cartDrawerEl || !cartDrawerEl.contains(document.activeElement)) {
+              document.body.classList.remove('cart-drawer-open');
+            }
+          }, 15);
+        }
       });
     }
 
