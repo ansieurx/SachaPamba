@@ -152,11 +152,11 @@
       width: 100% !important;
     }
 
-    /* Solución por altura del viewport:
-       En pantallas estándar, un zoom > 170% (ej. 180%) reduce la altura visible por debajo de los 520px.
-       Al desactivar el sticky basándonos en la altura, aseguramos que el header nunca
-       tape el contenido cuando hay poco espacio vertical. */
-    @media (max-height: 520px) {
+    /* Solución por altura del viewport y nivel de zoom:
+       En pantallas estándar, al superar el 140% de zoom (ej. 150% o más), la altura visible se reduce por debajo de los 635px.
+       Al desactivar el sticky a partir de un zoom superior al 140% basándonos en la altura, aseguramos que el header se mantenga
+       sticky hasta el 140% de zoom y nunca tape el contenido cuando hay poco espacio vertical disponible. */
+    @media (max-height: 635px) {
       .smart-header {
         position: relative !important;
       }
