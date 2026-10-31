@@ -771,6 +771,25 @@
 
     /* En pantallas amplias o contenedores sin zoom elevado (ancho disponible >= 680px),
        se distribuye horizontalmente con imagen cuadrada fija y contenido a la derecha */
+    @media (min-width: 680px) {
+      .fav-product-card {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .fav-card-image-box {
+        width: 11.5rem !important;
+        height: 11.5rem !important;
+        align-self: center !important;
+      }
+
+      .fav-card-content {
+        flex: 1 1 0% !important;
+        min-height: 11.5rem;
+      }
+    }
+
     @container (min-width: 680px) {
       .fav-product-card {
         flex-direction: row !important;
@@ -790,26 +809,25 @@
       }
     }
 
-    /* Respaldo para navegadores o entornos donde container-type no esté disponible */
-    @supports not (container-type: inline-size) {
-      @media (min-width: 768px) {
-        .fav-product-card {
-          flex-direction: row !important;
-          align-items: center !important;
-          gap: 1.5rem !important;
-        }
+    /* Supresión total de movimientos, desplazamientos y animaciones al pulsar la pestaña de favoritos */
+    #account-tab-favorites,
+    #account-tab-favorites *,
+    .fav-card-item,
+    .fav-card-item *,
+    .fav-product-card,
+    .fav-product-card * {
+      animation: none !important;
+      transform: none !important;
+      transition-property: background-color, border-color, color, fill, stroke !important;
+      transition-duration: 0.15s !important;
+    }
 
-        .fav-card-image-box {
-          width: 11.5rem !important;
-          height: 11.5rem !important;
-          align-self: center !important;
-        }
-
-        .fav-card-content {
-          flex: 1 1 0% !important;
-          min-height: 11.5rem;
-        }
-      }
+    #tab-btn-personal,
+    #tab-btn-orders,
+    #tab-btn-favorites {
+      transform: none !important;
+      transition-property: background-color, border-color, color, fill, stroke !important;
+      transition-duration: 0.15s !important;
     }
 
     /* Prevenir que el doble clic rápido active arrastres de imagen, rayas de selección o halos de foco cuadrados */
@@ -2662,7 +2680,7 @@
       const isFav = isFavorite(p.id);
       return `
         <div class="fav-card-item w-full">
-          <div id="fav-card-${p.id}" class="fav-product-card bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md transition-all group cursor-pointer w-full box-border" onclick="handleProductCardClick(event, '${p.id}')">
+          <div id="fav-card-${p.id}" class="fav-product-card bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md group cursor-pointer w-full box-border" onclick="handleProductCardClick(event, '${p.id}')">
             
             <!-- Imagen del producto siempre cuadrada, nunca estirada ni encogida -->
             <div 
@@ -2676,7 +2694,7 @@
                 alt="${p.name}" 
                 draggable="false"
                 ondragstart="return false;"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                class="w-full h-full object-cover pointer-events-none select-none"
                 onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=${encodeURIComponent(p.name)}'"
               >
               <button 
@@ -2684,7 +2702,7 @@
                 id="card-fav-btn-${p.id}" 
                 onclick="event.stopPropagation(); toggleFavorite('${p.id}')" 
                 ondblclick="event.stopPropagation(); event.preventDefault();"
-                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full ${isFav ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full ${isFav ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center cursor-pointer select-none focus:outline-none"
                 aria-label="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
               >
                 ${getHeartIconSVG(isFav, 'w-4.5 h-4.5 sm:w-5 sm:h-5')}
@@ -2714,7 +2732,7 @@
                   <a 
                     href="#producto.html?id=${p.id}" 
                     onclick="saveCatalogPosition('${p.id}')" 
-                    class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs sm:text-sm font-bold transition-all shadow-2xs border-2 border-brand-forest text-center whitespace-nowrap active:scale-95 cursor-pointer flex-shrink-0"
+                    class="fav-ver-btn inline-flex items-center justify-center px-4 py-2 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs sm:text-sm font-bold shadow-2xs border-2 border-brand-forest text-center whitespace-nowrap cursor-pointer flex-shrink-0 transition-colors"
                     aria-label="Ver detalle de ${p.name}"
                   >
                     <span>Ver</span>
@@ -2722,7 +2740,7 @@
                   <button 
                     type="button" 
                     onclick="event.stopPropagation(); addToCart('${p.id}', 1)" 
-                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap flex-shrink-0"
+                    class="fav-add-btn inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-xs cursor-pointer whitespace-nowrap flex-shrink-0 transition-colors"
                     aria-label="Añadir ${p.name} al carrito"
                   >
                     <i class="ph ph-shopping-cart text-sm sm:text-base text-brand-sunflower flex-shrink-0"></i>
@@ -5539,8 +5557,8 @@
 
       if (!tabPersonal || !tabOrders || !tabFavorites || !btnPersonal || !btnOrders || !btnFavorites) return;
 
-      const activeClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[52px] sm:min-h-[56px] text-center";
-      const inactiveClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[52px] sm:min-h-[56px] text-center";
+      const activeClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[52px] sm:min-h-[56px] text-center";
+      const inactiveClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[52px] sm:min-h-[56px] text-center";
 
       tabPersonal.classList.add('hidden');
       tabOrders.classList.add('hidden');
@@ -5559,7 +5577,10 @@
       } else if (tabKey === 'favorites') {
         tabFavorites.classList.remove('hidden');
         btnFavorites.className = activeClass;
-        renderFavoritesTabContent();
+        // Solo inyectar si el contenedor estuviera vacío para evitar doble renderizado y parpadeos
+        if (!tabFavorites.firstElementChild) {
+          renderFavoritesTabContent();
+        }
       }
       btnFavorites.innerHTML = `${getHeartIconSVG(tabKey === 'favorites', 'w-5 h-5 flex-shrink-0')}<span>Productos Favoritos</span>`;
     }
@@ -5642,7 +5663,7 @@
               type="button" 
               id="tab-btn-personal" 
               onclick="switchAccountTab('personal')" 
-              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
               <i class="ph ph-user text-lg sm:text-xl flex-shrink-0"></i>
               <span>Información Personal</span>
@@ -5651,7 +5672,7 @@
               type="button" 
               id="tab-btn-orders" 
               onclick="switchAccountTab('orders')" 
-              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
               <i class="ph ph-package text-lg sm:text-xl flex-shrink-0"></i>
               <span>Historial de Compras</span>
@@ -5660,7 +5681,7 @@
               type="button" 
               id="tab-btn-favorites" 
               onclick="switchAccountTab('favorites')" 
-              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'favorites' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer ${currentAccountTab === 'favorites' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
               ${getHeartIconSVG(currentAccountTab === 'favorites', 'w-5 h-5 flex-shrink-0')}
               <span>Productos Favoritos</span>
