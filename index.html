@@ -132,7 +132,7 @@
     .smart-header {
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 30 !important;
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
@@ -941,14 +941,65 @@
       user-select: none;
       z-index: -1;
     }
+
+    /* Ajuste de desplazamiento para que los elementos enfocados con tab queden visibles bajo el header fijo */
+    html {
+      scroll-padding-top: 140px;
+    }
+
+    article,
+    section,
+    .product-card,
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [tabindex="0"] {
+      scroll-margin-top: 140px;
+    }
+
+    /* ==========================================================================
+       NAVEGACIÓN POR TECLADO (TAB) - BORDE / MARCO AMARILLO DESTACADO
+       Garantiza que cualquier elemento enfocado o seleccionado por tabulador
+       quede claramente rodeado por un borde amarillo accesible y visible.
+       ========================================================================== */
+    :focus-visible,
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [role="button"]:focus-visible,
+    [role="tab"]:focus-visible,
+    [role="link"]:focus-visible,
+    [tabindex="0"]:focus-visible,
+    body.user-is-tabbing :focus {
+      outline: 3px solid #FACC15 !important; /* Borde amarillo canario de alta visibilidad */
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 12px 2px rgba(250, 204, 21, 0.75) !important;
+    }
+
+    /* Respetar curvaturas redondeadas en botones y pastillas */
+    .rounded-full:focus-visible,
+    button.rounded-full:focus-visible,
+    a.rounded-full:focus-visible,
+    body.user-is-tabbing .rounded-full:focus {
+      border-radius: 9999px !important;
+    }
+
+    .rounded-2xl:focus-visible,
+    body.user-is-tabbing .rounded-2xl:focus {
+      border-radius: 1rem !important;
+    }
+
+    .rounded-xl:focus-visible,
+    body.user-is-tabbing .rounded-xl:focus {
+      border-radius: 0.75rem !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
-
-  <!-- Enlace accesible de salto al contenido principal para lectores de pantalla -->
-  <a href="#app" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-brand-sunflower focus:text-brand-leaf focus:font-extrabold focus:rounded-xl focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand-forest">
-    Saltar al contenido principal
-  </a>
 
   <!-- ==========================================
        1. ENCABEZADO Y NAVEGACIÓN PRINCIPAL (#283618)
@@ -1758,7 +1809,7 @@
   <!-- ==========================================
        2. CONTENEDOR DINÁMICO DE VISTAS (APP VIEW)
        ========================================== -->
-  <main id="app" role="main" tabindex="-1" class="flex-1 w-full bg-brand-cream focus:outline-none relative">
+  <main id="app" role="main" tabindex="-1" class="flex-1 w-full bg-brand-cream focus:outline-none relative z-10">
     <div class="lector_texto_accesible" role="region" aria-label="Encabezado y navegación del sitio" lang="es">
       <p lang="es">Sacha &amp; Pamba, tu tienda naturista en Quito. Opciones disponibles: buscador de productos, acceso a la cuenta de usuario y carrito de compras. Navegación principal: Inicio, Categorías, Productos, Ayuda y preguntas frecuentes, Políticas de Retiro.</p>
     </div>
@@ -3477,7 +3528,7 @@
               </div>
 
               <!-- SLIDE 2: Promoción de Bienvenida & Descuento para Nuevos Clientes -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida, 2 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida, 2 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual -->
                 <img 
                   src="https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=1920&q=80" 
@@ -3525,7 +3576,7 @@
               </div>
 
               <!-- SLIDE 3: Novedades / Cosecha Dorada Amazónica -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica, 3 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica, 3 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual cálido atardecer -->
                 <img 
                   src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80" 
@@ -3573,7 +3624,7 @@
               </div>
 
               <!-- SLIDE 4: Superalimentos de Máxima Pureza -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad, 4 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad, 4 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual verde botánico -->
                 <img 
                   src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1920&q=80" 
@@ -7090,13 +7141,13 @@
 
         slides.forEach((slide, i) => {
           if (i === currentHeroSlide) {
-            slide.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+            slide.classList.remove('opacity-0', 'pointer-events-none', 'z-0', 'invisible');
             slide.classList.add('opacity-100', 'pointer-events-auto', 'z-10');
             slide.removeAttribute('aria-hidden');
             slide.setAttribute('aria-current', 'true');
           } else {
             slide.classList.remove('opacity-100', 'pointer-events-auto', 'z-10');
-            slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+            slide.classList.add('opacity-0', 'pointer-events-none', 'z-0', 'invisible');
             slide.setAttribute('aria-hidden', 'true');
             slide.removeAttribute('aria-current');
           }
@@ -7977,6 +8028,16 @@
       updateAuthUI();
       const initialHash = window.location.hash || '#index.html';
       renderCurrentRoute(initialHash);
+
+      // Activar borde amarillo al navegar mediante tecla Tab
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          document.body.classList.add('user-is-tabbing');
+        }
+      });
+      window.addEventListener('mousedown', () => {
+        document.body.classList.remove('user-is-tabbing');
+      });
     }
 
     if (document.readyState === 'loading') {
