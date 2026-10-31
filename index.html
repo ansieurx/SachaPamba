@@ -714,12 +714,124 @@
 
     /* Garantizar que los contenedores en Mi Cuenta tengan espaciado limpio y nunca desborden en zoom */
     #account-tab-orders,
-    #account-tab-personal {
+    #account-tab-personal,
+    #account-tab-favorites {
       padding-left: 0 !important;
       padding-right: 0 !important;
       max-width: 100% !important;
       box-sizing: border-box !important;
       overflow-x: clip;
+    }
+
+    /* ==========================================================================
+       TARJETA DE PRODUCTOS FAVORITOS ADAPTABLE (ZOOM & MULTI-DISPOSITIVO)
+       ========================================================================== */
+    .fav-card-item {
+      container-type: inline-size;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .fav-product-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+      gap: 1rem;
+    }
+
+    .fav-card-image-box {
+      width: 12.5rem !important; /* ~200px: grande, visible, cuadrada y sin encogerse */
+      height: 12.5rem !important; /* ~200px */
+      max-width: 100% !important;
+      aspect-ratio: 1 / 1 !important;
+      flex-shrink: 0 !important;
+      align-self: center !important; /* Previene estiramiento vertical en cualquier caso */
+      border-radius: 1rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fav-card-image-box img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block;
+    }
+
+    .fav-card-content {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    /* En pantallas amplias o contenedores sin zoom elevado (ancho disponible >= 680px),
+       se distribuye horizontalmente con imagen cuadrada fija y contenido a la derecha */
+    @container (min-width: 680px) {
+      .fav-product-card {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+      }
+
+      .fav-card-image-box {
+        width: 11.5rem !important; /* ~184px */
+        height: 11.5rem !important;
+        align-self: center !important;
+      }
+
+      .fav-card-content {
+        flex: 1 1 0% !important;
+        min-height: 11.5rem;
+      }
+    }
+
+    /* Respaldo para navegadores o entornos donde container-type no esté disponible */
+    @supports not (container-type: inline-size) {
+      @media (min-width: 768px) {
+        .fav-product-card {
+          flex-direction: row !important;
+          align-items: center !important;
+          gap: 1.5rem !important;
+        }
+
+        .fav-card-image-box {
+          width: 11.5rem !important;
+          height: 11.5rem !important;
+          align-self: center !important;
+        }
+
+        .fav-card-content {
+          flex: 1 1 0% !important;
+          min-height: 11.5rem;
+        }
+      }
+    }
+
+    /* Prevenir que el doble clic rápido active arrastres de imagen, rayas de selección o halos de foco cuadrados */
+    .product-card,
+    .product-card *,
+    .product-card-image-box,
+    .product-card-image-box *,
+    .card-fav-btn,
+    .card-fav-btn * {
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .card-fav-btn:focus,
+    .card-fav-btn:focus-visible,
+    .card-fav-btn:active {
+      outline: none !important;
+      box-shadow: none !important;
     }
 
     /* Espaciado garantizado para inputs con icono a la izquierda para evitar solapamientos */
@@ -2275,7 +2387,13 @@
       }
 
       if (msgEl) msgEl.textContent = message;
-      if (iconEl) iconEl.innerHTML = `<i class="ph ${icon}"></i>`;
+      if (iconEl) {
+        if (typeof icon === 'string' && icon.trim().startsWith('<svg')) {
+          iconEl.innerHTML = icon;
+        } else {
+          iconEl.innerHTML = `<i class="ph ${icon}"></i>`;
+        }
+      }
 
       if (action && typeof action.onClick === 'function') {
         if (actionBtn) {
@@ -2301,6 +2419,530 @@
       toastTimeout = setTimeout(() => {
         hideToast();
       }, duration);
+    }
+
+    /* ==========================================================================
+       GESTIÓN DE PRODUCTOS FAVORITOS
+       ========================================================================== */
+    const FAVORITES_STORAGE_KEY = 'sacha_pamba_favorites';
+
+    function getFavorites() {
+      try {
+        const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+        if (raw === null) {
+          // Favoritos predeterminados iniciales para demostración inmediata
+          const initial = ['omega-3', 'vitamina-c', 'jarabe-sabila'];
+          localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(initial));
+          return initial;
+        }
+        return JSON.parse(raw) || [];
+      } catch (e) {
+        return ['omega-3', 'vitamina-c'];
+      }
+    }
+
+    function saveFavorites(favs) {
+      try {
+        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favs));
+      } catch (e) {
+        console.error('Error al guardar favoritos:', e);
+      }
+    }
+
+    function isFavorite(productId) {
+      const favs = getFavorites();
+      return favs.includes(productId);
+    }
+
+    // Renderizador SVG vector puro ultra ligero para carga instantánea (0ms) sin dependencias ni artefactos
+    function getHeartIconSVG(isFav, sizeClass = 'w-4 h-4 sm:w-5 sm:h-5') {
+      const heartPath = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+      if (isFav) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="${sizeClass} pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="${heartPath}"></path></svg>`;
+      }
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="${sizeClass} pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${heartPath}"></path></svg>`;
+    }
+
+    function updateFavoriteUI(productId, isFav) {
+      // 1. Actualizar botones en tarjetas de producto
+      document.querySelectorAll(`[id="card-fav-btn-${productId}"]`).forEach(btn => {
+        btn.setAttribute('aria-label', isFav ? 'Quitar de favoritos' : 'Añadir a favoritos');
+        btn.removeAttribute('title');
+        if (isFav) {
+          btn.className = 'card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 flex items-center justify-center shadow-md border-2 border-brand-forest transition-all active:scale-90 cursor-pointer select-none focus:outline-none';
+        } else {
+          btn.className = 'card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower flex items-center justify-center shadow-md border border-brand-sunflower/40 transition-all active:scale-90 cursor-pointer select-none focus:outline-none';
+        }
+        btn.innerHTML = getHeartIconSVG(isFav, 'w-4 h-4 sm:w-4.5 sm:h-4.5');
+      });
+
+      // 2. Actualizar botón en la vista de detalle de producto
+      const detailBtn = document.getElementById(`detail-fav-btn-${productId}`);
+      if (detailBtn) {
+        detailBtn.setAttribute('aria-label', isFav ? 'Quitar de favoritos' : 'Añadir a favoritos');
+        detailBtn.removeAttribute('title');
+        if (isFav) {
+          detailBtn.className = 'w-full py-3.5 px-3 sm:px-4 rounded-xl bg-[#FEFAE0] hover:bg-white text-brand-forest border-2 border-brand-forest shadow-sm font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]';
+          detailBtn.innerHTML = `
+            ${getHeartIconSVG(true, 'w-5 h-5 text-amber-500 flex-shrink-0')}
+            <span id="detail-fav-btn-text-${productId}" class="whitespace-nowrap font-bold">En favoritos</span>
+          `;
+        } else {
+          detailBtn.className = 'w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream border-2 border-brand-forest shadow-sm font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]';
+          detailBtn.innerHTML = `
+            ${getHeartIconSVG(false, 'w-5 h-5 text-brand-sunflower flex-shrink-0')}
+            <span id="detail-fav-btn-text-${productId}" class="whitespace-nowrap font-bold">Añadir a favoritos</span>
+          `;
+        }
+      }
+
+      // 3. Actualizar botón sobre la imagen principal en detalle si existe
+      const detailImgBtn = document.getElementById(`detail-img-fav-btn-${productId}`);
+      if (detailImgBtn) {
+        detailImgBtn.setAttribute('aria-label', isFav ? 'Quitar de favoritos' : 'Añadir a favoritos');
+        detailImgBtn.removeAttribute('title');
+        if (isFav) {
+          detailImgBtn.className = 'card-fav-btn absolute bottom-3 left-3 sm:bottom-3.5 sm:left-3.5 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 flex items-center justify-center shadow-md border-2 border-brand-forest transition-all active:scale-90 cursor-pointer select-none focus:outline-none';
+        } else {
+          detailImgBtn.className = 'card-fav-btn absolute bottom-3 left-3 sm:bottom-3.5 sm:left-3.5 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower flex items-center justify-center shadow-md border border-brand-sunflower/40 transition-all active:scale-90 cursor-pointer select-none focus:outline-none';
+        }
+        detailImgBtn.innerHTML = getHeartIconSVG(isFav, 'w-4.5 h-4.5 sm:w-5 sm:h-5');
+      }
+
+      // Micro-pulso sutil e instantáneo en el botón
+      document.querySelectorAll(`[id="card-fav-btn-${productId}"], [id="detail-img-fav-btn-${productId}"]`).forEach(btn => {
+        btn.classList.add('scale-110');
+        setTimeout(() => btn.classList.remove('scale-110'), 180);
+      });
+    }
+
+    function toggleFavorite(productId, forceAdd = false) {
+      let favs = getFavorites();
+      const index = favs.indexOf(productId);
+      let added = false;
+
+      if (index > -1) {
+        if (forceAdd) {
+          added = true;
+        } else {
+          favs.splice(index, 1);
+          added = false;
+        }
+      } else {
+        favs.push(productId);
+        added = true;
+      }
+
+      saveFavorites(favs);
+      updateFavoriteUI(productId, added);
+
+      const prod = PRODUCTS.find(p => p.id === productId);
+      const prodName = prod ? prod.name : 'Producto';
+
+      if (added) {
+        showToast(`"${prodName}" añadido a tus favoritos`, getHeartIconSVG(true, 'w-5 h-5 text-brand-sunflower'));
+      } else {
+        showToast(`"${prodName}" eliminado de favoritos`, getHeartIconSVG(false, 'w-5 h-5 text-brand-forest'));
+      }
+
+      // Si el usuario está visualizando la pestaña de favoritos en Mi Cuenta, refrescar la lista
+      if (typeof currentAccountTab !== 'undefined' && currentAccountTab === 'favorites') {
+        renderFavoritesTabContent();
+      }
+
+      return added;
+    }
+
+    let cardImageClickTimer = null;
+    let detailImageClickTimer = null;
+
+    function handleCardImageClick(event, productId) {
+      if (event.target.closest('button') || event.target.closest('a')) return;
+      if (cardImageClickTimer) {
+        clearTimeout(cardImageClickTimer);
+      }
+      cardImageClickTimer = setTimeout(() => {
+        saveCatalogPosition(productId);
+        navigateTo(`#producto.html?id=${productId}`);
+      }, 260);
+    }
+
+    function handleDetailImageClick(eventOrProductId, productIdOrIndex, index) {
+      let event = null;
+      let productId = eventOrProductId;
+      let targetIndex = productIdOrIndex;
+
+      if (eventOrProductId && eventOrProductId.target) {
+        event = eventOrProductId;
+        productId = productIdOrIndex;
+        targetIndex = index;
+      }
+      if (event && event.target && (event.target.closest('button') || event.target.closest('a'))) return;
+      if (detailImageClickTimer) {
+        clearTimeout(detailImageClickTimer);
+      }
+      detailImageClickTimer = setTimeout(() => {
+        const finalIndex = typeof targetIndex === 'number' ? targetIndex : getCurrentImageIndex();
+        openImageLightbox(productId, finalIndex);
+      }, 250);
+    }
+
+    function triggerFavoriteDblClick(productId, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      try {
+        if (window.getSelection) {
+          window.getSelection().removeAllRanges();
+        }
+      } catch (e) {}
+
+      if (cardImageClickTimer) {
+        clearTimeout(cardImageClickTimer);
+        cardImageClickTimer = null;
+      }
+      if (detailImageClickTimer) {
+        clearTimeout(detailImageClickTimer);
+        detailImageClickTimer = null;
+      }
+
+      if (!isFavorite(productId)) {
+        toggleFavorite(productId, true);
+      } else {
+        const prod = PRODUCTS.find(p => p.id === productId);
+        showToast(`"${prod ? prod.name : 'Producto'}" ya está en tus favoritos`, getHeartIconSVG(true, 'w-5 h-5 text-brand-sunflower'));
+        document.querySelectorAll(`[id="card-fav-btn-${productId}"], [id="detail-img-fav-btn-${productId}"]`).forEach(btn => {
+          btn.classList.add('scale-110');
+          setTimeout(() => btn.classList.remove('scale-110'), 180);
+        });
+      }
+    }
+
+    // Filtros de favoritos en Mi Cuenta
+    let favFilterCategory = 'all';
+    let favFilterSubcategory = 'all';
+
+    function getCatalogCategoriesAndSubcategories() {
+      const map = {};
+      PRODUCTS.forEach(p => {
+        if (!map[p.category]) {
+          map[p.category] = {
+            id: p.category,
+            name: p.categoryName || p.category,
+            subcategories: {}
+          };
+        }
+        if (p.subcategory && !map[p.category].subcategories[p.subcategory]) {
+          map[p.category].subcategories[p.subcategory] = p.subcategoryName || p.subcategory;
+        }
+      });
+      return map;
+    }
+
+    function setFavFilterCategory(cat) {
+      favFilterCategory = cat;
+      favFilterSubcategory = 'all'; // reiniciar subcategoría al cambiar de categoría
+      renderFavoritesTabContent();
+    }
+
+    function setFavFilterSubcategory(subcat) {
+      favFilterSubcategory = subcat;
+      renderFavoritesTabContent();
+    }
+
+    function resetFavFilters() {
+      favFilterCategory = 'all';
+      favFilterSubcategory = 'all';
+      renderFavoritesTabContent();
+    }
+
+    // Tarjeta de producto simplificada y perfectamente adaptable exclusiva para el apartado de favoritos
+    function renderFavoriteProductCard(p) {
+      const isFav = isFavorite(p.id);
+      return `
+        <div class="fav-card-item w-full">
+          <div id="fav-card-${p.id}" class="fav-product-card bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md transition-all group cursor-pointer w-full box-border" onclick="handleProductCardClick(event, '${p.id}')">
+            
+            <!-- Imagen del producto siempre cuadrada, nunca estirada ni encogida -->
+            <div 
+              class="fav-card-image-box product-card-image-box bg-brand-cream border border-brand-forest/20 shadow-xs select-none"
+              onclick="handleCardImageClick(event, '${p.id}')"
+              ondblclick="triggerFavoriteDblClick('${p.id}', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="${p.image}" 
+                alt="${p.name}" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=${encodeURIComponent(p.name)}'"
+              >
+              <button 
+                type="button" 
+                id="card-fav-btn-${p.id}" 
+                onclick="event.stopPropagation(); toggleFavorite('${p.id}')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full ${isFav ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+              >
+                ${getHeartIconSVG(isFav, 'w-4.5 h-4.5 sm:w-5 sm:h-5')}
+              </button>
+            </div>
+
+            <!-- Columna de detalles del producto con ancho completo y organización adaptable -->
+            <div class="fav-card-content space-y-3">
+              <div class="min-w-0 space-y-1.5">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-forest text-brand-cream text-[11px] sm:text-xs font-bold tracking-wide shadow-2xs border border-brand-forest/20 max-w-full truncate">
+                    ${p.categoryName || ''}
+                  </span>
+                </div>
+                <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="${p.name}">
+                  <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')">
+                    ${p.name}
+                  </a>
+                </h4>
+                <span class="text-xs sm:text-sm text-brand-moss font-bold block pt-0.5">${p.size}</span>
+              </div>
+
+              <!-- Fila de precio y botones de acción nunca cortados y con espaciado amplio -->
+              <div class="mt-3 pt-3 border-t border-brand-forest/15 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 w-full">
+                <span class="text-base sm:text-lg md:text-xl font-extrabold text-brand-forest leading-none whitespace-nowrap">$${p.price.toFixed(2)}</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <a 
+                    href="#producto.html?id=${p.id}" 
+                    onclick="saveCatalogPosition('${p.id}')" 
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs sm:text-sm font-bold transition-all shadow-2xs border-2 border-brand-forest text-center whitespace-nowrap active:scale-95 cursor-pointer flex-shrink-0"
+                    aria-label="Ver detalle de ${p.name}"
+                  >
+                    <span>Ver</span>
+                  </a>
+                  <button 
+                    type="button" 
+                    onclick="event.stopPropagation(); addToCart('${p.id}', 1)" 
+                    class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap flex-shrink-0"
+                    aria-label="Añadir ${p.name} al carrito"
+                  >
+                    <i class="ph ph-shopping-cart text-sm sm:text-base text-brand-sunflower flex-shrink-0"></i>
+                    <span>Añadir</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+    }
+
+    function getFavoritesTabHTML() {
+      const favIds = getFavorites();
+      const allFavProducts = PRODUCTS.filter(p => favIds.includes(p.id));
+
+      let filteredProducts = allFavProducts;
+      if (favFilterCategory !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.category === favFilterCategory);
+      }
+      if (favFilterSubcategory !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.subcategory === favFilterSubcategory);
+      }
+
+      const catMap = getCatalogCategoriesAndSubcategories();
+
+      // Construcción dinámica de opciones de categoría
+      const categoryOptions = Object.keys(catMap).map(catKey => {
+        const cat = catMap[catKey];
+        return `<option value="${cat.id}" ${favFilterCategory === cat.id ? 'selected' : ''}>${cat.name}</option>`;
+      }).join('');
+
+      // Construcción dinámica de opciones de subcategoría según categoría activa
+      let subcategoryOptions = '';
+      if (favFilterCategory === 'all') {
+        const uniqueSubs = {};
+        PRODUCTS.forEach(p => {
+          if (p.subcategory && !uniqueSubs[p.subcategory]) {
+            uniqueSubs[p.subcategory] = p.subcategoryName || p.subcategory;
+          }
+        });
+        subcategoryOptions = Object.keys(uniqueSubs).map(subKey => {
+          return `<option value="${subKey}" ${favFilterSubcategory === subKey ? 'selected' : ''}>${uniqueSubs[subKey]}</option>`;
+        }).join('');
+      } else if (catMap[favFilterCategory]) {
+        const subs = catMap[favFilterCategory].subcategories;
+        subcategoryOptions = Object.keys(subs).map(subKey => {
+          return `<option value="${subKey}" ${favFilterSubcategory === subKey ? 'selected' : ''}>${subs[subKey]}</option>`;
+        }).join('');
+      }
+
+      const hasActiveFilters = favFilterCategory !== 'all' || favFilterSubcategory !== 'all';
+
+      let contentHTML = '';
+      if (allFavProducts.length === 0) {
+        // Estado vacío: Sin favoritos en la cuenta
+        contentHTML = `
+          <div class="text-center py-10 sm:py-14 px-4 bg-[#FEFAE0] rounded-3xl border-2 border-dashed border-brand-forest/30 space-y-4">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-brand-forest/10 text-brand-forest flex items-center justify-center text-3xl sm:text-4xl">
+              <i class="ph ph-heart-break text-brand-forest/60"></i>
+            </div>
+            <div class="max-w-md mx-auto space-y-1.5">
+              <h4 class="font-botanic font-bold text-lg sm:text-xl text-brand-forest">
+                Aún no tienes productos favoritos
+              </h4>
+              <p class="text-xs sm:text-sm text-brand-leaf/80 leading-relaxed font-medium">
+                Guarda tus productos preferidos haciendo clic en el corazón verde oscuro o haciendo doble clic sobre su imagen en el catálogo.
+              </p>
+            </div>
+            <div class="pt-2">
+              <button 
+                type="button" 
+                onclick="navigateTo('#categoria.html')" 
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 cursor-pointer border border-brand-forest"
+              >
+                <i class="ph ph-compass text-base text-brand-sunflower"></i>
+                <span>Explorar Catálogo</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (filteredProducts.length === 0) {
+        // Estado vacío: Ningún favorito coincide con los filtros
+        contentHTML = `
+          <div class="text-center py-10 sm:py-12 px-4 bg-[#FEFAE0] rounded-3xl border-2 border-dashed border-brand-forest/30 space-y-3">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-brand-forest/10 text-brand-forest flex items-center justify-center text-2xl sm:text-3xl">
+              <i class="ph ph-magnifying-glass text-brand-forest/60"></i>
+            </div>
+            <div class="max-w-md mx-auto space-y-1">
+              <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest">
+                Sin favoritos en esta selección
+              </h4>
+              <p class="text-xs sm:text-sm text-brand-leaf/80 font-medium">
+                No tienes productos favoritos que coincidan con la categoría o subcategoría seleccionada.
+              </p>
+            </div>
+            <div class="pt-1">
+              <button 
+                type="button" 
+                onclick="resetFavFilters()" 
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <i class="ph ph-funnel-x text-sm text-brand-sunflower"></i>
+                <span>Restablecer filtros</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // Lista de favoritos horizontal simplificada y 100% adaptable
+        contentHTML = `
+          <div class="grid grid-cols-1 gap-4 sm:gap-5 w-full">
+            ${filteredProducts.map(renderFavoriteProductCard).join('')}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest p-3.5 sm:p-5 lg:p-6 shadow-sm space-y-4 sm:space-y-6 text-left box-border w-full">
+          <!-- Encabezado de la pestaña con contador y título -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-forest/20 pb-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <h3 class="font-botanic font-bold text-xl sm:text-2xl text-brand-forest">
+                  Productos Favoritos
+                </h3>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#CCD5AE] border border-brand-forest/30 text-brand-forest text-xs font-bold shadow-xs whitespace-nowrap">
+                  ${getHeartIconSVG(true, 'w-3.5 h-3.5 text-brand-forest')}
+                  <span>${allFavProducts.length} ${allFavProducts.length === 1 ? 'producto' : 'productos'}</span>
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-brand-leaf/70 font-medium mt-1">
+                Tus productos guardados organizados por categoría y listos para añadir a tu compra
+              </p>
+            </div>
+
+            ${hasActiveFilters ? `
+              <div class="flex-shrink-0 self-start sm:self-center">
+                <button 
+                  type="button" 
+                  onclick="resetFavFilters()" 
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#CCD5AE] border border-brand-forest text-brand-forest hover:bg-brand-forest hover:text-brand-cream text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer whitespace-nowrap"
+                  title="Restablecer todos los filtros"
+                >
+                  <i class="ph ph-funnel-x text-sm"></i>
+                  <span>Limpiar filtros</span>
+                </button>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Barra de Filtros por Categoría y Subcategoría en color #CCD5AE -->
+          <div class="p-4 sm:p-5 rounded-2xl bg-[#CCD5AE] border-2 border-brand-forest shadow-xs space-y-3.5 box-border w-full">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-2 text-brand-forest font-bold text-xs sm:text-sm">
+                <i class="ph ph-funnel text-base text-brand-forest flex-shrink-0"></i>
+                <span class="uppercase tracking-wider text-[11px] sm:text-xs font-extrabold">Filtrar favoritos:</span>
+              </div>
+              <span class="text-[11px] sm:text-xs text-brand-forest font-bold px-2.5 py-0.5 rounded-full bg-brand-cream/80 border border-brand-forest/20 shadow-2xs">
+                Mostrando ${filteredProducts.length} de ${allFavProducts.length}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-start">
+              <!-- Selector de Categoría -->
+              <div class="space-y-1 w-full min-w-0">
+                <label for="fav-category-select" class="block text-[11px] sm:text-xs font-extrabold text-brand-forest uppercase tracking-wider">
+                  Categoría
+                </label>
+                <div class="relative w-full">
+                  <select 
+                    id="fav-category-select" 
+                    onchange="setFavFilterCategory(this.value)"
+                    class="w-full bg-[#FEFAE0] border-2 border-brand-forest text-brand-forest font-bold text-xs sm:text-sm rounded-xl px-3.5 py-2.5 pr-9 focus:outline-none focus:ring-2 focus:ring-brand-forest cursor-pointer appearance-none shadow-xs truncate"
+                  >
+                    <option value="all" ${favFilterCategory === 'all' ? 'selected' : ''}>Todas las categorías</option>
+                    ${categoryOptions}
+                  </select>
+                  <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest text-sm pointer-events-none"></i>
+                </div>
+              </div>
+
+              <!-- Selector de Subcategoría -->
+              <div class="space-y-1 w-full min-w-0">
+                <label for="fav-subcategory-select" class="block text-[11px] sm:text-xs font-extrabold text-brand-forest uppercase tracking-wider">
+                  Subcategoría
+                </label>
+                <div class="relative w-full">
+                  <select 
+                    id="fav-subcategory-select" 
+                    onchange="setFavFilterSubcategory(this.value)"
+                    class="w-full bg-[#FEFAE0] border-2 border-brand-forest text-brand-forest font-bold text-xs sm:text-sm rounded-xl px-3.5 py-2.5 pr-9 focus:outline-none focus:ring-2 focus:ring-brand-forest cursor-pointer appearance-none shadow-xs truncate"
+                  >
+                    <option value="all" ${favFilterSubcategory === 'all' ? 'selected' : ''}>
+                      ${favFilterCategory === 'all' ? 'Todas las subcategorías' : 'Todas las subcategorías de esta categoría'}
+                    </option>
+                    ${subcategoryOptions}
+                  </select>
+                  <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest text-sm pointer-events-none"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cuadrícula o mensaje de resultados -->
+          <div id="favorites-grid-container" class="w-full box-border">
+            ${contentHTML}
+          </div>
+
+        </div>
+      `;
+    }
+
+    function renderFavoritesTabContent() {
+      const container = document.getElementById('account-tab-favorites');
+      if (container) {
+        container.innerHTML = getFavoritesTabHTML();
+      }
     }
 
     function addToCart(productId, quantity = 1, redirect = false) {
@@ -2900,7 +3542,7 @@
                 </button>
                 <a 
                   href="#categoria.html" 
-                  class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
+                  class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-[#CCD5AE] font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
                 >
                   <span>Ver todos</span>
                   <i class="ph ph-arrow-right text-sm"></i>
@@ -3087,7 +3729,7 @@
               </div>
 
               <!-- Botón Ver Todos -->
-              <a href="#categoria.html" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-forest font-semibold'} text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
+              <a href="#categoria.html" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold'} text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
                 <div class="flex items-center gap-2 min-w-0">
                   <i class="ph ph-squares-four text-base flex-shrink-0 text-brand-forest"></i>
                   <span class="font-bold whitespace-nowrap">Ver Todos</span>
@@ -3199,19 +3841,23 @@
             </div>
 
           </div>
+
         </div>
       `;
     }
 
     function saveCatalogPosition(productId) {
-      const currentHash = window.location.hash || '#index.html';
+      let currentHash = window.location.hash || '#index.html';
+      if (currentHash.includes('cuenta.html') && (!currentHash.includes('tab=') || currentAccountTab === 'favorites')) {
+        currentHash = '#cuenta.html?tab=' + (currentAccountTab || 'favorites');
+      }
       if (!currentHash.startsWith('#producto.html')) {
         sessionStorage.setItem('sacha_prev_route', currentHash);
         const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
         sessionStorage.setItem('sacha_catalog_scroll_pos', String(scrollY));
         if (productId) {
           sessionStorage.setItem('sacha_last_inspected_product_id', productId);
-          const card = document.getElementById(`product-card-${productId}`);
+          const card = document.getElementById(`fav-card-${productId}`) || document.getElementById(`product-card-${productId}`);
           if (card) {
             const rect = card.getBoundingClientRect();
             sessionStorage.setItem('sacha_card_viewport_offset', String(rect.top));
@@ -3223,14 +3869,14 @@
     function handleBackToProducts() {
       const prevRoute = sessionStorage.getItem('sacha_prev_route');
       let targetRoute = '#categoria.html';
-      if (prevRoute && (prevRoute.startsWith('#categoria.html') || prevRoute.startsWith('#productos.html') || prevRoute.startsWith('#index.html'))) {
+      if (prevRoute && (prevRoute.startsWith('#categoria.html') || prevRoute.startsWith('#productos.html') || prevRoute.startsWith('#index.html') || prevRoute.includes('cuenta.html'))) {
         targetRoute = prevRoute;
       }
       navigateTo(targetRoute);
     }
 
     function handleProductCardClick(event, id) {
-      if (event.target.closest('button') || event.target.closest('a')) {
+      if (event.target.closest('button') || event.target.closest('a') || event.target.closest('.product-card-image-box') || event.target.closest('.card-fav-btn')) {
         return;
       }
       saveCatalogPosition(id);
@@ -3238,19 +3884,37 @@
     }
 
     function renderProductCard(p) {
+      const isFav = isFavorite(p.id);
       return `
         <div id="product-card-${p.id}" onclick="handleProductCardClick(event, '${p.id}')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
           <div>
-            <div class="relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs">
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, '${p.id}')"
+              ondblclick="triggerFavoriteDblClick('${p.id}', event)"
+              ondragstart="return false;"
+            >
               <img 
                 src="${p.image}" 
                 alt="${p.name}" 
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
                 onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=${encodeURIComponent(p.name)}'"
               >
-              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate">
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
                 ${p.subcategoryName}
               </span>
+              <button 
+                type="button" 
+                id="card-fav-btn-${p.id}" 
+                onclick="event.stopPropagation(); toggleFavorite('${p.id}')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full ${isFav ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+              >
+                ${getHeartIconSVG(isFav, 'w-4 h-4 sm:w-4.5 sm:h-4.5')}
+              </button>
             </div>
 
             <div class="space-y-1.5 text-left mb-3 sm:mb-4">
@@ -3280,7 +3944,7 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+              <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
                 Ver
               </a>
               <button 
@@ -3294,6 +3958,7 @@
               </button>
             </div>
           </div>
+
         </div>
       `;
     }
@@ -3313,15 +3978,24 @@
         categoryName: product.categoryName
       });
 
+      const prevRoute = sessionStorage.getItem('sacha_prev_route') || '';
+      const isFromFavorites = prevRoute.includes('cuenta.html') || prevRoute.includes('tab=favorites');
+      const backLabel = isFromFavorites ? 'Volver a Favoritos' : 'Volver a Productos';
+      const backAria = isFromFavorites ? 'Volver a la lista de favoritos' : 'Volver al catálogo de productos';
+
       return `
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           
           <nav class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-full shadow-xs">
             <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
-            <a href="#categoria.html" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Productos</a>
-            <span>/</span>
-            <a href="#categoria.html?cat=${product.category}" class="hover:text-brand-forest">${product.categoryName}</a>
+            ${isFromFavorites ? `
+              <a href="#cuenta.html?tab=favorites" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Favoritos</a>
+            ` : `
+              <a href="#categoria.html" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Productos</a>
+              <span>/</span>
+              <a href="#categoria.html?cat=${product.category}" class="hover:text-brand-forest">${product.categoryName}</a>
+            `}
             <span>/</span>
             <span class="font-bold text-brand-forest">${product.name}</span>
           </nav>
@@ -3330,11 +4004,11 @@
             <button 
               type="button" 
               onclick="handleBackToProducts()" 
-              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group"
-              aria-label="Volver al catálogo de productos"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
+              aria-label="${backAria}"
             >
               <i class="ph ph-arrow-left text-base font-bold group-hover:-translate-x-0.5 text-brand-sunflower transition-transform"></i>
-              <span>Volver a Productos</span>
+              <span>${backLabel}</span>
             </button>
           </div>
 
@@ -3343,19 +4017,34 @@
               
               <!-- Columna Galería -->
               <div class="lg:col-span-5 space-y-4">
-                <div class="relative rounded-2xl overflow-hidden bg-brand-cream aspect-square border-2 border-brand-forest/30 max-w-sm mx-auto shadow-sm group">
+                <div 
+                  class="relative rounded-2xl overflow-hidden bg-brand-cream aspect-square border-2 border-brand-forest/30 max-w-sm mx-auto shadow-sm group select-none cursor-pointer"
+                  onclick="handleDetailImageClick(event, '${product.id}', getCurrentImageIndex())"
+                  ondblclick="triggerFavoriteDblClick('${product.id}', event)"
+                  ondragstart="return false;"
+                >
                   <img 
                     id="main-product-img" 
                     src="${gallery[0]}" 
                     alt="${product.name}" 
-                    class="w-full h-full object-cover transition-opacity duration-200 cursor-zoom-in group-hover:scale-105 transition-transform duration-300"
-                    onclick="openImageLightbox('${product.id}', getCurrentImageIndex())"
+                    draggable="false"
+                    ondragstart="return false;"
+                    class="w-full h-full object-cover transition-opacity duration-200 cursor-zoom-in group-hover:scale-105 transition-transform duration-300 select-none"
                     onerror="this.src='https://placehold.co/500x500/CCD5AE/283618?text=Sacha+Pamba'"
-                    title="Haz clic para ampliar la imagen"
                   >
-                  <span class="absolute top-3 left-3 bg-brand-forest text-brand-cream text-xs font-bold px-3 py-1 rounded-full shadow-xs pointer-events-none">
+                  <span class="absolute top-3 left-3 bg-brand-forest text-brand-cream text-xs font-bold px-3 py-1 rounded-full shadow-xs pointer-events-none select-none">
                     ${product.subcategoryName}
                   </span>
+                  <button 
+                    type="button" 
+                    id="detail-img-fav-btn-${product.id}" 
+                    onclick="event.stopPropagation(); toggleFavorite('${product.id}')" 
+                    ondblclick="event.stopPropagation(); event.preventDefault();"
+                    class="card-fav-btn absolute bottom-3 left-3 sm:bottom-3.5 sm:left-3.5 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full ${isFavorite(product.id) ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                    aria-label="${isFavorite(product.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+                  >
+                    ${getHeartIconSVG(isFavorite(product.id), 'w-4.5 h-4.5 sm:w-5 sm:h-5')}
+                  </button>
                 </div>
 
                 <div>
@@ -3437,24 +4126,40 @@
                   </span>
                 </div>
 
-                <!-- Botones de Acción de Compra (Colores intercambiados según solicitado) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <button 
-                    type="button" 
-                    onclick="handleAddToCartFromDetail('${product.id}', false)" 
-                    class="w-full py-3.5 px-5 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
-                  >
-                    <i class="ph ph-shopping-cart text-xl text-brand-sunflower"></i>
-                    <span>Añadir al carrito</span>
-                  </button>
+                <!-- Botones de Acción de Compra -->
+                <div class="space-y-3 pt-2">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button 
+                      type="button" 
+                      id="detail-fav-btn-${product.id}" 
+                      onclick="toggleFavorite('${product.id}')" 
+                      ondblclick="event.stopPropagation(); event.preventDefault();"
+                      class="w-full py-3.5 px-3 sm:px-4 rounded-xl ${isFavorite(product.id) ? 'bg-[#FEFAE0] hover:bg-white text-brand-forest border-2 border-brand-forest shadow-sm' : 'bg-brand-forest hover:bg-[#1e2912] text-brand-cream border-2 border-brand-forest shadow-sm'} font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]"
+                      aria-label="${isFavorite(product.id) ? 'Quitar de favoritos' : 'Añadir a favoritos'}"
+                    >
+                      ${getHeartIconSVG(isFavorite(product.id), isFavorite(product.id) ? 'w-5 h-5 text-amber-500 flex-shrink-0' : 'w-5 h-5 text-brand-sunflower flex-shrink-0')}
+                      <span id="detail-fav-btn-text-${product.id}" class="whitespace-nowrap font-bold">
+                        ${isFavorite(product.id) ? 'En favoritos' : 'Añadir a favoritos'}
+                      </span>
+                    </button>
+
+                    <button 
+                      type="button" 
+                      onclick="handleAddToCartFromDetail('${product.id}', false)" 
+                      class="w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer border-2 border-brand-forest min-h-[50px] sm:min-h-[52px]"
+                    >
+                      <i class="ph ph-shopping-cart text-lg sm:text-xl text-brand-sunflower flex-shrink-0"></i>
+                      <span class="whitespace-nowrap font-bold">Añadir a carrito</span>
+                    </button>
+                  </div>
 
                   <button 
                     type="button" 
                     onclick="handleAddToCartFromDetail('${product.id}', true)" 
-                    class="w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
+                    class="w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer min-h-[50px] sm:min-h-[52px]"
                   >
-                    <i class="ph ph-lightning text-xl text-brand-leaf"></i>
-                    <span>Comprar ahora</span>
+                    <i class="ph ph-lightning text-xl text-brand-leaf flex-shrink-0"></i>
+                    <span class="font-bold">Comprar ahora</span>
                   </button>
                 </div>
 
@@ -4217,6 +4922,7 @@
               return stepHtml + separatorHtml;
             }).join('')}
           </div>
+
         </div>
       `;
     }
@@ -4529,6 +5235,7 @@
             </div>
 
           </div>
+
         </div>
       `;
     }
@@ -4680,6 +5387,7 @@
             </div>
 
           </div>
+
         </div>
       `;
     }
@@ -4809,6 +5517,7 @@
             </div>
 
           </div>
+
         </div>
       `;
     }
@@ -4818,31 +5527,51 @@
 
     function switchAccountTab(tabKey) {
       currentAccountTab = tabKey;
+      try {
+        history.replaceState(null, '', '#cuenta.html?tab=' + tabKey);
+      } catch (e) {}
       const tabPersonal = document.getElementById('account-tab-personal');
       const tabOrders = document.getElementById('account-tab-orders');
+      const tabFavorites = document.getElementById('account-tab-favorites');
       const btnPersonal = document.getElementById('tab-btn-personal');
       const btnOrders = document.getElementById('tab-btn-orders');
+      const btnFavorites = document.getElementById('tab-btn-favorites');
 
-      if (!tabPersonal || !tabOrders || !btnPersonal || !btnOrders) return;
+      if (!tabPersonal || !tabOrders || !tabFavorites || !btnPersonal || !btnOrders || !btnFavorites) return;
 
-      const activeClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[52px] sm:min-h-[56px] text-center";
-      const inactiveClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[52px] sm:min-h-[56px] text-center";
+      const activeClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md w-full min-h-[52px] sm:min-h-[56px] text-center";
+      const inactiveClass = "flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30 w-full min-h-[52px] sm:min-h-[56px] text-center";
+
+      tabPersonal.classList.add('hidden');
+      tabOrders.classList.add('hidden');
+      tabFavorites.classList.add('hidden');
+
+      btnPersonal.className = inactiveClass;
+      btnOrders.className = inactiveClass;
+      btnFavorites.className = inactiveClass;
 
       if (tabKey === 'personal') {
         tabPersonal.classList.remove('hidden');
-        tabOrders.classList.add('hidden');
         btnPersonal.className = activeClass;
-        btnOrders.className = inactiveClass;
-      } else {
-        tabPersonal.classList.add('hidden');
+      } else if (tabKey === 'orders') {
         tabOrders.classList.remove('hidden');
-        btnPersonal.className = inactiveClass;
         btnOrders.className = activeClass;
+      } else if (tabKey === 'favorites') {
+        tabFavorites.classList.remove('hidden');
+        btnFavorites.className = activeClass;
+        renderFavoritesTabContent();
       }
+      btnFavorites.innerHTML = `${getHeartIconSVG(tabKey === 'favorites', 'w-5 h-5 flex-shrink-0')}<span>Productos Favoritos</span>`;
     }
 
     // --- Vista 8: Perfil & Seguimiento de pedidos (cuenta.html / seguimiento-pedidos.html) ---
     function renderCuentaView() {
+      const urlParams = new URLSearchParams((window.location.hash || '').split('?')[1] || '');
+      const requestedTab = urlParams.get('tab');
+      if (requestedTab && ['personal', 'orders', 'favorites'].includes(requestedTab)) {
+        currentAccountTab = requestedTab;
+      }
+
       const user = getCurrentUser() || {
         name: 'Cliente Sacha & Pamba',
         username: 'cliente_sacha',
@@ -4908,12 +5637,12 @@
           </div>
 
           <!-- Selector de Pestañas / Sub-páginas con botones de tamaño idéntico -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full max-w-xl mx-auto box-border">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full max-w-3xl mx-auto box-border">
             <button 
               type="button" 
               id="tab-btn-personal" 
               onclick="switchAccountTab('personal')" 
-              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'personal' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
               <i class="ph ph-user text-lg sm:text-xl flex-shrink-0"></i>
               <span>Información Personal</span>
@@ -4922,10 +5651,19 @@
               type="button" 
               id="tab-btn-orders" 
               onclick="switchAccountTab('orders')" 
-              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'orders' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
             >
               <i class="ph ph-package text-lg sm:text-xl flex-shrink-0"></i>
               <span>Historial de Compras</span>
+            </button>
+            <button 
+              type="button" 
+              id="tab-btn-favorites" 
+              onclick="switchAccountTab('favorites')" 
+              class="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 active:scale-95 ${currentAccountTab === 'favorites' ? 'bg-brand-forest text-brand-sunflower border-2 border-brand-forest shadow-md' : 'bg-[#FEFAE0] text-brand-forest border-2 border-brand-forest hover:bg-[#CCD5AE]/30'} w-full min-h-[52px] sm:min-h-[56px] text-center"
+            >
+              ${getHeartIconSVG(currentAccountTab === 'favorites', 'w-5 h-5 flex-shrink-0')}
+              <span>Productos Favoritos</span>
             </button>
           </div>
 
@@ -5407,6 +6145,12 @@
             </div>
 
           </div>
+
+          <!-- Pestaña 3: Productos Favoritos con filtros por categoría y subcategoría -->
+          <div id="account-tab-favorites" class="${currentAccountTab === 'favorites' ? '' : 'hidden'} max-w-5xl mx-auto w-full space-y-6 !px-0 box-border overflow-hidden">
+            ${getFavoritesTabHTML()}
+          </div>
+
         </div>
       `;
     }
@@ -5654,6 +6398,7 @@
             </div>
 
           </div>
+
         </div>
       `;
     }
@@ -5871,7 +6616,9 @@
       } else if (path === 'cuenta.html' || path === 'seguimiento-pedidos.html') {
         if (path === 'seguimiento-pedidos.html') {
           currentAccountTab = 'orders';
-        } else if (previousRoutePath !== 'cuenta.html') {
+        } else if (params && params.tab && ['personal', 'orders', 'favorites'].includes(params.tab)) {
+          currentAccountTab = params.tab;
+        } else if (previousRoutePath !== 'cuenta.html' && !window.location.hash.includes('tab=')) {
           currentAccountTab = 'personal';
         }
         html = renderCuentaView();
@@ -5900,17 +6647,18 @@
       }
 
       // Posicionamiento de scroll según la ruta
-      const isCatalogRoute = (path === '' || path === 'index.html' || path === 'categoria.html' || path === 'productos.html');
+      const isCatalogRoute = (path === '' || path === 'index.html' || path === 'categoria.html' || path === 'productos.html' || path === 'cuenta.html');
 
-      if (path === 'producto.html' || path === 'carrito.html' || path.startsWith('checkout')) {
-        // En detalles de producto, carrito y checkout siempre mostrar directamente desde el inicio (arriba)
+      if (path === 'producto.html') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } else if (path === 'carrito.html' || path.startsWith('checkout')) {
         sessionStorage.removeItem('sacha_last_inspected_product_id');
         sessionStorage.removeItem('sacha_catalog_scroll_pos');
         sessionStorage.removeItem('sacha_card_viewport_offset');
         sessionStorage.removeItem('sacha_prev_route');
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       } else if (isCatalogRoute) {
-        // Al regresar de un producto a catálogo o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
+        // Al regresar de un producto a catálogo, favoritos o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
         const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
         const rawScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
 
@@ -5926,7 +6674,7 @@
             if (!isNaN(returningScroll)) {
               window.scrollTo({ top: returningScroll, left: 0, behavior: 'instant' });
             } else if (returningProductId) {
-              const card = document.getElementById(`product-card-${returningProductId}`);
+              const card = document.getElementById(`fav-card-${returningProductId}`) || document.getElementById(`product-card-${returningProductId}`);
               if (card) {
                 card.scrollIntoView({ block: 'nearest', behavior: 'instant' });
               }
