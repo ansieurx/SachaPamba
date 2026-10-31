@@ -132,7 +132,7 @@
     .smart-header {
       position: sticky;
       top: 0;
-      z-index: 30 !important;
+      z-index: 50 !important;
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
@@ -874,11 +874,16 @@
       outline: none !important;
       -webkit-tap-highlight-color: transparent !important;
     }
-    .card-fav-btn:focus,
-    .card-fav-btn:focus-visible,
-    .card-fav-btn:active {
+    .card-fav-btn:focus:not(:focus-visible) {
       outline: none !important;
       box-shadow: none !important;
+    }
+    .card-fav-btn:focus-visible,
+    body.user-is-tabbing .card-fav-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 12px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 9999px !important;
     }
 
     /* Espaciado garantizado para inputs con icono a la izquierda para evitar solapamientos */
@@ -950,6 +955,7 @@
     article,
     section,
     .product-card,
+    .card-fav-btn,
     a,
     button,
     input,
@@ -997,6 +1003,46 @@
     body.user-is-tabbing .rounded-xl:focus {
       border-radius: 0.75rem !important;
     }
+
+    /* Marco de enfoque adaptado a las cabeceras de categorías para evitar cortes */
+    .sidebar-cat-header {
+      border-radius: 0.875rem !important;
+    }
+    .sidebar-cat-header[aria-expanded="true"] {
+      border-radius: 0.875rem 0.875rem 0 0 !important;
+    }
+    .sidebar-cat-header:focus-visible,
+    body.user-is-tabbing .sidebar-cat-header:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.875rem !important;
+    }
+    .sidebar-cat-header[aria-expanded="true"]:focus-visible,
+    body.user-is-tabbing .sidebar-cat-header[aria-expanded="true"]:focus {
+      border-radius: 0.875rem 0.875rem 0 0 !important;
+    }
+
+    /* Marco de enfoque y visualización de selección en preguntas frecuentes (Ayuda/FAQ) */
+    .faq-btn {
+      border-radius: 1.35rem !important;
+    }
+    .faq-btn[aria-expanded="true"] {
+      border-radius: 1.35rem 1.35rem 0 0 !important;
+      background-color: #5a6b4e !important;
+      color: #FEFAE0 !important;
+    }
+    .faq-btn:focus-visible,
+    body.user-is-tabbing .faq-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 1.35rem !important;
+    }
+    .faq-btn[aria-expanded="true"]:focus-visible,
+    body.user-is-tabbing .faq-btn[aria-expanded="true"]:focus {
+      border-radius: 1.35rem 1.35rem 0 0 !important;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
@@ -1035,7 +1081,7 @@
               class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 xl:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf focus:placeholder-brand-leaf/50 transition-all shadow-inner"
               aria-label="Buscar productos naturales en la tienda"
             >
-            <button type="submit" role="button" aria-label="Buscar productos" class="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
+            <button type="submit" role="button" aria-label="Buscar productos" tabindex="-1" class="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
               <i aria-hidden="true" class="ph-bold ph-magnifying-glass"></i>
             </button>
           </form>
@@ -1079,7 +1125,7 @@
             class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 sm:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf"
             aria-label="Buscar productos naturales en la tienda"
           >
-          <button type="submit" role="button" aria-label="Buscar productos" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
+          <button type="submit" role="button" aria-label="Buscar productos" tabindex="-1" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
             <i aria-hidden="true" class="ph-bold ph-magnifying-glass"></i>
           </button>
         </form>
@@ -1610,7 +1656,7 @@
           </span>
           <h2 id="review-modal-title" class="font-botanic font-bold text-xl text-brand-cream tracking-tight">Calificar y comentar</h2>
         </div>
-        <p class="text-sm text-brand-cream/80 font-medium" id="review-modal-product-name">Formulación Botánica</p>
+        <p class="text-sm text-brand-cream/80 font-medium" id="review-modal-product-name">Producto Botánico</p>
         <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-brand-sunflower text-xs font-bold">
           <i aria-hidden="true" class="ph ph-seal-check text-base"></i>
           <span>Retiro verificado en Av. González Suárez 420</span>
@@ -2855,7 +2901,7 @@
                   </span>
                 </div>
                 <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="${p.name}">
-                  <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')">
+                  <a href="#producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')">
                     ${p.name}
                   </a>
                 </h3>
@@ -3700,10 +3746,10 @@
 
               <!-- Paginación con Puntos (Dots): Ubicada en la zona libre inferior -->
               <div class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5" role="group" aria-label="Indicadores de diapositiva">
-                <button data-hero-slide="0" aria-label="Ir a diapositiva 1 de 4" aria-current="true" class="hero-dot w-8 h-3 rounded-full bg-white transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 1</span></button>
-                <button data-hero-slide="1" aria-label="Ir a diapositiva 2 de 4" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 2</span></button>
-                <button data-hero-slide="2" aria-label="Ir a diapositiva 3 de 4" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 3</span></button>
-                <button data-hero-slide="3" aria-label="Ir a diapositiva 4 de 4" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 4</span></button>
+                <button data-hero-slide="0" aria-label="Ir a diapositiva 1 de 4" aria-current="true" tabindex="-1" class="hero-dot w-8 h-3 rounded-full bg-white transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 1</span></button>
+                <button data-hero-slide="1" aria-label="Ir a diapositiva 2 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 2</span></button>
+                <button data-hero-slide="2" aria-label="Ir a diapositiva 3 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 3</span></button>
+                <button data-hero-slide="3" aria-label="Ir a diapositiva 4 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 4</span></button>
               </div>
 
             </div>
@@ -3960,8 +4006,8 @@
               </a>
 
               <!-- Acordeón 1: Selección Especial -->
-              <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <button type="button" role="button" aria-expanded="${selectedSpecial ? 'true' : 'false'}" aria-controls="sidebar-drawer-especiales" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-1.5" data-cat="especiales">
+              <div class="border-2 ${selectedSpecial ? 'border-brand-forest/60 shadow-xs' : 'border-brand-forest/20'} rounded-2xl bg-brand-cream">
+                <button type="button" role="button" aria-expanded="${selectedSpecial ? 'true' : 'false'}" aria-controls="sidebar-drawer-especiales" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 ${selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-leaf font-semibold'} transition-colors cursor-pointer select-none gap-1.5 ${selectedSpecial ? 'rounded-t-2xl' : 'rounded-2xl'}" data-cat="especiales">
                   <div class="flex items-center gap-1.5 min-w-0">
                     <i aria-hidden="true" class="ph ph-sparkle text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
                     <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Selección Especial</span>
@@ -3972,7 +4018,7 @@
                   </div>
                 </button>
 
-                <div id="sidebar-drawer-especiales" role="region" aria-label="Subcategorías de Selección Especial" class="sidebar-cat-drawer ${selectedSpecial ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1">
+                <div id="sidebar-drawer-especiales" role="region" aria-label="Subcategorías de Selección Especial" class="sidebar-cat-drawer ${selectedSpecial ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
                   <a href="#categoria.html?special=all" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Toda la Selección</span>
                     <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">${allSpecialCount}</span>
@@ -4002,8 +4048,8 @@
               </div>
 
               <!-- Acordeón 2: Suplementos -->
-              <div class="border-2 border-brand-forest/20 rounded-2xl overflow-hidden bg-brand-cream">
-                <button type="button" role="button" aria-expanded="${selectedCat === 'suplementos' ? 'true' : 'false'}" aria-controls="sidebar-drawer-suplementos" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 hover:bg-brand-olive/40 text-brand-leaf transition-colors cursor-pointer select-none gap-1.5" data-cat="suplementos">
+              <div class="border-2 ${selectedCat === 'suplementos' ? 'border-brand-forest/60 shadow-xs' : 'border-brand-forest/20'} rounded-2xl bg-brand-cream">
+                <button type="button" role="button" aria-expanded="${selectedCat === 'suplementos' ? 'true' : 'false'}" aria-controls="sidebar-drawer-suplementos" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 ${selectedCat === 'suplementos' ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-brand-olive/40 text-brand-leaf font-semibold'} transition-colors cursor-pointer select-none gap-1.5 ${selectedCat === 'suplementos' ? 'rounded-t-2xl' : 'rounded-2xl'}" data-cat="suplementos">
                   <div class="flex items-center gap-1.5 min-w-0">
                     <i aria-hidden="true" class="ph ph-lightning text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
                     <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Suplementos</span>
@@ -4014,7 +4060,7 @@
                   </div>
                 </button>
 
-                <div id="sidebar-drawer-suplementos" role="region" aria-label="Subcategorías de Suplementos" class="sidebar-cat-drawer ${selectedCat === 'suplementos' ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1">
+                <div id="sidebar-drawer-suplementos" role="region" aria-label="Subcategorías de Suplementos" class="sidebar-cat-drawer ${selectedCat === 'suplementos' ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
                   <a href="#categoria.html?cat=suplementos" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Todos los Suplementos</span>
                     <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
@@ -4148,7 +4194,7 @@
               </div>
 
               <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
-                <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                <a href="#producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
                   ${p.name}
                 </a>
               </h3>
@@ -4262,6 +4308,7 @@
                   <button 
                     type="button" 
                     id="detail-img-fav-btn-${product.id}" 
+                    tabindex="-1"
                     onclick="event.stopPropagation(); toggleFavorite('${product.id}')" 
                     ondblclick="event.stopPropagation(); event.preventDefault();"
                     class="card-fav-btn absolute bottom-3 left-3 sm:bottom-3.5 sm:left-3.5 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full ${isFavorite(product.id) ? 'bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md' : 'bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md'} flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
@@ -4276,6 +4323,7 @@
                     ${gallery.map((imgUrl, idx) => `
                       <button 
                         type="button" 
+                        tabindex="-1"
                         onclick="switchProductImage('${imgUrl}', this, ${idx})" 
                         class="product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden ${idx === 0 ? 'border-[3px] border-brand-forest ring-2 ring-brand-sunflower scale-105 opacity-100 shadow-md' : 'border-2 border-brand-forest/30 opacity-75 hover:opacity-100 shadow-sm'} bg-brand-cream p-1.5 transition-all cursor-pointer"
                         aria-label="Ver imagen ${idx + 1} de ${product.name}"
@@ -4340,7 +4388,7 @@
                     <label for="detail-qty" class="text-sm font-bold text-brand-forest">Cantidad:</label>
                     <div class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-xs">
                       <button type="button" role="button" aria-label="Disminuir cantidad" onclick="adjustProductQty(-1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50 cursor-pointer">-</button>
-                      <input type="text" inputmode="numeric" id="detail-qty" value="1" class="w-10 text-center text-sm sm:text-base font-bold bg-transparent text-brand-leaf focus:outline-none select-none cursor-default" readonly aria-label="Cantidad">
+                      <input type="text" inputmode="numeric" id="detail-qty" value="1" class="w-10 text-center text-sm sm:text-base font-bold bg-transparent text-brand-leaf focus:outline-none select-none cursor-default" readonly aria-label="Cantidad" tabindex="-1">
                       <button type="button" role="button" aria-label="Aumentar cantidad" onclick="adjustProductQty(1)" class="px-3 py-1.5 text-base font-bold text-brand-forest hover:bg-brand-olive/50 cursor-pointer">+</button>
                     </div>
                   </div>
@@ -4489,7 +4537,7 @@
                   <i aria-hidden="true" class="ph ph-chats-circle text-brand-moss text-2xl flex-shrink-0"></i>
                   <span>Calificaciones y Comentarios</span>
                 </h2>
-                <p class="text-sm text-brand-leaf/70 mt-1 font-medium">Opiniones reales de quienes han retirado y probado esta formulación.</p>
+                <p class="text-sm text-brand-leaf/70 mt-1 font-medium">Opiniones reales de quienes han retirado y probado este producto.</p>
               </div>
               
               <div class="flex items-center gap-2 flex-shrink-0">
@@ -4815,7 +4863,7 @@
           name: 'Cliente Sacha & Pamba',
           date: 'Septiembre, 2026',
           rating: 5,
-          comment: 'Formulación pura y fresca. Retiro ágil y seguro en la tienda de Quito.',
+          comment: 'Producto puro y fresco. Retiro ágil y seguro en la tienda de Quito.',
           verified: true
         }
       ]);
@@ -5238,7 +5286,7 @@
                     
                     <!-- Bloque Superior: Imagen + Nombre + Tamaño/Precio + Botón Eliminar Móvil -->
                     <div class="cart-item-top flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                      <a href="#producto.html?id=${item.id}" class="flex-shrink-0 block" aria-label="Ver detalles de ${item.name}">
+                      <a href="#producto.html?id=${item.id}" tabindex="-1" class="flex-shrink-0 block" aria-label="Ver detalles de ${item.name}">
                         <img 
                           src="${item.image}" 
                           alt="${item.name}" 
@@ -6665,42 +6713,42 @@
             
             <div class="md:col-span-7 space-y-4 text-left" id="faq-accordion" role="region" aria-label="Listado de preguntas frecuentes">
               
-              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 overflow-hidden shadow-sm">
-                <button type="button" role="button" id="faq-btn-1" aria-expanded="false" aria-controls="faq-content-1" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer">
+              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 shadow-sm">
+                <button type="button" role="button" id="faq-btn-1" aria-expanded="false" aria-controls="faq-content-1" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer rounded-3xl">
                   <span>¿Cómo funciona el retiro en la tienda física de Quito?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-1" role="region" aria-labelledby="faq-btn-1" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15">
+                <div id="faq-content-1" role="region" aria-labelledby="faq-btn-1" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   Una vez confirmado tu pedido, lo empacamos en un lapso de 2 horas. Puedes acercarte a nuestra tienda en la Av. González Suárez 420 y Coruña con tu cédula y número de pedido (#NAT-XXXX). El retiro no tiene ningún costo.
                 </div>
               </div>
 
-              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 overflow-hidden shadow-sm">
-                <button type="button" role="button" id="faq-btn-2" aria-expanded="false" aria-controls="faq-content-2" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer">
-                  <span>¿Las formulaciones y extractos tienen certificación agroecológica?</span>
+              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 shadow-sm">
+                <button type="button" role="button" id="faq-btn-2" aria-expanded="false" aria-controls="faq-content-2" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer rounded-3xl">
+                  <span>¿Los productos y extractos tienen certificación agroecológica?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-2" role="region" aria-labelledby="faq-btn-2" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15">
-                  Sí. Todas nuestras formulaciones, suplementos y superalimentos provienen de cosechas agroecológicas y recolección silvestre sustentable en Napo, Pastaza y Cayambe, libres de pesticidas químicos.
+                <div id="faq-content-2" role="region" aria-labelledby="faq-btn-2" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
+                  Sí. Todos nuestros productos, suplementos y superalimentos provienen de cosechas agroecológicas y recolección silvestre sustentable en Napo, Pastaza y Cayambe, libres de pesticidas químicos.
                 </div>
               </div>
 
-              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 overflow-hidden shadow-sm">
-                <button type="button" role="button" id="faq-btn-3" aria-expanded="false" aria-controls="faq-content-3" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer">
+              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 shadow-sm">
+                <button type="button" role="button" id="faq-btn-3" aria-expanded="false" aria-controls="faq-content-3" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer rounded-3xl">
                   <span>¿Puedo pagar en efectivo o tarjeta al momento de retirar?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-3" role="region" aria-labelledby="faq-btn-3" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15">
+                <div id="faq-content-3" role="region" aria-labelledby="faq-btn-3" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   ¡Por supuesto! Durante el paso de pago en la web puedes seleccionar "Pagar al Retirar" y abonar en caja con efectivo, tarjeta de débito/crédito o transferencia bancaria directa.
                 </div>
               </div>
 
-              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 overflow-hidden shadow-sm">
-                <button type="button" role="button" id="faq-btn-4" aria-expanded="false" aria-controls="faq-content-4" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer">
+              <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 shadow-sm">
+                <button type="button" role="button" id="faq-btn-4" aria-expanded="false" aria-controls="faq-content-4" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer rounded-3xl">
                   <span>¿Emiten factura con validez tributaria para el SRI?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-4" role="region" aria-labelledby="faq-btn-4" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15">
+                <div id="faq-content-4" role="region" aria-labelledby="faq-btn-4" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   Sí, emitimos facturación electrónica autorizada por el SRI enviada directamente a tu correo electrónico al procesarse la compra.
                 </div>
               </div>
@@ -7346,13 +7394,40 @@
       setupHomeProductTabs();
 
       document.querySelectorAll('.sidebar-cat-header').forEach(header => {
-        header.addEventListener('click', () => {
+        header.addEventListener('click', (e) => {
+          const isCaretClick = !!e.target.closest('.ph-caret-down');
+          const cat = header.getAttribute('data-cat');
+          const isSpecial = (cat === 'especiales');
+          const isSupplements = (cat === 'suplementos');
+          const currentSpecial = new URLSearchParams((window.location.hash.split('?')[1] || '')).get('special');
+          const currentCat = new URLSearchParams((window.location.hash.split('?')[1] || '')).get('cat');
+
+          // Si se hace clic en la categoría y aún no está seleccionada, seleccionarla y abrirla
+          if (!isCaretClick) {
+            if (isSpecial && !currentSpecial) {
+              navigateTo('#categoria.html?special=all');
+              return;
+            }
+            if (isSupplements && currentCat !== 'suplementos') {
+              navigateTo('#categoria.html?cat=suplementos');
+              return;
+            }
+          }
+
+          // Si ya está activa o se pulsó la flecha, alternar apertura/cierre
           const drawer = header.nextElementSibling;
           const caret = header.querySelector('.ph-caret-down');
           if (drawer) {
             const isHidden = drawer.classList.toggle('hidden');
             header.setAttribute('aria-expanded', String(!isHidden));
             if (caret) caret.classList.toggle('rotate-180', !isHidden);
+            if (isHidden) {
+              header.classList.remove('rounded-t-2xl');
+              header.classList.add('rounded-2xl');
+            } else {
+              header.classList.remove('rounded-2xl');
+              header.classList.add('rounded-t-2xl');
+            }
           }
         });
       });
@@ -7365,6 +7440,13 @@
             const isHidden = content.classList.toggle('hidden');
             btn.setAttribute('aria-expanded', String(!isHidden));
             if (icon) icon.classList.toggle('rotate-180', !isHidden);
+            if (isHidden) {
+              btn.classList.remove('rounded-t-3xl', 'bg-[#5a6b4e]', 'text-brand-cream');
+              btn.classList.add('rounded-3xl');
+            } else {
+              btn.classList.remove('rounded-3xl');
+              btn.classList.add('rounded-t-3xl', 'bg-[#5a6b4e]', 'text-brand-cream');
+            }
           }
         });
       });
