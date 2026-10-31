@@ -234,6 +234,7 @@
       flex-shrink: 0 !important;
       border-radius: 0.5rem !important;
       box-sizing: border-box !important;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
     }
 
     .product-card-actions button {
@@ -249,6 +250,7 @@
       gap: clamp(0.25rem, 0.8cqi, 0.38rem) !important;
       border-radius: 0.5rem !important;
       box-sizing: border-box !important;
+      transition: transform 0.1s ease, background-color 0.15s ease, color 0.15s ease !important;
     }
 
     .product-card-actions button i {
@@ -258,7 +260,7 @@
 
     /* Transición fluida y consistente en cuadrículas */
     #home-products-grid {
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.2s ease;
     }
 
     /* Adaptabilidad de Detalles Botánicos en Zoom */
@@ -729,15 +731,23 @@
       gap: 0.75rem !important;
       width: 100% !important;
       box-sizing: border-box !important;
+      position: relative !important;
     }
     .auth-header-title-box {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
       min-width: 0 !important;
       flex: 1 1 auto !important;
       overflow: hidden !important;
     }
     #auth-modal-close {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
       flex-shrink: 0 !important;
       position: static !important;
+      margin-left: auto !important;
     }
 
     /* Adaptabilidad de desplazamiento del modal de autenticación en cualquier nivel de zoom */
@@ -1018,7 +1028,7 @@
               <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
                 <i class="ph ph-plant text-lg sm:text-xl"></i>
               </span>
-              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-cream tracking-tight flex items-center flex-wrap leading-tight">
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-cream tracking-tight inline-flex items-center whitespace-nowrap leading-tight truncate">
                 <span>Sacha</span><span class="font-hand text-brand-sunflower text-[1.25em] font-bold mx-1.5 inline-block transform -rotate-12 align-baseline">&amp;</span><span>Pamba</span>
               </h3>
             </div>
@@ -3152,7 +3162,7 @@
 
     function renderProductCard(p) {
       return `
-        <div id="product-card-${p.id}" onclick="handleProductCardClick(event, '${p.id}')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl transition-all group h-full cursor-pointer">
+        <div id="product-card-${p.id}" onclick="handleProductCardClick(event, '${p.id}')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
           <div>
             <div class="relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs">
               <img 
@@ -3174,7 +3184,7 @@
               </div>
 
               <h4 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
-                <a href="#producto.html?id=${p.id}" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
                   ${p.name}
                 </a>
               </h4>
@@ -3193,7 +3203,7 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="#producto.html?id=${p.id}" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-all shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+              <a href="#producto.html?id=${p.id}" onclick="saveCatalogPosition('${p.id}')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#FEFAE0] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
                 Ver
               </a>
               <button 
@@ -3252,10 +3262,10 @@
           </div>
 
           <div class="bg-brand-cream rounded-3xl border-2 border-brand-forest shadow-md p-4 sm:p-6 md:p-8 mb-10 overflow-hidden box-border">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
               
               <!-- Columna Galería -->
-              <div class="md:col-span-5 space-y-4">
+              <div class="lg:col-span-5 space-y-4">
                 <div class="relative rounded-2xl overflow-hidden bg-brand-cream aspect-square border-2 border-brand-forest/30 max-w-sm mx-auto shadow-sm">
                   <img 
                     id="main-product-img" 
@@ -3291,20 +3301,26 @@
               </div>
 
               <!-- Columna Info -->
-              <div class="md:col-span-7 space-y-4 sm:space-y-5 text-left min-w-0">
+              <div class="lg:col-span-7 space-y-4 sm:space-y-5 text-left min-w-0">
                 <!-- Reseñas y Calificación Adaptables sin descuadres en zoom -->
-                <div class="flex flex-wrap items-center gap-x-2.5 sm:gap-x-3 gap-y-1.5 max-w-full">
-                  <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-                    <div class="flex text-amber-500 text-base sm:text-lg md:text-xl">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 max-w-full">
+                  <div class="inline-flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                    <div class="flex text-amber-500 text-sm sm:text-base">
                       <i class="ph-fill ph-star"></i>
                       <i class="ph-fill ph-star"></i>
                       <i class="ph-fill ph-star"></i>
                       <i class="ph-fill ph-star"></i>
                       <i class="ph-fill ph-star"></i>
                     </div>
-                    <span class="text-base sm:text-lg md:text-xl font-extrabold text-brand-forest">${product.rating.toFixed(1)}</span>
+                    <span class="text-sm sm:text-base font-extrabold text-brand-forest">${product.rating.toFixed(1)}</span>
                   </div>
-                  <span class="text-xs sm:text-sm text-brand-leaf/70 font-medium whitespace-nowrap">(${product.reviewsCount} reseñas verificadas)</span>
+                  <a 
+                    href="#customer-reviews-section" 
+                    class="inline-flex items-center text-xs sm:text-sm text-brand-leaf/80 hover:text-brand-moss underline underline-offset-2 decoration-brand-leaf/30 font-medium transition-colors flex-shrink-0"
+                    title="Ver reseñas de clientes"
+                  >
+                    (${product.reviewsCount} reseñas verificadas)
+                  </a>
                 </div>
 
                 <div>
@@ -3342,23 +3358,23 @@
                   </span>
                 </div>
 
-                <!-- Botones de Acción de Compra -->
+                <!-- Botones de Acción de Compra (Colores intercambiados según solicitado) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <button 
                     type="button" 
                     onclick="handleAddToCartFromDetail('${product.id}', false)" 
-                    class="w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95"
+                    class="w-full py-3.5 px-5 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
                   >
-                    <i class="ph ph-shopping-cart text-xl"></i>
+                    <i class="ph ph-shopping-cart text-xl text-brand-sunflower"></i>
                     <span>Añadir al carrito</span>
                   </button>
 
                   <button 
                     type="button" 
                     onclick="handleAddToCartFromDetail('${product.id}', true)" 
-                    class="w-full py-3.5 px-5 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95"
+                    class="w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
                   >
-                    <i class="ph ph-lightning text-xl text-brand-sunflower"></i>
+                    <i class="ph ph-lightning text-xl text-brand-leaf"></i>
                     <span>Comprar ahora</span>
                   </button>
                 </div>
@@ -5710,27 +5726,17 @@
           sessionStorage.removeItem('sacha_prev_route');
 
           const restoreCardPosition = () => {
-            if (returningProductId) {
-              const card = document.getElementById(`product-card-${returningProductId}`);
-              if (card) {
-                if (!isNaN(cardOffset)) {
-                  const targetScroll = (card.getBoundingClientRect().top + window.scrollY) - cardOffset;
-                  window.scrollTo({ top: Math.max(0, targetScroll), left: 0, behavior: 'instant' });
-                } else {
-                  card.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-                }
-                return;
-              }
-            }
             if (!isNaN(returningScroll)) {
               window.scrollTo({ top: returningScroll, left: 0, behavior: 'instant' });
+            } else if (returningProductId) {
+              const card = document.getElementById(`product-card-${returningProductId}`);
+              if (card) {
+                card.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+              }
             }
           };
 
           restoreCardPosition();
-          requestAnimationFrame(restoreCardPosition);
-          setTimeout(restoreCardPosition, 50);
-          setTimeout(restoreCardPosition, 150);
         }
       }
 
