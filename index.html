@@ -6804,12 +6804,17 @@
             
             <div class="md:col-span-7 space-y-4 text-left" id="faq-accordion" role="region" aria-label="Listado de preguntas frecuentes">
               
+              <!-- Bloque accesible para lectores de pantalla: lee las preguntas en orden y la respuesta inmediatamente tras la pregunta desplegada -->
+              <div class="lector_texto_accesible" role="region" aria-label="Preguntas frecuentes y respuestas" lang="es">
+                <p id="faq-a11y-texto" aria-live="polite" lang="es">Preguntas frecuentes. Pregunta 1: ¿Cómo funciona el retiro en la tienda física de Quito? Pregunta 2: ¿Los productos y extractos tienen certificación agroecológica? Pregunta 3: ¿Puedo pagar en efectivo o tarjeta al momento de retirar? Pregunta 4: ¿Emiten factura con validez tributaria para el SRI?</p>
+              </div>
+
               <div class="bg-[#CCD5AE] rounded-3xl border-2 border-brand-forest/20 shadow-sm">
                 <button type="button" role="button" id="faq-btn-1" aria-expanded="false" aria-controls="faq-content-1" class="faq-btn w-full p-5 flex justify-between items-center text-sm sm:text-base font-bold text-brand-forest text-left hover:bg-brand-forest/5 transition-colors cursor-pointer rounded-3xl">
                   <span>¿Cómo funciona el retiro en la tienda física de Quito?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-1" role="region" aria-labelledby="faq-btn-1" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
+                <div id="faq-content-1" aria-hidden="true" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   Una vez confirmado tu pedido, lo empacamos en un lapso de 2 horas. Puedes acercarte a nuestra tienda en la Av. González Suárez 420 y Coruña con tu cédula y número de pedido (#NAT-XXXX). El retiro no tiene ningún costo.
                 </div>
               </div>
@@ -6819,7 +6824,7 @@
                   <span>¿Los productos y extractos tienen certificación agroecológica?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-2" role="region" aria-labelledby="faq-btn-2" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
+                <div id="faq-content-2" aria-hidden="true" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   Sí. Todos nuestros productos, suplementos y superalimentos provienen de cosechas agroecológicas y recolección silvestre sustentable en Napo, Pastaza y Cayambe, libres de pesticidas químicos.
                 </div>
               </div>
@@ -6829,7 +6834,7 @@
                   <span>¿Puedo pagar en efectivo o tarjeta al momento de retirar?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-3" role="region" aria-labelledby="faq-btn-3" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
+                <div id="faq-content-3" aria-hidden="true" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   ¡Por supuesto! Durante el paso de pago en la web puedes seleccionar "Pagar al Retirar" y abonar en caja con efectivo, tarjeta de débito/crédito o transferencia bancaria directa.
                 </div>
               </div>
@@ -6839,7 +6844,7 @@
                   <span>¿Emiten factura con validez tributaria para el SRI?</span>
                   <i aria-hidden="true" class="ph ph-caret-down text-xl transition-transform"></i>
                 </button>
-                <div id="faq-content-4" role="region" aria-labelledby="faq-btn-4" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
+                <div id="faq-content-4" aria-hidden="true" class="faq-content hidden p-5 pt-0 text-sm text-brand-leaf font-medium leading-relaxed border-t border-brand-forest/15 rounded-b-3xl">
                   Sí, emitimos facturación electrónica autorizada por el SRI enviada directamente a tu correo electrónico al procesarse la compra.
                 </div>
               </div>
@@ -7523,6 +7528,45 @@
         });
       });
 
+      function updateFaqA11yText() {
+        const a11yEl = document.getElementById('faq-a11y-texto');
+        if (!a11yEl) return;
+
+        const faqData = [
+          {
+            btn: document.getElementById('faq-btn-1'),
+            q: '¿Cómo funciona el retiro en la tienda física de Quito?',
+            a: 'Una vez confirmado tu pedido, lo empacamos en un lapso de 2 horas. Puedes acercarte a nuestra tienda en la Av. González Suárez 420 y Coruña con tu cédula y número de pedido (#NAT-XXXX). El retiro no tiene ningún costo.'
+          },
+          {
+            btn: document.getElementById('faq-btn-2'),
+            q: '¿Los productos y extractos tienen certificación agroecológica?',
+            a: 'Sí. Todos nuestros productos, suplementos y superalimentos provienen de cosechas agroecológicas y recolección silvestre sustentable en Napo, Pastaza y Cayambe, libres de pesticidas químicos.'
+          },
+          {
+            btn: document.getElementById('faq-btn-3'),
+            q: '¿Puedo pagar en efectivo o tarjeta al momento de retirar?',
+            a: '¡Por supuesto! Durante el paso de pago en la web puedes seleccionar "Pagar al Retirar" y abonar en caja con efectivo, tarjeta de débito/crédito o transferencia bancaria directa.'
+          },
+          {
+            btn: document.getElementById('faq-btn-4'),
+            q: '¿Emiten factura con validez tributaria para el SRI?',
+            a: 'Sí, emitimos facturación electrónica autorizada por el SRI enviada directamente a tu correo electrónico al procesarse la compra.'
+          }
+        ];
+
+        let partes = ['Preguntas frecuentes.'];
+        faqData.forEach((item, idx) => {
+          partes.push(`Pregunta ${idx + 1}: ${item.q}`);
+          const isExpanded = item.btn && item.btn.getAttribute('aria-expanded') === 'true';
+          if (isExpanded) {
+            partes.push(`Respuesta a la pregunta ${idx + 1}: ${item.a}`);
+          }
+        });
+
+        a11yEl.textContent = partes.join(' ');
+      }
+
       document.querySelectorAll('.faq-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const content = btn.nextElementSibling;
@@ -7538,9 +7582,12 @@
               btn.classList.remove('rounded-3xl');
               btn.classList.add('rounded-t-3xl', 'bg-[#5a6b4e]', 'text-brand-cream');
             }
+            updateFaqA11yText();
           }
         });
       });
+
+      updateFaqA11yText();
     }
 
     function getCurrentUser() {
