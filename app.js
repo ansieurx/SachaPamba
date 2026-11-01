@@ -243,12 +243,18 @@
     ];
 
     /* Estado del carrito y checkout */
-    let cart = [];
-    try {
-      cart = JSON.parse(localStorage.getItem('sacha_pamba_cart') || '[]');
-    } catch (e) {
-      cart = [];
+    const CART_STORAGE_KEY = 'sacha_pamba_cart';
+
+    function readCartFromStorage() {
+      try {
+        const storedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        return Array.isArray(storedCart) ? storedCart : [];
+      } catch {
+        return [];
+      }
     }
+
+    let cart = readCartFromStorage();
 
     // Normaliza tipos numéricos, sincroniza precios oficiales y descarta datos corruptos
     function sanitizeCart() {
@@ -280,9 +286,28 @@
 
     function saveCart() {
       sanitizeCart();
-      localStorage.setItem('sacha_pamba_cart', JSON.stringify(cart));
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      renderCartUI();
+    }
+
+    function renderCartUI() {
       updateCartBadge();
       updateCartDrawerUI();
+      const main = document.getElementById('app');
+      if (main && parsePageUrl().path === 'carrito.html') {
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        main.innerHTML = renderCartView();
+        window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' });
+        });
+      }
+    }
+
+    function reloadCartFromStorage() {
+      cart = readCartFromStorage();
+      sanitizeCart();
+      renderCartUI();
     }
 
     function updateCartBadge() {
@@ -1312,15 +1337,6 @@
       cart.splice(itemIndex, 1);
       saveCart();
 
-      const currentPageUrl = getCurrentPageUrl() || 'index.html';
-      if (currentPageUrl.includes('carrito.html')) {
-        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        refreshPageContent();
-        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        });
-      }
 
       showToast(`"${removedItem.name}" retirado del carrito`, 'ph-trash');
     }
@@ -1333,12 +1349,6 @@
         lastClearedCart = null;
         lastRemovedCartItem = null;
         saveCart();
-        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        refreshPageContent();
-        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        });
         showToast('Productos restaurados en el carrito', 'ph-arrow-u-up-left');
         return;
       }
@@ -1372,15 +1382,6 @@
       lastRemovedCartItem = null;
       saveCart();
 
-      const currentPageUrl = getCurrentPageUrl() || 'index.html';
-      if (currentPageUrl.includes('carrito.html')) {
-        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        refreshPageContent();
-        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        });
-      }
 
       showToast(`"${restoredName}" restaurado al carrito`, 'ph-arrow-u-up-left');
     }
@@ -1452,15 +1453,6 @@
       if (prod) item.price = Number(prod.price);
 
       saveCart();
-      const currentPageUrl = getCurrentPageUrl() || 'index.html';
-      if (currentPageUrl.includes('carrito.html')) {
-        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        refreshPageContent();
-        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        });
-      }
     }
 
     let lastClearedCart = null;
@@ -1473,7 +1465,6 @@
       cart = [];
       saveCart();
       resetCheckoutProgress();
-      refreshPageContent();
       showToast('Se ha vaciado el carrito', 'ph-trash');
     }
 
@@ -5763,8 +5754,6 @@
         history.scrollRestoration = 'manual';
       }
       updateCartDrawerZoom();
-      updateCartBadge();
-      updateCartDrawerUI();
       if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
         const currentPageUrl = getCurrentPageUrl() || 'index.html';
         if (!currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
@@ -5854,14 +5843,24 @@
       });
     }
 
+    window.addToCart = addToCart;
+    window.toggleCartDrawer = toggleCartDrawer;
+    window.removeFromCart = removeFromCart;
+    window.updateCartQuantity = updateCartQuantity;
+    window.clearCart = clearCart;
+    window.undoRemoveFromCart = undoRemoveFromCart;
+    window.confirmRemoveProduct = confirmRemoveProduct;
+    window.renderCartUI = renderCartUI;
+
     // Mantener disponibles los eventos inline del HTML y de las vistas generadas.
     Object.assign(window, {
+      readCartFromStorage,
+      reloadCartFromStorage,
       sanitizeCart,
       saveCart,
       updateCartBadge,
       updateCartDrawerUI,
       updateCartDrawerZoom,
-      toggleCartDrawer,
       triggerDrawerSlide,
       openCartDrawer,
       collapseCartDrawer,
@@ -5886,14 +5885,8 @@
       renderFavoriteProductCard,
       getFavoritesTabHTML,
       renderFavoritesTabContent,
-      addToCart,
-      removeFromCart,
-      undoRemoveFromCart,
       openConfirmRemoveModal,
       closeConfirmRemoveModal,
-      confirmRemoveProduct,
-      updateCartQuantity,
-      clearCart,
       openNavCategoryMenu,
       toggleNavCategoryMenu,
       collapseNavCategories,
@@ -6026,8 +6019,22 @@
       confirmRemoveModal: { configurable: true, enumerable: true, get: () => confirmRemoveModal },
     });
 
+    // Restaurar el estado real al volver con Atras o recibir cambios de otra pestana.
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) reloadCartFromStorage();
+    });
+    window.addEventListener('storage', event => {
+      if (event.storageArea === localStorage && (event.key === CART_STORAGE_KEY || event.key === null)) {
+        reloadCartFromStorage();
+      }
+    });
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initApp);
+      document.addEventListener('DOMContentLoaded', () => {
+        renderCartUI();
+        initApp();
+      });
     } else {
+      renderCartUI();
       initApp();
     }
