@@ -1171,7 +1171,7 @@ body :focus { scroll-margin-top: calc(var(--focus-header-height, 0px) + 1rem); }
 }
 [role="tab"], button[data-product-tab] { transition-property: transform, box-shadow; }
 .cart-footer-title { color: #FEFAE0 !important; }
-#cart-counter-badge { background-color: #b91c1c !important; color: #fff !important; }
+#cart-counter-badge { background-color: #283618 !important; color: #FEFAE0 !important; }
 main .opacity-50 { opacity: 1; }
 main .opacity-50 [class*="text-brand-forest/"] { color: #283618; }
 main .text-brand-forest\/70 { color: #3e4a2f; }
