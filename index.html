@@ -880,6 +880,44 @@
     .btn_agregar_fav {
       transition: background-color 0.15s ease !important;
     }
+    .btn_eliminar_fav {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0.75rem !important; /* Recuadro, no círculo */
+      box-shadow: none !important;
+      color: rgba(40, 54, 24, 0.6) !important;
+      cursor: pointer;
+      width: 2.25rem !important;
+      height: 2.25rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      line-height: 1 !important;
+      transition: background-color 0.15s ease, color 0.15s ease !important;
+    }
+    @media (min-width: 640px) {
+      .btn_eliminar_fav {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+      }
+    }
+    .btn_eliminar_fav:hover,
+    .btn_eliminar_fav:focus,
+    .btn_eliminar_fav:active {
+      background: #283618 !important; /* Recuadro verde oscuro de la página al hacer hover */
+      color: #E9C46A !important; /* Icono amarillo al hacer hover */
+      border: none !important;
+      box-shadow: none !important;
+    }
+    body.user-is-tabbing .btn_eliminar_fav:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.75rem !important;
+      background: #283618 !important;
+      color: #E9C46A !important;
+    }
 
     #tab-btn-personal,
     #tab-btn-orders,
@@ -2843,6 +2881,16 @@
 
       // Si el usuario está visualizando la pestaña de favoritos en Mi Cuenta, refrescar la lista
       if (typeof currentAccountTab !== 'undefined' && currentAccountTab === 'favorites') {
+        if (!added && prod) {
+          // Si otro producto se elimina de favoritos, quitar el anterior producto que estaba con deshacer
+          const previousUndoIds = Object.keys(pendingUndoFavorites);
+          if (previousUndoIds.length > 0) {
+            favoritesDisplayOrder = favoritesDisplayOrder.filter(id => !previousUndoIds.includes(id));
+          }
+          pendingUndoFavorites = { [productId]: prod };
+        } else if (added) {
+          delete pendingUndoFavorites[productId];
+        }
         renderFavoritesTabContent();
       }
 
@@ -2918,6 +2966,64 @@
     // Filtros de favoritos en Mi Cuenta
     let filtro_cat = 'all';
     let filtro_subcat = 'all';
+    let pendingUndoFavorites = {};
+    let favoritesDisplayOrder = [];
+
+    // Tarjeta con botón de deshacer en el lugar exacto del producto eliminado en la página de favoritos
+    function renderFavoriteUndoCard(p) {
+      const prodName = typeof escapeHtml === 'function' ? escapeHtml(p.name) : p.name;
+      return `
+        <article role="status" aria-label="Producto ${prodName} eliminado de favoritos" class="caja_fav w-full">
+          <div id="fav-undo-${p.id}" class="tarjeta_fav bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-dashed border-brand-forest/40 p-4 sm:p-5 w-full box-border flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+            
+            <div class="flex items-center gap-3.5 min-w-0 w-full sm:w-auto flex-1">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream border border-brand-forest/20 flex-shrink-0 shadow-2xs">
+                <img 
+                  src="${p.image}" 
+                  alt="${prodName}" 
+                  class="w-full h-full object-cover opacity-60 grayscale"
+                  onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'"
+                >
+              </div>
+              <div class="min-w-0 space-y-1 text-left flex-1">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-forest/15 text-brand-forest text-[11px] font-bold">
+                    Eliminado de favoritos
+                  </span>
+                </div>
+                <h3 class="font-botanic font-bold text-sm sm:text-base md:text-lg text-brand-forest leading-snug line-clamp-2 break-words" title="${prodName}">
+                  ${prodName}
+                </h3>
+                <p class="text-[11px] sm:text-xs text-brand-leaf/70 font-medium">
+                  Se quitó este producto de tu lista de favoritos.
+                </p>
+              </div>
+            </div>
+
+            <!-- Botón Deshacer en el lugar donde estaba el producto -->
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-shrink-0">
+              <button 
+                type="button" 
+                role="button"
+                onclick="undoRemoveFavorite('${p.id}')" 
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm shadow-xs transition-transform active:scale-95 border-2 border-brand-forest/20 cursor-pointer whitespace-nowrap w-full sm:w-auto"
+                aria-label="Deshacer y restaurar ${prodName} a favoritos"
+              >
+                <i aria-hidden="true" class="ph ph-arrow-u-up-left text-base sm:text-lg font-bold"></i>
+                <span>Deshacer</span>
+              </button>
+            </div>
+
+          </div>
+        </article>
+      `;
+    }
+
+    function undoRemoveFavorite(productId) {
+      if (!productId) return;
+      delete pendingUndoFavorites[productId];
+      toggleFavorite(productId, true);
+    }
 
     function getCatalogCategoriesAndSubcategories() {
       const map = {};
@@ -2956,10 +3062,23 @@
     // Tarjeta de producto simplificada y perfectamente adaptable exclusiva para el apartado de favoritos
     function renderFavoriteProductCard(p) {
       const es_fav = isFavorite(p.id);
+      const prodName = typeof escapeHtml === 'function' ? escapeHtml(p.name) : p.name;
       return `
-        <article role="article" aria-label="Producto favorito: ${p.name}" class="caja_fav w-full">
-          <div id="fav-card-${p.id}" class="tarjeta_fav bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md group cursor-pointer w-full box-border" onclick="handleProductCardClick(event, '${p.id}')">
+        <article role="article" aria-label="Producto favorito: ${prodName}" class="caja_fav w-full">
+          <div id="fav-card-${p.id}" class="tarjeta_fav bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md group cursor-pointer w-full box-border relative" onclick="handleProductCardClick(event, '${p.id}')">
             
+            <!-- Botón de basurero para eliminar de favoritos en la esquina superior derecha -->
+            <button 
+              type="button" 
+              role="button"
+              onclick="event.stopPropagation(); toggleFavorite('${p.id}')" 
+              class="btn_eliminar_fav absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center cursor-pointer select-none"
+              title="Eliminar de favoritos"
+              aria-label="Eliminar ${prodName} de favoritos"
+            >
+              <i aria-hidden="true" class="ph ph-trash text-lg sm:text-xl font-bold"></i>
+            </button>
+
             <!-- Imagen del producto siempre cuadrada, nunca estirada ni encogida -->
             <div 
               class="caja_img_fav product-card-image-box bg-brand-cream border border-brand-forest/20 shadow-xs select-none"
@@ -2969,7 +3088,7 @@
             >
               <img 
                 src="${p.image}" 
-                alt="${p.name}" 
+                alt="${prodName}" 
                 draggable="false"
                 ondragstart="return false;"
                 class="w-full h-full object-cover pointer-events-none select-none"
@@ -2990,13 +3109,13 @@
 
             <!-- Columna de detalles del producto con ancho completo y organización adaptable -->
             <div class="datos_fav space-y-3">
-              <div class="min-w-0 space-y-1.5">
+              <div class="min-w-0 space-y-1.5 pr-9 sm:pr-11">
                 <div>
                   <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-forest text-brand-cream text-[11px] sm:text-xs font-bold tracking-wide shadow-2xs border border-brand-forest/20 max-w-full truncate">
                     ${p.categoryName || ''}
                   </span>
                 </div>
-                <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="${p.name}">
+                <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="${prodName}">
                   <a href="#producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')">
                     ${p.name}
                   </a>
@@ -3038,14 +3157,36 @@
 
     function getFavoritesTabHTML() {
       const favIds = getFavorites();
-      const todos_favs = PRODUCTS.filter(p => favIds.includes(p.id));
 
-      let prods_filtrados = todos_favs;
+      // Sincronizar el orden de visualización de favoritos para mantener la posición exacta al eliminar/deshacer
+      if (!Array.isArray(favoritesDisplayOrder) || favoritesDisplayOrder.length === 0) {
+        favoritesDisplayOrder = [...favIds];
+      } else {
+        favIds.forEach(id => {
+          if (!favoritesDisplayOrder.includes(id)) {
+            favoritesDisplayOrder.push(id);
+          }
+        });
+        favoritesDisplayOrder = favoritesDisplayOrder.filter(id => favIds.includes(id) || pendingUndoFavorites[id]);
+      }
+
+      const itemsParaMostrar = [];
+      favoritesDisplayOrder.forEach(id => {
+        const prod = PRODUCTS.find(p => p.id === id);
+        if (!prod) return;
+        if (favIds.includes(id)) {
+          itemsParaMostrar.push({ isUndo: false, product: prod });
+        } else if (pendingUndoFavorites[id]) {
+          itemsParaMostrar.push({ isUndo: true, product: pendingUndoFavorites[id] });
+        }
+      });
+
+      let prods_filtrados = itemsParaMostrar;
       if (filtro_cat !== 'all') {
-        prods_filtrados = prods_filtrados.filter(p => p.category === filtro_cat);
+        prods_filtrados = prods_filtrados.filter(item => item.product.category === filtro_cat);
       }
       if (filtro_subcat !== 'all') {
-        prods_filtrados = prods_filtrados.filter(p => p.subcategory === filtro_subcat);
+        prods_filtrados = prods_filtrados.filter(item => item.product.subcategory === filtro_subcat);
       }
 
       const catMap = getCatalogCategoriesAndSubcategories();
@@ -3078,7 +3219,7 @@
       const hay_filtros = filtro_cat !== 'all' || filtro_subcat !== 'all';
 
       let html_contenido = '';
-      if (todos_favs.length === 0) {
+      if (itemsParaMostrar.length === 0) {
         // Estado vacío: Sin favoritos en la cuenta
         html_contenido = `
           <div class="text-center py-10 sm:py-14 px-4 bg-[#FEFAE0] rounded-3xl border-2 border-dashed border-brand-forest/30 space-y-4">
@@ -3136,7 +3277,7 @@
         // Lista de favoritos horizontal simplificada y 100% adaptable
         html_contenido = `
           <div class="cuadricula_fav grid grid-cols-1 gap-4 sm:gap-5 w-full">
-            ${prods_filtrados.map(renderFavoriteProductCard).join('')}
+            ${prods_filtrados.map(item => item.isUndo ? renderFavoriteUndoCard(item.product) : renderFavoriteProductCard(item.product)).join('')}
           </div>
         `;
       }
@@ -3152,7 +3293,7 @@
                 </h2>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#CCD5AE] border border-brand-forest/30 text-brand-forest text-xs font-bold shadow-xs whitespace-nowrap">
                   ${getHeartIconSVG(true, 'w-3.5 h-3.5 text-brand-forest')}
-                  <span>${todos_favs.length} ${todos_favs.length === 1 ? 'producto' : 'productos'}</span>
+                  <span>${favIds.length} ${favIds.length === 1 ? 'producto' : 'productos'}</span>
                 </span>
               </div>
               <p class="text-xs sm:text-sm text-brand-leaf/70 font-medium mt-1">
@@ -3183,7 +3324,7 @@
                 <span class="uppercase tracking-wider text-[11px] sm:text-xs font-extrabold">Filtrar favoritos:</span>
               </div>
               <span class="text-[11px] sm:text-xs text-brand-forest font-bold px-2.5 py-0.5 rounded-full bg-brand-cream/80 border border-brand-forest/20 shadow-2xs">
-                Mostrando ${prods_filtrados.length} de ${todos_favs.length}
+                Mostrando ${prods_filtrados.length} de ${itemsParaMostrar.length}
               </span>
             </div>
 
@@ -3240,7 +3381,14 @@
     function renderFavoritesTabContent() {
       const container = document.getElementById('account-tab-favorites');
       if (container) {
+        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
         container.innerHTML = getFavoritesTabHTML();
+        if (typeof prevScrollY === 'number' && prevScrollY > 0) {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+          });
+        }
       }
     }
 
@@ -6035,9 +6183,13 @@
       if (tabKey === 'personal') {
         tabPersonal.classList.remove('hidden');
         btnPersonal.className = activeClass;
+        pendingUndoFavorites = {};
+        favoritesDisplayOrder = [];
       } else if (tabKey === 'orders') {
         tabOrders.classList.remove('hidden');
         btnOrders.className = activeClass;
+        pendingUndoFavorites = {};
+        favoritesDisplayOrder = [];
       } else if (tabKey === 'favorites') {
         tabFavorites.classList.remove('hidden');
         btnFavorites.className = activeClass;
@@ -6051,6 +6203,8 @@
 
     // --- Vista 8: Perfil & Seguimiento de pedidos (cuenta.html / seguimiento-pedidos.html) ---
     function renderCuentaView() {
+      pendingUndoFavorites = {};
+      favoritesDisplayOrder = [];
       const urlParams = new URLSearchParams((window.location.hash || '').split('?')[1] || '');
       const requestedTab = urlParams.get('tab');
       if (requestedTab && ['personal', 'orders', 'favorites'].includes(requestedTab)) {
