@@ -365,8 +365,8 @@
                 >
                 <!-- Capa con icono de lupa visible al hacer hover para ver el producto -->
                 <a 
-                  href="#producto.html?id=${item.id}" 
-                  onclick="event.stopPropagation(); navigateTo('#producto.html?id=${item.id}');"
+                  href="producto.html?id=${item.id}" 
+                  onclick="event.stopPropagation(); navigateTo('producto.html?id=${item.id}');"
                   class="cart-hover-zoom absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-20"
                   title="Ver ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
                   aria-label="Ver detalle de ${typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name}"
@@ -520,8 +520,8 @@
       sessionStorage.setItem('sacha_cart_drawer_collapsed', 'true');
 
       // Al colapsar con la flecha, sí se muestra la pestaña con la flecha en el lateral
-      const currentHash = window.location.hash || '#index.html';
-      if (toggleBtn && !currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+      const currentPageUrl = getCurrentPageUrl() || 'index.html';
+      if (toggleBtn && !currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
         toggleBtn.classList.remove('hidden');
       }
 
@@ -552,9 +552,9 @@
       } else {
         const isDismissed = sessionStorage.getItem('sacha_cart_drawer_dismissed') === 'true';
         const isCollapsed = sessionStorage.getItem('sacha_cart_drawer_collapsed') === 'true';
-        const currentHash = window.location.hash || '#index.html';
+        const currentPageUrl = getCurrentPageUrl() || 'index.html';
         if (toggleBtn) {
-          if (!isDismissed && isCollapsed && !currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+          if (!isDismissed && isCollapsed && !currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
             toggleBtn.classList.remove('hidden');
           } else {
             toggleBtn.classList.add('hidden');
@@ -775,7 +775,7 @@
       }
       cardImageClickTimer = setTimeout(() => {
         saveCatalogPosition(productId);
-        navigateTo(`#producto.html?id=${productId}`);
+        navigateTo(`producto.html?id=${productId}`);
       }, 260);
     }
 
@@ -984,7 +984,7 @@
                   </span>
                 </div>
                 <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="${prodName}">
-                  <a href="#producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')">
+                  <a href="producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')">
                     ${p.name}
                   </a>
                 </h3>
@@ -996,7 +996,7 @@
                 <span class="text-base sm:text-lg md:text-xl font-extrabold text-brand-forest leading-none whitespace-nowrap">$${p.price.toFixed(2)}</span>
                 <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                   <a 
-                    href="#producto.html?id=${p.id}" 
+                    href="producto.html?id=${p.id}" 
                     role="button"
                     onclick="saveCatalogPosition('${p.id}')" 
                     class="btn_ver_fav flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 sm:py-2.5 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs sm:text-sm font-bold shadow-2xs border-2 border-brand-forest text-center whitespace-nowrap cursor-pointer transition-colors"
@@ -1105,7 +1105,7 @@
             <div class="pt-2">
               <button 
                 type="button" 
-                onclick="navigateTo('#categoria.html')" 
+                onclick="navigateTo('categoria.html')" 
                 class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 cursor-pointer border border-brand-forest"
               >
                 <i aria-hidden="true" class="ph ph-compass text-base text-brand-sunflower"></i>
@@ -1290,7 +1290,7 @@
         sessionStorage.removeItem('sacha_card_viewport_offset');
         sessionStorage.removeItem('sacha_prev_route');
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        navigateTo('#carrito.html');
+        navigateTo('carrito.html');
       } else {
         openCartDrawer();
       }
@@ -1312,10 +1312,10 @@
       cart.splice(itemIndex, 1);
       saveCart();
 
-      const currentHash = window.location.hash || '#index.html';
-      if (currentHash.includes('carrito.html')) {
+      const currentPageUrl = getCurrentPageUrl() || 'index.html';
+      if (currentPageUrl.includes('carrito.html')) {
         const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        renderCurrentRoute(currentHash);
+        refreshPageContent();
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
         requestAnimationFrame(() => {
           window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -1334,7 +1334,7 @@
         lastRemovedCartItem = null;
         saveCart();
         const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        renderCurrentRoute(window.location.hash || '#carrito.html');
+        refreshPageContent();
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
         requestAnimationFrame(() => {
           window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -1372,10 +1372,10 @@
       lastRemovedCartItem = null;
       saveCart();
 
-      const currentHash = window.location.hash || '#index.html';
-      if (currentHash.includes('carrito.html')) {
+      const currentPageUrl = getCurrentPageUrl() || 'index.html';
+      if (currentPageUrl.includes('carrito.html')) {
         const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        renderCurrentRoute(currentHash);
+        refreshPageContent();
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
         requestAnimationFrame(() => {
           window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -1452,10 +1452,10 @@
       if (prod) item.price = Number(prod.price);
 
       saveCart();
-      const currentHash = window.location.hash || '#index.html';
-      if (currentHash.includes('carrito.html')) {
+      const currentPageUrl = getCurrentPageUrl() || 'index.html';
+      if (currentPageUrl.includes('carrito.html')) {
         const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        renderCurrentRoute(currentHash);
+        refreshPageContent();
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
         requestAnimationFrame(() => {
           window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -1473,7 +1473,7 @@
       cart = [];
       saveCart();
       resetCheckoutProgress();
-      renderCurrentRoute(window.location.hash || '#carrito.html');
+      refreshPageContent();
       showToast('Se ha vaciado el carrito', 'ph-trash');
     }
 
@@ -1600,7 +1600,7 @@
         }
 
         dropdown.innerHTML = filtered.map(p => `
-          <a href="#producto.html?id=${p.id}" class="flex items-center gap-3.5 p-3.5 hover:bg-brand-cream border-b border-brand-olive/30 last:border-none transition-colors group">
+          <a href="producto.html?id=${p.id}" class="flex items-center gap-3.5 p-3.5 hover:bg-brand-cream border-b border-brand-olive/30 last:border-none transition-colors group">
             <img src="${p.image}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover border border-brand-olive flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
             <div class="flex-1 min-w-0 text-left">
               <span class="text-sm font-bold text-brand-forest truncate group-hover:text-brand-moss block">${p.name}</span>
@@ -1639,398 +1639,6 @@
       try {
         sessionStorage.setItem('sacha_last_visited_product', JSON.stringify(prod));
       } catch (e) {}
-    }
-
-    // --- Vista 1: Inicio (index.html) ---
-    function renderHomeView() {
-      const featured = PRODUCTS.filter(p => p.isFeatured).slice(0, 4);
-      const bestSellers = PRODUCTS.filter(p => p.isBestSeller).slice(0, 4);
-      const newArrivals = PRODUCTS.filter(p => p.isNew).slice(0, 4);
-
-      return `
-        <!-- ========================================================
-             PANEL PROMOCIONAL MULTISECCIÓN / HERO CAROUSEL
-             Inspirado en Equator Coffees (Ofertas, Novedades y Galardones)
-             ======================================================== -->
-        <section aria-label="Carrusel de promociones y novedades destacadas" class="bg-brand-cream pt-6 sm:pt-8 pb-4" id="hero-carousel-section">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
-            
-            <!-- Contenedor del Carrusel: Rectángulo con Bordes Redondeados y Auto-adaptable con Grid -->
-            <div id="hero-carousel" role="region" aria-roledescription="carrusel" aria-label="Promociones y novedades" class="relative w-full min-h-[460px] sm:min-h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-none hover:shadow-[0_25px_50px_-12px_rgba(40,54,24,0.4)] border-2 border-brand-forest/15 hover:border-brand-forest/35 transition-all duration-300 bg-brand-forest grid grid-cols-1 grid-rows-1">
-              
-              <!-- SLIDE 1: Sentirse bien nunca fue tan natural -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Primer bloque del carrusel: Herbolaria Viva y Tradición Ancestral, 1 de 4" aria-current="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-100 pointer-events-auto z-10 flex items-center justify-center w-full h-full relative">
-                <!-- Fondo visual natural andino/amazónico -->
-                <img 
-                  src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80" 
-                  alt="Valles andinos y naturaleza viva"
-                  class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="eager"
-                  onerror="this.src='https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80'"
-                >
-                <!-- Gradiente unificado para legibilidad y contraste -->
-                <div class="absolute inset-0 bg-black/45 sm:bg-black/40 backdrop-brightness-95"></div>
-                
-                <!-- Contenido accesible unificado y agrupado para lectores de pantalla y Read Aloud -->
-                <div class="lector_texto_accesible" role="region" aria-label="Primer bloque del carrusel: Herbolaria Viva y Tradición Ancestral" lang="es">
-                  <p lang="es">Primer bloque del carrusel, diapositiva 1 de 4: Herbolaria Viva y Tradición Ancestral. Sentirse bien nunca fue tan natural. Cosechas seleccionadas de comunidades campesinas de la región andina y de la sierra, junto a recolectores amazónicos de Napo, Cayambe y Pastaza, remedios puros que cuidan de ti y de la tierra. Botón: Ver más vendidos. Botón: Explorar catálogo. Botón: Diapositiva anterior. Botón: Siguiente diapositiva.</p>
-                </div>
-
-                <!-- Contenido Visual Slide 1: Completamente Centrado y Agrupado -->
-                <article aria-hidden="true" class="relative z-10 max-w-3xl mx-auto px-6 sm:px-12 md:px-16 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
-                  <div class="w-full text-center flex flex-col items-center justify-center">
-                    <span class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-widest shadow-md text-center max-w-full mb-3 sm:mb-4">
-                      <i aria-hidden="true" class="ph ph-plant text-sm text-brand-forest flex-shrink-0"></i>
-                      <span>Herbolaria Viva <span class="amp-normal">&amp;</span> Tradición Ancestral</span>
-                    </span>
-                    
-                    <span role="heading" aria-level="1" class="font-botanic text-[clamp(1.35rem,4vw,2.75rem)] sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance break-words block">
-                      Sentirse bien nunca fue tan natural.
-                    </span>
-                    
-                    <span class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center block">
-                      Cosechas seleccionadas de comunidades campesinas de la región andina y de la sierra, junto a recolectores amazónicos de Napo, Cayambe y Pastaza. Remedios puros que cuidan de ti y de la tierra.
-                    </span>
-                    
-                    <span role="group" aria-label="Botones de acción del primer bloque" class="flex flex-wrap items-center justify-center gap-3 sm:gap-3.5 w-full">
-                      <a href="#categoria.html?special=mas-vendidos" role="button" aria-label="Ver más vendidos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center text-center">
-                        <span>Ver más vendidos</span>
-                      </a>
-                      <a href="#categoria.html" role="button" aria-label="Explorar catálogo" class="px-6 py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center">
-                        <i aria-hidden="true" class="ph ph-magnifying-glass text-base text-brand-sunflower"></i>
-                        <span>Explorar catálogo</span>
-                      </a>
-                    </span>
-                  </div>
-                </article>
-              </div>
-
-              <!-- SLIDE 2: Promoción de Bienvenida & Descuento para Nuevos Clientes -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida, 2 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
-                <!-- Fondo visual -->
-                <img 
-                  src="https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=1920&q=80" 
-                  alt="Persona consumiendo productos orgánicos y naturales feliz"
-                  class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1527887980323-88b77f646535?auto=format&fit=crop&w=1920&q=80'"
-                >
-                <!-- Gradiente unificado con mayor contraste para fondo claro -->
-                <div class="absolute inset-0 bg-black/55 sm:bg-black/50 backdrop-brightness-90"></div>
-                
-                <!-- Contenido accesible unificado y agrupado para lectores de pantalla y Read Aloud -->
-                <div class="lector_texto_accesible" role="region" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida" lang="es">
-                  <p lang="es">Segundo bloque del carrusel, diapositiva 2 de 4: Beneficio Exclusivo de Bienvenida. Nuevos clientes reciben un 15% de descuento. Crea tu cuenta hoy y disfruta de un 15% de descuento directo en tu primer pedido de infusiones, superalimentos y medicina ancestral. Botón: Crear Cuenta y Obtener 15%. Botón: Explorar Catálogo. Botón: Diapositiva anterior. Botón: Siguiente diapositiva.</p>
-                </div>
-
-                <!-- Contenido Visual Slide 2: Completamente Centrado y Agrupado -->
-                <article aria-hidden="true" class="relative z-10 max-w-3xl mx-auto px-6 sm:px-12 md:px-16 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
-                  <div class="w-full text-center flex flex-col items-center justify-center">
-                    <span class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-normal sm:tracking-widest shadow-md text-center max-w-full mb-3 sm:mb-4">
-                      <i aria-hidden="true" class="ph ph-sparkle text-sm text-brand-forest flex-shrink-0"></i>
-                      <span class="break-words">Beneficio Exclusivo de Bienvenida</span>
-                    </span>
-                    
-                    <span role="heading" aria-level="2" class="font-botanic text-[clamp(1.35rem,4vw,2.75rem)] sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance break-words block">
-                      Nuevos clientes reciben un 15% de descuento
-                    </span>
-                    
-                    <span class="text-xs sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center block">
-                      Crea tu cuenta hoy y disfruta de un 15% de descuento directo en tu primer pedido de infusiones, superalimentos y medicina ancestral.
-                    </span>
-                    
-                    <span role="group" aria-label="Botones de acción del segundo bloque" class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 w-full">
-                      <button type="button" onclick="openAuthModal('register')" aria-label="Crear Cuenta y Obtener 15%" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center max-w-full cursor-pointer">
-                        <span>Crear Cuenta &amp; Obtener 15%</span>
-                        <i aria-hidden="true" class="ph ph-arrow-right text-base"></i>
-                      </button>
-                      <a href="#categoria.html" role="button" aria-label="Explorar Catálogo" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center max-w-full">
-                        <i aria-hidden="true" class="ph ph-magnifying-glass text-base text-brand-sunflower"></i>
-                        <span>Explorar Catálogo</span>
-                      </a>
-                    </span>
-                  </div>
-                </article>
-              </div>
-
-              <!-- SLIDE 3: Novedades / Cosecha Dorada Amazónica -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica, 3 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
-                <!-- Fondo visual cálido atardecer -->
-                <img 
-                  src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80" 
-                  alt="Cosecha dorada y selva amazónica"
-                  class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=1920&q=80'"
-                >
-                <!-- Gradiente unificado -->
-                <div class="absolute inset-0 bg-black/45 sm:bg-black/40 backdrop-brightness-95"></div>
-                
-                <!-- Contenido accesible unificado y agrupado para lectores de pantalla y Read Aloud -->
-                <div class="lector_texto_accesible" role="region" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica" lang="es">
-                  <p lang="es">Tercer bloque del carrusel, diapositiva 3 de 4: Recién Cosechado, Temporada Solar. Tinturas y Fórmulas Vivas de la Selva. Evocando la calidez del sol andino y la energía pura de las comunidades de Napo y Pastaza, extractos botánicos puros para revitalizar tu cuerpo y serenar la mente. Botón: Explorar la Colección. Botón: Ver Tinturas y Extractos. Botón: Diapositiva anterior. Botón: Siguiente diapositiva.</p>
-                </div>
-
-                <!-- Contenido Visual Slide 3: Completamente Centrado y Agrupado -->
-                <article aria-hidden="true" class="relative z-10 max-w-3xl mx-auto px-6 sm:px-12 md:px-16 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
-                  <div class="w-full text-center flex flex-col items-center justify-center">
-                    <span class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[11px] sm:text-xs uppercase tracking-widest shadow-md text-center max-w-full mb-3 sm:mb-4">
-                      <i aria-hidden="true" class="ph ph-sun-horizon text-sm text-brand-forest flex-shrink-0"></i>
-                      <span>Recién Cosechado · Temporada Solar</span>
-                    </span>
-                    
-                    <span role="heading" aria-level="2" class="font-botanic text-[clamp(1.35rem,4vw,2.75rem)] sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance break-words block">
-                      Tinturas <span class="amp-normal">&amp;</span> Fórmulas Vivas de la Selva
-                    </span>
-                    
-                    <span class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center block">
-                      Evocando la calidez del sol andino y la energía pura de las comunidades de Napo y Pastaza. Extractos botánicos puros para revitalizar tu cuerpo y serenar la mente.
-                    </span>
-                    
-                    <span role="group" aria-label="Botones de acción del tercer bloque" class="flex flex-wrap items-center justify-center gap-3 sm:gap-3.5 w-full">
-                      <a href="#categoria.html?special=nuevos" role="button" aria-label="Explorar la Colección" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center">
-                        <span>Explorar la Colección</span>
-                        <i aria-hidden="true" class="ph ph-arrow-right text-base"></i>
-                      </a>
-                      <a href="#categoria.html?cat=suplementos" role="button" aria-label="Ver Tinturas y Extractos" class="px-6 py-3 rounded-full bg-brand-forest/90 border-2 border-brand-sunflower text-brand-cream font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-brand-forest hover:ring-1 hover:ring-brand-sunflower transition-[background-color,transform] duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 backdrop-blur-xs text-center">
-                        <i aria-hidden="true" class="ph ph-drop text-base text-brand-sunflower"></i>
-                        <span>Ver Tinturas <span class="amp-normal">&amp;</span> Extractos</span>
-                      </a>
-                    </span>
-                  </div>
-                </article>
-              </div>
-
-              <!-- SLIDE 4: Superalimentos de Máxima Pureza -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad, 4 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
-                <!-- Fondo visual verde botánico -->
-                <img 
-                  src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1920&q=80" 
-                  alt="Hojas medicinales y superalimentos puros"
-                  class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=1920&q=80'"
-                >
-                <!-- Gradiente unificado con mayor contraste para hojas -->
-                <div class="absolute inset-0 bg-black/55 sm:bg-black/50 backdrop-brightness-90"></div>
-                
-                <!-- Contenido accesible unificado y agrupado para lectores de pantalla y Read Aloud -->
-                <div class="lector_texto_accesible" role="region" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad" lang="es">
-                  <p lang="es">Cuarto bloque del carrusel, diapositiva 4 de 4: 100% Orgánicos y Sin Químicos, Directo de Familias Productoras. Superalimentos con Máxima Calidad. Maca negra, colágeno con camu camu silvestre y cacao puro. Cosechas 100% orgánicas y sin químicos que llegan a ti directo de familias productoras de Napo, Cayambe y Pastaza. Botón: Comprar Superalimentos. Botón: Diapositiva anterior. Botón: Siguiente diapositiva.</p>
-                </div>
-
-                <!-- Contenido Visual Slide 4: Completamente Centrado y Agrupado -->
-                <article aria-hidden="true" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 md:px-8 w-full pt-8 sm:pt-10 pb-16 sm:pb-20 text-center flex flex-col items-center justify-center">
-                  <div class="w-full text-center flex flex-col items-center justify-center">
-                    <!-- Insignias Superiores Adaptables -->
-                    <span class="w-full flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-3 sm:mb-4 px-1">
-                      <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[clamp(10px,2.2vw,12px)] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-md text-center max-w-[calc(100%-0.5rem)]">
-                        <i aria-hidden="true" class="ph ph-leaf text-xs sm:text-sm text-brand-forest flex-shrink-0"></i>
-                        <span class="text-center leading-tight">100% Orgánicos y Sin Químicos</span>
-                      </span>
-                      <span class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#CCD5AE] text-brand-forest font-extrabold text-[clamp(10px,2.2vw,12px)] sm:text-xs uppercase tracking-wider sm:tracking-widest shadow-md text-center max-w-[calc(100%-0.5rem)]">
-                        <i aria-hidden="true" class="ph ph-users-three text-xs sm:text-sm text-brand-forest flex-shrink-0"></i>
-                        <span class="text-center leading-tight">Directo de Familias Productoras</span>
-                      </span>
-                    </span>
-                    
-                    <span role="heading" aria-level="2" class="font-botanic text-[clamp(1.35rem,4vw,2.75rem)] sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight drop-shadow-lg mb-3 sm:mb-4 max-w-2xl mx-auto text-center text-balance break-words block">
-                      Superalimentos con Máxima Calidad
-                    </span>
-                    
-                    <span class="text-sm sm:text-base text-white/95 max-w-xl mx-auto font-medium leading-relaxed drop-shadow mb-6 sm:mb-7 text-center block">
-                      Maca negra, colágeno con camu camu silvestre y cacao puro. Cosechas 100% orgánicas y sin químicos que llegan a ti directo de familias productoras de Napo, Cayambe y Pastaza.
-                    </span>
-                    
-                    <span role="group" aria-label="Botones de acción del cuarto bloque" class="flex flex-wrap items-center justify-center gap-3 sm:gap-3.5 w-full">
-                      <a href="#categoria.html?cat=suplementos" role="button" aria-label="Comprar Superalimentos" class="px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center">
-                        <span>Comprar Superalimentos</span>
-                        <i aria-hidden="true" class="ph ph-arrow-right text-base"></i>
-                      </a>
-                    </span>
-                  </div>
-                </article>
-              </div>
-
-              <!-- Flecha de Navegación Izquierda: DENTRO del panel y con margen del filo -->
-              <button 
-                id="hero-prev-btn" 
-                type="button" 
-                aria-label="Diapositiva anterior" 
-                title="Diapositiva anterior"
-                class="hero-nav-arrow absolute left-2 sm:left-3.5 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
-              >
-                <i aria-hidden="true" class="ph ph-caret-left text-base sm:text-lg font-bold"></i>
-                <span class="sr-only">Diapositiva anterior</span>
-              </button>
-
-              <!-- Flecha de Navegación Derecha: DENTRO del panel y con margen del filo -->
-              <button 
-                id="hero-next-btn" 
-                type="button" 
-                aria-label="Siguiente diapositiva" 
-                title="Siguiente diapositiva"
-                class="hero-nav-arrow absolute right-2 sm:right-3.5 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
-              >
-                <i aria-hidden="true" class="ph ph-caret-right text-base sm:text-lg font-bold"></i>
-                <span class="sr-only">Siguiente diapositiva</span>
-              </button>
-
-              <!-- Paginación con Puntos (Dots): Ubicada en la zona libre inferior -->
-              <div class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5" role="group" aria-label="Indicadores de diapositiva">
-                <button data-hero-slide="0" aria-label="Ir a diapositiva 1 de 4" aria-current="true" tabindex="-1" class="hero-dot w-8 h-3 rounded-full bg-white transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 1</span></button>
-                <button data-hero-slide="1" aria-label="Ir a diapositiva 2 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 2</span></button>
-                <button data-hero-slide="2" aria-label="Ir a diapositiva 3 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 3</span></button>
-                <button data-hero-slide="3" aria-label="Ir a diapositiva 4 de 4" tabindex="-1" class="hero-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer shadow-md"><span class="sr-only">Diapositiva 4</span></button>
-              </div>
-
-            </div>
-
-            <!-- Barra de Pestañas Interactivas (Destacados, Más Vendidos, Nuevos) -->
-            <div class="py-2.5 px-4 text-center">
-              <div class="lector_texto_accesible" role="region" aria-label="Selección Especial" lang="es">
-                <p id="seleccion-especial-a11y-texto" lang="es">Selección Especial. Pestaña actualmente seleccionada: Productos Destacados. Otras opciones disponibles: Los Más Vendidos, Productos Nuevos, Ver todos.</p>
-              </div>
-              <div role="tablist" aria-label="Filtro de productos en inicio" class="flex items-center justify-center gap-2 sm:gap-3.5 flex-wrap text-xs sm:text-sm uppercase tracking-wider text-brand-forest">
-                <!-- Label a la izquierda indicando que es una Selección Especial -->
-                <span class="inline-flex items-center gap-1.5 sm:gap-2 text-base sm:text-lg md:text-xl font-black text-brand-forest uppercase tracking-wider flex-shrink-0 select-none py-1 mr-0.5 sm:mr-2" aria-hidden="true">
-                  <i class="ph ph-sparkle text-lg sm:text-xl md:text-2xl text-brand-forest flex-shrink-0"></i>
-                  <span>Selección Especial:</span>
-                </span>
-
-                <button 
-                  type="button" 
-                  role="tab"
-                  aria-selected="true"
-                  aria-controls="home-products-grid"
-                  data-product-tab="destacados" 
-                  aria-label="Productos Destacados, pestaña seleccionada"
-                  class="tab-link-btn is-active px-4 py-1.5 rounded-full border-2 border-brand-forest text-brand-cream bg-brand-forest font-extrabold shadow-sm transition-all flex items-center gap-2 cursor-default focus:outline-none"
-                >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower inline-block animate-pulse"></span>
-                  <span aria-hidden="true">Productos Destacados</span>
-                </button>
-                <button 
-                  type="button" 
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="home-products-grid"
-                  data-product-tab="mas-vendidos" 
-                  aria-label="Los Más Vendidos, pestaña"
-                  class="tab-link-btn px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-2 cursor-pointer focus:outline-none"
-                >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower hidden animate-pulse"></span>
-                  <span aria-hidden="true">Los Más Vendidos</span>
-                </button>
-                <button 
-                  type="button" 
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="home-products-grid"
-                  data-product-tab="nuevos" 
-                  aria-label="Productos Nuevos, pestaña"
-                  class="tab-link-btn px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-black/5 font-bold transition-all flex items-center gap-2 cursor-pointer focus:outline-none"
-                >
-                  <span class="tab-pulse-dot w-2 h-2 rounded-full bg-brand-sunflower hidden animate-pulse"></span>
-                  <span aria-hidden="true">Productos Nuevos</span>
-                </button>
-                <a 
-                  href="#categoria.html" 
-                  aria-label="Ver todos los productos"
-                  class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-[#CCD5AE] font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
-                >
-                  <span aria-hidden="true">Ver todos</span>
-                  <i aria-hidden="true" class="ph ph-arrow-right text-sm"></i>
-                </a>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- Sección Dinámica: Productos según la opción seleccionada debajo del carrusel -->
-        <section aria-label="Productos destacados" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-12" id="home-products-section">
-          <!-- Cuadrícula Dinámica de Productos -->
-          <div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-opacity duration-200">
-            ${featured.map(renderProductCard).join('')}
-          </div>
-        </section>
-
-        <!-- Tarjetas de Acceso a Categorías Principales -->
-        <section aria-label="Nuestras Categorías Principales" class="bg-brand-cream/60 py-8 sm:py-10 border-b border-brand-olive/40" id="home-categories-section">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Bloque de lectura accesible para que el lector mencione la sección y únicamente los títulos de categorías -->
-            <div class="lector_texto_accesible" role="region" aria-label="Nuestras Categorías Principales" lang="es">
-              <p lang="es">Nuestras Categorías Principales. Categoría: Suplementos y Superalimentos.</p>
-            </div>
-
-            <h2 id="home-categories-heading" class="font-botanic text-2xl sm:text-3xl font-bold text-brand-forest text-center mb-6 sm:mb-8" aria-hidden="true">Nuestras Categorías Principales</h2>
-            
-            <div class="flex justify-center max-w-2xl lg:max-w-3xl mx-auto w-full" aria-hidden="true">
-              <a href="#categoria.html?cat=suplementos" class="w-full group relative rounded-2xl sm:rounded-3xl p-5 sm:p-7 md:p-8 bg-[#CCD5AE] border-2 border-brand-forest hover:border-[#3e4a2f] shadow-md hover:shadow-xl transition-all text-left flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#FEFAE0] text-brand-forest flex items-center justify-center text-3xl sm:text-4xl group-hover:scale-105 transition-transform flex-shrink-0 shadow-xs border border-brand-forest/10">
-                  <i class="ph ph-lightning"></i>
-                </div>
-                <div class="min-w-0 flex-1 w-full space-y-2.5 sm:space-y-3">
-                  <h3 class="font-botanic text-xl sm:text-2xl md:text-3xl font-bold text-brand-forest group-hover:text-brand-leaf transition-colors break-words leading-tight">Suplementos <span class="amp-normal">&amp;</span> Superalimentos</h3>
-                  <p class="text-xs sm:text-sm md:text-base text-brand-forest/90 font-medium leading-relaxed break-words">Superalimentos en polvo, maca, cacao fino, colágeno, vitaminas, minerales y remedios tradicionales.</p>
-                  
-                  <div class="pt-1.5 flex flex-wrap items-center gap-2">
-                    <span class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-brand-cream group-hover:translate-x-1 transition-all bg-[#283618] group-hover:bg-[#1f2b13] px-3.5 py-2 rounded-xl border border-[#283618] shadow-xs max-w-full">
-                      <span class="break-words">Explorar <strong class="font-extrabold text-brand-sunflower">10</strong> productos disponibles</span>
-                      <i class="ph ph-arrow-right text-base sm:text-lg text-brand-sunflower flex-shrink-0"></i>
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- Sección: ¿Por qué elegir Sacha & Pamba? -->
-        <section aria-labelledby="home-why-heading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div class="bg-brand-forest text-brand-cream rounded-3xl p-8 sm:p-12 shadow-xl">
-            <div class="text-center max-w-xl mx-auto mb-10">
-              <p class="font-sans uppercase tracking-widest font-bold text-sm text-brand-sunflower block mb-2.5">Nuestra Filosofía</p>
-              <h2 id="home-why-heading" class="font-botanic text-3xl sm:text-4xl font-bold flex items-center justify-center flex-wrap">¿Por qué elegir Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba?</h2>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-              <div class="bg-[#CCD5AE] rounded-2xl p-6 border-2 border-brand-forest/20 space-y-3 shadow-sm text-brand-forest">
-                <div class="w-14 h-14 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center mx-auto text-3xl font-bold shadow-xs">
-                  <i aria-hidden="true" class="ph ph-leaf"></i>
-                </div>
-                <h3 class="font-sans font-bold text-lg text-brand-forest leading-tight">100% Agroecológico</h3>
-                <p class="text-sm text-brand-leaf font-medium leading-relaxed">Sin pesticidas sintéticos, sin aditivos artificiales y respetando ciclos lunares.</p>
-              </div>
-
-              <div class="bg-[#CCD5AE] rounded-2xl p-6 border-2 border-brand-forest/20 space-y-3 shadow-sm text-brand-forest">
-                <div class="w-14 h-14 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center mx-auto text-3xl font-bold shadow-xs">
-                  <i aria-hidden="true" class="ph ph-handshake"></i>
-                </div>
-                <h3 class="font-sans font-bold text-lg text-brand-forest leading-tight">Comercio Justo</h3>
-                <p class="text-sm text-brand-leaf font-medium leading-relaxed">Trabajamos de la mano con familias productoras de Napo, Cayambe y Pastaza.</p>
-              </div>
-
-              <div class="bg-[#CCD5AE] rounded-2xl p-6 border-2 border-brand-forest/20 space-y-3 shadow-sm text-brand-forest">
-                <div class="w-14 h-14 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center mx-auto text-3xl font-bold shadow-xs">
-                  <i aria-hidden="true" class="ph ph-storefront"></i>
-                </div>
-                <h3 class="font-sans font-bold text-lg text-brand-forest leading-tight">Retiro Inmediato</h3>
-                <p class="text-sm text-brand-leaf font-medium leading-relaxed">Compra en línea y retira sin costo adicional en nuestra tienda de la González Suárez.</p>
-              </div>
-
-              <div class="bg-[#CCD5AE] rounded-2xl p-6 border-2 border-brand-forest/20 space-y-3 shadow-sm text-brand-forest">
-                <div class="w-14 h-14 rounded-xl bg-brand-forest text-brand-sunflower flex items-center justify-center mx-auto text-3xl font-bold shadow-xs">
-                  <i aria-hidden="true" class="ph ph-shield-check"></i>
-                </div>
-                <h3 class="font-sans font-bold text-lg text-brand-forest leading-tight">Asesoría de Confianza</h3>
-                <p class="text-sm text-brand-leaf font-medium leading-relaxed">Respaldamos cada remedio con guías claras de uso seguro y tradicional.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      `;
     }
 
     // --- Vista 2: Catálogo de Productos y Filtros (categoria.html) ---
@@ -2077,19 +1685,19 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
           <nav aria-label="Miga de pan" class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-4 flex-wrap bg-[#CCD5AE] py-1.5 px-3.5 rounded-xl border border-brand-forest/20 shadow-xs">
-            <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
+            <a href="index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
             ${!selectedCat && !selectedSpecial ? `
               <span class="font-bold text-brand-forest">Productos</span>
             ` : `
-              <a href="#categoria.html" class="hover:text-brand-forest">Productos</a>
+              <a href="categoria.html" class="hover:text-brand-forest">Productos</a>
             `}
             ${selectedSpecial ? `
               <span>/</span>
               ${!subcatTitle ? `
                 <span class="font-bold text-brand-forest">${catTitle}</span>
               ` : `
-                <a href="#categoria.html?special=all" class="hover:text-brand-forest">${catTitle}</a>
+                <a href="categoria.html?special=all" class="hover:text-brand-forest">${catTitle}</a>
               `}
             ` : ''}
             ${selectedCat ? `
@@ -2097,7 +1705,7 @@
               ${!selectedSubcat ? `
                 <span class="font-bold text-brand-forest">${catTitle}</span>
               ` : `
-                <a href="#categoria.html?cat=${selectedCat}" class="hover:text-brand-forest">${catTitle}</a>
+                <a href="categoria.html?cat=${selectedCat}" class="hover:text-brand-forest">${catTitle}</a>
               `}
             ` : ''}
             ${subcatTitle ? `
@@ -2107,7 +1715,7 @@
             ${lastProduct ? `
               <span class="opacity-40">/</span>
               <a 
-                href="#producto.html?id=${lastProduct.id}" 
+                href="producto.html?id=${lastProduct.id}" 
                 class="opacity-60 hover:opacity-100 transition-opacity text-brand-forest font-medium hover:underline inline-flex items-center gap-1"
                 title="Volver a ${escapeHtml(lastProduct.name)}"
               >
@@ -2125,11 +1733,11 @@
                   <i aria-hidden="true" class="ph ph-funnel text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
                   <span>Categorías</span>
                 </h2>
-                <a href="#categoria.html" role="button" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0 ml-auto whitespace-nowrap" title="Restablecer filtros">Limpiar</a>
+                <a href="categoria.html" role="button" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0 ml-auto whitespace-nowrap" title="Restablecer filtros">Limpiar</a>
               </div>
 
               <!-- Botón Ver Todos -->
-              <a href="#categoria.html" role="button" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold'} text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
+              <a href="categoria.html" role="button" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl ${!selectedCat && !selectedSpecial ? 'bg-brand-sunflower text-brand-leaf font-bold shadow-xs' : 'bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold'} text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
                 <div class="flex items-center gap-2 min-w-0">
                   <i aria-hidden="true" class="ph ph-squares-four text-base flex-shrink-0 text-brand-forest"></i>
                   <span class="font-bold whitespace-nowrap">Ver Todos</span>
@@ -2151,25 +1759,25 @@
                 </button>
 
                 <div id="sidebar-drawer-especiales" role="region" aria-label="Subcategorías de Selección Especial" class="sidebar-cat-drawer ${selectedSpecial ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
-                  <a href="#categoria.html?special=all" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
+                  <a href="categoria.html?special=all" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedSpecial === 'all' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Toda la Selección</span>
                     <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">${allSpecialCount}</span>
                   </a>
-                  <a href="#categoria.html?special=destacados" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'destacados' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?special=destacados" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'destacados' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <div class="flex items-center gap-1.5 min-w-0">
                       <i aria-hidden="true" class="ph ph-star text-sm ${selectedSpecial === 'destacados' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
                       <span class="whitespace-nowrap">Destacados</span>
                     </div>
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
                   </a>
-                  <a href="#categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'mas-vendidos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'mas-vendidos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <div class="flex items-center gap-1.5 min-w-0">
                       <i aria-hidden="true" class="ph ph-fire text-sm ${selectedSpecial === 'mas-vendidos' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
                       <span class="whitespace-nowrap">Más Vendidos</span>
                     </div>
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">6</span>
                   </a>
-                  <a href="#categoria.html?special=nuevos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'nuevos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?special=nuevos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSpecial === 'nuevos' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <div class="flex items-center gap-1.5 min-w-0">
                       <i aria-hidden="true" class="ph ph-plant text-sm ${selectedSpecial === 'nuevos' ? 'text-brand-forest' : 'text-brand-sunflower'} flex-shrink-0"></i>
                       <span class="whitespace-nowrap">Nuevos</span>
@@ -2193,19 +1801,19 @@
                 </button>
 
                 <div id="sidebar-drawer-suplementos" role="region" aria-label="Subcategorías de Suplementos" class="sidebar-cat-drawer ${selectedCat === 'suplementos' ? '' : 'hidden'} bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
-                  <a href="#categoria.html?cat=suplementos" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
+                  <a href="categoria.html?cat=suplementos" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm ${selectedCat === 'suplementos' && !selectedSubcat ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest font-semibold'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Todos los Suplementos</span>
                     <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'vitaminas-minerales' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'vitaminas-minerales' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Vitaminas &amp; Minerales</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">3</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'remedios' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'remedios' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <span class="whitespace-nowrap">Remedios Tradicionales</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">2</span>
                   </a>
-                  <a href="#categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'suplementos-polvo' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
+                  <a href="categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs ${selectedSubcat === 'suplementos-polvo' ? 'bg-brand-sunflower font-bold text-brand-leaf shadow-xs' : 'hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium'} transition-colors gap-2">
                     <span class="whitespace-nowrap">En Polvo / Harinas</span>
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">5</span>
                   </a>
@@ -2233,7 +1841,7 @@
                   <i aria-hidden="true" class="ph ph-magnifying-glass text-5xl text-brand-forest/50 mb-4 block"></i>
                   <h2 class="font-botanic text-xl font-bold text-brand-forest">No hay productos en esta selección</h2>
                   <p class="text-sm text-brand-forest/80 mt-2 mb-5 font-medium">Prueba seleccionando otra subcategoría o consulta nuestro catálogo completo.</p>
-                  <a href="#categoria.html" class="inline-block px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-sm shadow-xs hover:bg-[#dcb556]">
+                  <a href="categoria.html" class="inline-block px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-sm shadow-xs hover:bg-[#dcb556]">
                     Ver todos los productos
                   </a>
                 </div>
@@ -2247,12 +1855,12 @@
     }
 
     function saveCatalogPosition(productId) {
-      let currentHash = window.location.hash || '#index.html';
-      if (currentHash.includes('cuenta.html') && (!currentHash.includes('tab=') || currentAccountTab === 'favorites')) {
-        currentHash = '#cuenta.html?tab=' + (currentAccountTab || 'favorites');
+      let currentPageUrl = getCurrentPageUrl() || 'index.html';
+      if (currentPageUrl.includes('cuenta.html') && (!currentPageUrl.includes('tab=') || currentAccountTab === 'favorites')) {
+        currentPageUrl = 'cuenta.html?tab=' + (currentAccountTab || 'favorites');
       }
-      if (!currentHash.startsWith('#producto.html')) {
-        sessionStorage.setItem('sacha_prev_route', currentHash);
+      if (!currentPageUrl.startsWith('producto.html')) {
+        sessionStorage.setItem('sacha_prev_route', currentPageUrl);
         const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
         sessionStorage.setItem('sacha_catalog_scroll_pos', String(scrollY));
         if (productId) {
@@ -2268,8 +1876,8 @@
 
     function handleBackToProducts() {
       const prevRoute = sessionStorage.getItem('sacha_prev_route');
-      let targetRoute = '#categoria.html';
-      if (prevRoute && (prevRoute.startsWith('#categoria.html') || prevRoute.startsWith('#productos.html') || prevRoute.startsWith('#index.html') || prevRoute.includes('cuenta.html'))) {
+      let targetRoute = 'categoria.html';
+      if (prevRoute && (prevRoute.startsWith('categoria.html') || prevRoute.startsWith('productos.html') || prevRoute.startsWith('index.html') || prevRoute.includes('cuenta.html'))) {
         targetRoute = prevRoute;
       }
       navigateTo(targetRoute);
@@ -2280,7 +1888,7 @@
         return;
       }
       saveCatalogPosition(id);
-      navigateTo(`#producto.html?id=${id}`);
+      navigateTo(`producto.html?id=${id}`);
     }
 
     function renderProductCard(p) {
@@ -2326,7 +1934,7 @@
               </div>
 
               <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
-                <a href="#producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                <a href="producto.html?id=${p.id}" tabindex="-1" onclick="saveCatalogPosition('${p.id}')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
                   ${p.name}
                 </a>
               </h3>
@@ -2345,7 +1953,7 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="#producto.html?id=${p.id}" role="button" aria-label="Ver detalles de ${p.name}" onclick="saveCatalogPosition('${p.id}')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+              <a href="producto.html?id=${p.id}" role="button" aria-label="Ver detalles de ${p.name}" onclick="saveCatalogPosition('${p.id}')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
                 Ver
               </a>
               <button 
@@ -2389,14 +1997,14 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           
           <nav aria-label="Miga de pan" class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-5 flex-wrap bg-[#CCD5AE] py-2 px-4 rounded-xl border border-brand-forest/20 max-w-full shadow-xs">
-            <a href="#index.html" class="hover:text-brand-forest">Inicio</a>
+            <a href="index.html" class="hover:text-brand-forest">Inicio</a>
             <span>/</span>
             ${isFromFavorites ? `
-              <a href="#cuenta.html?tab=favorites" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Favoritos</a>
+              <a href="cuenta.html?tab=favorites" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Favoritos</a>
             ` : `
-              <a href="#categoria.html" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Productos</a>
+              <a href="categoria.html" class="hover:text-brand-forest" onclick="event.preventDefault(); event.stopPropagation(); handleBackToProducts(); return false;">Productos</a>
               <span>/</span>
-              <a href="#categoria.html?cat=${product.category}" class="hover:text-brand-forest">${product.categoryName}</a>
+              <a href="categoria.html?cat=${product.category}" class="hover:text-brand-forest">${product.categoryName}</a>
             `}
             <span>/</span>
             <span class="font-bold text-brand-forest">${product.name}</span>
@@ -3070,7 +2678,7 @@
         showToast('¡Producto marcado como retirado en tienda física!', 'ph-seal-check');
       }
       localStorage.setItem('sacha_pamba_picked_up_products', JSON.stringify(list));
-      renderCurrentRoute(window.location.hash || '#producto.html?id=' + productId);
+      refreshPageContent();
     }
 
     function openReviewModal(productId) {
@@ -3232,20 +2840,20 @@
       if (e) e.preventDefault();
       const user = getCurrentUser();
       if (!user) {
-        pendingCheckoutRedirect = '#checkout-retiro.html';
+        pendingCheckoutRedirect = 'checkout-retiro.html';
         openAuthModal('register', 'Inicia sesión o regístrate para proceder con tu compra.');
         return;
       }
-      navigateTo('#checkout-retiro.html');
+      navigateTo('checkout-retiro.html');
     }
 
-    function handleStepperNav(hash) {
-      if (hash.startsWith('#checkout') && !getCurrentUser()) {
-        pendingCheckoutRedirect = hash;
+    function handleStepperNav(url) {
+      if (url.startsWith('checkout') && !getCurrentUser()) {
+        pendingCheckoutRedirect = url;
         openAuthModal('register', 'Inicia sesión o regístrate para proceder con tu compra.');
         return;
       }
-      navigateTo(hash);
+      navigateTo(url);
     }
 
     function renderCheckoutStepper(currentStep) {
@@ -3255,10 +2863,10 @@
       const maxReached = (currentStep === 4) ? 4 : getMaxCheckoutStep();
 
       const steps = [
-        { id: 1, name: 'Carrito', hash: '#carrito.html' },
-        { id: 2, name: 'Retiro', hash: '#checkout-retiro.html' },
-        { id: 3, name: 'Pago', hash: '#checkout-pago.html' },
-        { id: 4, name: 'Confirmación', hash: '#checkout-confirmacion.html' }
+        { id: 1, name: 'Carrito', url: 'carrito.html' },
+        { id: 2, name: 'Retiro', url: 'checkout-retiro.html' },
+        { id: 3, name: 'Pago', url: 'checkout-pago.html' },
+        { id: 4, name: 'Confirmación', url: 'checkout-confirmacion.html' }
       ];
 
       // En el proceso de confirmación no se permite volver a ningún paso
@@ -3309,7 +2917,7 @@
                   <li class="inline-flex items-center">
                     <button 
                       type="button" 
-                      onclick="handleStepperNav('${st.hash}')" 
+                      onclick="handleStepperNav('${st.url}')" 
                       class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" 
                       title="${actionTitle}"
                       aria-label="${actionTitle}"
@@ -3368,7 +2976,7 @@
             <button 
               type="button" 
               role="button"
-              onclick="navigateTo('#categoria.html')" 
+              onclick="navigateTo('categoria.html')" 
               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
               aria-label="Seguir comprando en el catálogo"
             >
@@ -3410,7 +3018,7 @@
               <p class="text-xs sm:text-sm text-brand-leaf/70 leading-relaxed font-medium">
                 Descubre nuestros suplementos y superalimentos puros para tu bienestar.
               </p>
-              <a href="#categoria.html" role="button" class="inline-block px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-sm shadow-sm hover:bg-[#dcb556] transition-transform active:scale-95">
+              <a href="categoria.html" role="button" class="inline-block px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-sm shadow-sm hover:bg-[#dcb556] transition-transform active:scale-95">
                 Explorar el catálogo
               </a>
             </div>
@@ -3424,7 +3032,7 @@
                     
                     <!-- Bloque Superior: Imagen + Nombre + Tamaño/Precio + Botón Eliminar Móvil -->
                     <div class="cart-item-top flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                      <a href="#producto.html?id=${item.id}" tabindex="-1" class="flex-shrink-0 block" aria-label="Ver detalles de ${item.name}">
+                      <a href="producto.html?id=${item.id}" tabindex="-1" class="flex-shrink-0 block" aria-label="Ver detalles de ${item.name}">
                         <img 
                           src="${item.image}" 
                           alt="${item.name}" 
@@ -3435,7 +3043,7 @@
                       
                       <div class="min-w-0 flex-1 text-left">
                         <h3 class="font-botanic font-bold text-sm sm:text-base text-brand-forest leading-snug break-words">
-                          <a href="#producto.html?id=${item.id}" class="hover:text-brand-moss transition-colors">
+                          <a href="producto.html?id=${item.id}" class="hover:text-brand-moss transition-colors">
                             ${item.name}
                           </a>
                         </h3>
@@ -3553,7 +3161,7 @@
                   </p>
                 </div>
 
-                <a href="#checkout-retiro.html" role="button" onclick="handleProceedToCheckout(event)" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center cursor-pointer" aria-label="Continuar a Retiro" title="Continuar a Retiro">
+                <a href="checkout-retiro.html" role="button" onclick="handleProceedToCheckout(event)" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 text-center cursor-pointer" aria-label="Continuar a Retiro" title="Continuar a Retiro">
                   <span>Continuar a Retiro</span>
                   <i aria-hidden="true" class="ph ph-arrow-right text-lg"></i>
                 </a>
@@ -3586,7 +3194,7 @@
             <button 
               type="button" 
               role="button"
-              onclick="navigateTo('#carrito.html')" 
+              onclick="navigateTo('carrito.html')" 
               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
               aria-label="Volver al carrito de compras"
             >
@@ -3679,7 +3287,7 @@
                 </div>
               </div>
 
-              <a href="#checkout-pago.html" role="button" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 mt-2 cursor-pointer">
+              <a href="checkout-pago.html" role="button" class="w-full py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 mt-2 cursor-pointer">
                 <span>Continuar al pago</span>
                 <i aria-hidden="true" class="ph ph-arrow-right text-lg"></i>
               </a>
@@ -3743,7 +3351,7 @@
             <button 
               type="button" 
               role="button"
-              onclick="navigateTo('#checkout-retiro.html')" 
+              onclick="navigateTo('checkout-retiro.html')" 
               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
               aria-label="Volver al paso de retiro en tienda"
             >
@@ -3950,7 +3558,7 @@
     function processPayment() {
       const user = getCurrentUser();
       if (!user) {
-        pendingCheckoutRedirect = '#checkout-pago.html';
+        pendingCheckoutRedirect = 'checkout-pago.html';
         openAuthModal('login');
         showToast('Inicia sesión para finalizar tu pedido', 'ph-user');
         return;
@@ -3983,7 +3591,7 @@
         cart = [];
         saveCart();
         resetCheckoutProgress();
-        navigateTo('#checkout-confirmacion.html');
+        navigateTo('checkout-confirmacion.html');
       }, 700);
     }
 
@@ -4034,10 +3642,10 @@
             </div>
 
             <div class="pt-2 sm:pt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4" role="group" aria-label="Acciones posteriores a la compra">
-              <a href="#seguimiento-pedidos.html" role="button" class="w-full sm:w-auto inline-block px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-forest text-brand-cream hover:bg-[#1b2611] font-bold text-xs sm:text-sm md:text-base shadow-sm transition-transform active:scale-95 text-center">
+              <a href="seguimiento-pedidos.html" role="button" class="w-full sm:w-auto inline-block px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-forest text-brand-cream hover:bg-[#1b2611] font-bold text-xs sm:text-sm md:text-base shadow-sm transition-transform active:scale-95 text-center">
                 Ver Seguimiento de mi Pedido
               </a>
-              <a href="#index.html" role="button" class="w-full sm:w-auto inline-block px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm md:text-base shadow-sm transition-transform active:scale-95 text-center">
+              <a href="index.html" role="button" class="w-full sm:w-auto inline-block px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm md:text-base shadow-sm transition-transform active:scale-95 text-center">
                 Volver a Inicio
               </a>
             </div>
@@ -4054,7 +3662,7 @@
     function switchAccountTab(tabKey) {
       currentAccountTab = tabKey;
       try {
-        history.replaceState(null, '', '#cuenta.html?tab=' + tabKey);
+        history.replaceState(null, '', 'cuenta.html?tab=' + tabKey);
       } catch (e) {}
       const tabPersonal = document.getElementById('account-tab-personal');
       const tabOrders = document.getElementById('account-tab-orders');
@@ -4105,7 +3713,7 @@
     function renderCuentaView() {
       pendingUndoFavorites = {};
       favoritesDisplayOrder = [];
-      const urlParams = new URLSearchParams((window.location.hash || '').split('?')[1] || '');
+      const urlParams = new URLSearchParams(window.location.search);
       const requestedTab = urlParams.get('tab');
       if (requestedTab && ['personal', 'orders', 'favorites'].includes(requestedTab)) {
         currentAccountTab = requestedTab;
@@ -4148,7 +3756,7 @@
             <button 
               type="button" 
               role="button"
-              onclick="navigateTo('#categoria.html')" 
+              onclick="navigateTo('categoria.html')" 
               class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
               aria-label="Seguir comprando en el catálogo"
             >
@@ -4520,7 +4128,7 @@
                     <div class="flex items-center gap-3 bg-[#FEFAE0] rounded-xl p-2.5 border border-brand-forest/20 shadow-xs text-brand-forest">
                       <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-lg object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
                       <div class="flex-1 min-w-0 text-left">
-                        <a href="#producto.html?id=${item.id}" class="text-xs font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
+                        <a href="producto.html?id=${item.id}" class="text-xs font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
                           ${item.name}
                         </a>
                         <p class="text-[11px] text-brand-leaf/70 font-medium truncate">${item.size || 'Unidad'} • Cant: <strong>${item.quantity}</strong></p>
@@ -4580,7 +4188,7 @@
                   <p class="text-xs text-brand-leaf/70 font-medium mt-1">Todas tus compras solicitadas</p>
                 </div>
                 <a 
-                  href="#politicas-retiro.html" 
+                  href="politicas-retiro.html" 
                   class="text-xs sm:text-sm font-bold bg-brand-forest text-brand-sunflower px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs hover:bg-[#3e4a2f] hover:scale-105 active:scale-95 transition-all text-center inline-flex items-center gap-1.5 whitespace-nowrap"
                   title="Ver Políticas de Retiro"
                 >
@@ -4674,7 +4282,7 @@
                             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                               <img src="${prod.image}" alt="${prod.name}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-brand-forest/20 flex-shrink-0" onerror="this.src='https://placehold.co/80x80/CCD5AE/283618?text=Item'">
                               <div class="min-w-0 flex-1">
-                                <a href="#producto.html?id=${prod.id}" class="font-bold text-xs sm:text-sm text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
+                                <a href="producto.html?id=${prod.id}" class="font-bold text-xs sm:text-sm text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5">
                                   ${prod.name}
                                 </a>
                                 <span class="text-[11px] sm:text-xs text-brand-leaf/70 block font-medium truncate">${prod.size || 'Unidad'}</span>
@@ -4815,7 +4423,7 @@
       }
 
       showToast(`Pedido ${orderNumber}: Estado cambiado a "${newStatus}"`, 'ph-check-circle');
-      renderCurrentRoute(window.location.hash || '#cuenta.html');
+      refreshPageContent();
     }
 
     function toggleStatusDropdown(key, event) {
@@ -5084,7 +4692,7 @@
           </div>
 
           <div class="mt-10 sm:mt-12 text-center pt-3">
-            <a href="#categoria.html" role="button" class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base shadow-sm transition-transform active:scale-95 max-w-full break-words">
+            <a href="categoria.html" role="button" class="inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base shadow-sm transition-transform active:scale-95 max-w-full break-words">
               <i aria-hidden="true" class="ph ph-plant text-xl flex-shrink-0"></i>
               <span>Explorar catálogo y hacer tu pedido</span>
             </a>
@@ -5094,31 +4702,22 @@
       `;
     }
 
-    function parseRoute(url) {
-      let raw = url || '#index.html';
-      if (raw.startsWith('#')) {
-        raw = raw.slice(1);
-      }
-      let path = raw;
-      let queryStr = '';
-      if (raw.includes('?')) {
-        const parts = raw.split('?');
-        path = parts[0];
-        queryStr = parts[1];
-      }
-      const params = {};
-      if (queryStr) {
-        new URLSearchParams(queryStr).forEach((val, key) => {
-          params[key] = val;
-        });
-      }
-      return { path: path.replace(/^\//, '') || 'index.html', params };
+    function getCurrentPageUrl() {
+      return (window.location.pathname.split('/').pop() || 'index.html') + window.location.search;
+    }
+
+    function parsePageUrl(url = getCurrentPageUrl()) {
+      const pageUrl = new URL(url, window.location.href);
+      return {
+        path: pageUrl.pathname.split('/').pop() || 'index.html',
+        params: Object.fromEntries(pageUrl.searchParams)
+      };
     }
 
     function updateActiveNav(path) {
       document.querySelectorAll('.nav-section-link').forEach(link => {
         const href = link.getAttribute('href') || '';
-        const cleanHref = href.replace(/^#/, '');
+        const cleanHref = href;
         if (cleanHref && (cleanHref === path || (path === 'index.html' && cleanHref === 'index.html'))) {
           link.classList.add('bg-brand-olive', 'text-brand-forest', 'shadow-xs');
           link.classList.remove('bg-white/10', 'text-brand-cream/90');
@@ -5129,210 +4728,23 @@
       });
     }
 
-    let previousRoutePath = '';
-
-    function renderCurrentRoute(hashUrl) {
-      const { path, params } = parseRoute(hashUrl);
+    // Actualizar datos tras una acci?n en la p?gina actual, sin navegar entre vistas.
+    function refreshPageContent() {
+      const { path, params } = parsePageUrl();
       const app = document.getElementById('app');
       if (!app) return;
-
-      if (path === 'checkout-retiro.html' || path === 'checkout-pago.html' || path === 'cuenta.html' || path === 'seguimiento-pedidos.html') {
-        const user = getCurrentUser();
-        if (!user) {
-          pendingCheckoutRedirect = hashUrl;
-          const isCheckout = path.startsWith('checkout');
-          const noticeMsg = isCheckout
-            ? 'Inicia sesión o regístrate para proceder con tu compra.'
-            : (path === 'seguimiento-pedidos.html'
-                ? 'Inicia sesión o regístrate para acceder al seguimiento de tus pedidos.'
-                : 'Inicia sesión o regístrate para acceder a tu cuenta.');
-          openAuthModal(isCheckout ? 'register' : 'login', noticeMsg);
-          return;
-        }
-      }
-
-      closeNavCategoryMenu();
-      updateActiveNav(path);
-
-      let html = '';
-      if (path === '' || path === 'index.html') {
-        html = renderHomeView();
-      } else if (path === 'categoria.html' || path === 'productos.html') {
-        html = renderCategoryView(params);
-      } else if (path === 'producto.html') {
-        html = renderProductView(params);
-      } else if (path === 'carrito.html') {
-        html = renderCartView();
-      } else if (path === 'checkout-retiro.html') {
-        html = renderCheckoutRetiroView();
-      } else if (path === 'checkout-pago.html') {
-        html = renderCheckoutPagoView();
-      } else if (path === 'checkout-confirmacion.html') {
-        html = renderCheckoutConfirmacionView();
-      } else if (path === 'cuenta.html' || path === 'seguimiento-pedidos.html') {
-        if (path === 'seguimiento-pedidos.html') {
-          currentAccountTab = 'orders';
-        } else if (params && params.tab && ['personal', 'orders', 'favorites'].includes(params.tab)) {
-          currentAccountTab = params.tab;
-        } else if (previousRoutePath !== 'cuenta.html' && !window.location.hash.includes('tab=')) {
-          currentAccountTab = 'personal';
-        }
-        html = renderCuentaView();
-      } else if (path === 'ayuda.html') {
-        html = renderAyudaView();
-      } else if (path === 'politicas-retiro.html') {
-        html = renderPoliticasRetiroView();
-      } else {
-        html = renderHomeView();
-      }
-
-      const isHome = (path === '' || path === 'index.html');
-      const headerA11yNotice = isHome
-        ? `<div class="lector_texto_accesible" role="region" aria-label="Encabezado y navegación del sitio" lang="es"><p lang="es">Sacha &amp; Pamba, tu tienda naturista en Quito. Opciones disponibles: buscador de productos, acceso a la cuenta de usuario y carrito de compras. Navegación principal: Inicio, Categorías, Productos, Ayuda y preguntas frecuentes, Políticas de Retiro.</p></div>`
-        : `<div class="lector_texto_accesible" role="region" aria-label="Encabezado del sitio" lang="es"><p lang="es">Sacha &amp; Pamba, tu tienda naturista en Quito. Menú y opciones de navegación del sitio.</p></div>`;
-
-      app.innerHTML = headerA11yNotice + html;
-      setupDynamicListeners();
-
-      const routeTitles = {
-        '': 'Inicio | Sacha & Pamba',
-        'index.html': 'Inicio | Sacha & Pamba',
-        'categoria.html': 'Catálogo de Productos | Sacha & Pamba',
-        'productos.html': 'Catálogo de Productos | Sacha & Pamba',
-        'producto.html': 'Detalle del Producto | Sacha & Pamba',
-        'carrito.html': 'Carrito de Compras | Sacha & Pamba',
-        'checkout-retiro.html': 'Checkout - Retiro en Tienda | Sacha & Pamba',
-        'checkout-pago.html': 'Checkout - Forma de Pago | Sacha & Pamba',
-        'checkout-confirmacion.html': 'Pedido Confirmado | Sacha & Pamba',
-        'cuenta.html': 'Mi Cuenta | Sacha & Pamba',
-        'seguimiento-pedidos.html': 'Historial de Pedidos | Sacha & Pamba',
-        'ayuda.html': 'Centro de Ayuda y Preguntas Frecuentes | Sacha & Pamba',
-        'politicas-retiro.html': 'Políticas de Retiro en Tienda | Sacha & Pamba'
-      };
-      document.title = routeTitles[path] || 'Sacha & Pamba';
-
-      // Mantener el desplegable lateral del carrito abierto mientras se navega, cerrándolo solo en el carrito/checkout
-      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
-      if (path === 'carrito.html' || path.startsWith('checkout')) {
-        closeCartDrawer();
-        if (toggleBtn) toggleBtn.classList.add('hidden');
-      } else {
-        if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
-          openCartDrawer();
-        } else {
-          closeCartDrawer();
-        }
-      }
-
-      // Posicionamiento de scroll según la ruta
-      const isCatalogRoute = (path === '' || path === 'index.html' || path === 'categoria.html' || path === 'productos.html' || path === 'cuenta.html');
-
-      if (path === 'producto.html') {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      } else if (path === 'carrito.html' || path.startsWith('checkout')) {
-        sessionStorage.removeItem('sacha_last_inspected_product_id');
-        sessionStorage.removeItem('sacha_catalog_scroll_pos');
-        sessionStorage.removeItem('sacha_card_viewport_offset');
-        sessionStorage.removeItem('sacha_prev_route');
-        if (previousRoutePath !== path) {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
-      } else if (isCatalogRoute) {
-        // Al regresar de un producto a catálogo, favoritos o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
-        const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
-        const rawScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
-
-        if (returningProductId || rawScroll !== null) {
-          const returningScroll = rawScroll !== null ? parseFloat(rawScroll) : NaN;
-
-          sessionStorage.removeItem('sacha_last_inspected_product_id');
-          sessionStorage.removeItem('sacha_catalog_scroll_pos');
-          sessionStorage.removeItem('sacha_card_viewport_offset');
-          sessionStorage.removeItem('sacha_prev_route');
-
-          const restoreCardPosition = () => {
-            if (!isNaN(returningScroll)) {
-              window.scrollTo({ top: returningScroll, left: 0, behavior: 'instant' });
-            } else if (returningProductId) {
-              const card = document.getElementById(`fav-card-${returningProductId}`) || document.getElementById(`product-card-${returningProductId}`);
-              if (card) {
-                card.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-              }
-            }
-          };
-
-          restoreCardPosition();
-        }
-      } else {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      }
-
-      previousRoutePath = path;
+      if (path === 'carrito.html') app.innerHTML = renderCartView();
+      else if (path === 'cuenta.html') app.innerHTML = renderCuentaView();
+      else if (path === 'producto.html') app.innerHTML = renderProductView(params);
     }
 
-    function navigateTo(url, preventScroll = false) {
-      let targetHash = url;
-      if (!targetHash.startsWith('#')) {
-        targetHash = '#' + targetHash;
-      }
-
-      const currentRoute = parseRoute(window.location.hash);
-      const targetRoute = parseRoute(targetHash);
-
-      if (targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
-        closeCartDrawer();
-      }
-
-      // Si nos encontramos en Inicio y hacemos clic en el título o inicio, mantenerse donde está sin reiniciar ni mover el scroll
-      if (currentRoute.path === 'index.html' && targetRoute.path === 'index.html') {
-        return;
-      }
-
-      // Si ya nos encontramos en la misma ruta con los mismos parámetros, no hacer nada
-      if (currentRoute.path === targetRoute.path && JSON.stringify(currentRoute.params) === JSON.stringify(targetRoute.params)) {
-        if (targetRoute.path === 'cuenta.html' || targetRoute.path === 'seguimiento-pedidos.html') {
-          showToast('Ya te encuentras en Mi Cuenta', 'ph-user');
-        }
-        return;
-      }
-
-      const isReturningToCatalog = (targetRoute.path === '' || targetRoute.path === 'index.html' || targetRoute.path === 'categoria.html' || targetRoute.path === 'productos.html') && (
-        sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
-        sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
-      );
-
-      if (targetRoute.path === 'producto.html' || targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      }
-
-      if (window.location.hash !== targetHash) {
-        window.location.hash = targetHash;
-      } else {
-        if (!preventScroll && !isReturningToCatalog) {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
-        renderCurrentRoute(targetHash);
-      }
+    function navigateTo(url) {
+      const destination = new URL(url, window.location.href);
+      const { path } = parsePageUrl(destination.href);
+      if (path === 'carrito.html' || path.startsWith('checkout')) closeCartDrawer();
+      if (destination.href === window.location.href) return;
+      window.location.assign(destination.href);
     }
-
-    window.addEventListener('hashchange', () => {
-      const targetRoute = parseRoute(window.location.hash || '#index.html');
-      if (targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
-        closeCartDrawer();
-      }
-      const isReturningToCatalog = (targetRoute.path === '' || targetRoute.path === 'index.html' || targetRoute.path === 'categoria.html' || targetRoute.path === 'productos.html') && (
-        sessionStorage.getItem('sacha_last_inspected_product_id') !== null ||
-        sessionStorage.getItem('sacha_catalog_scroll_pos') !== null
-      );
-
-      if (targetRoute.path === 'producto.html' || targetRoute.path === 'carrito.html' || targetRoute.path.startsWith('checkout')) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      } else if (!isReturningToCatalog) {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      }
-
-      renderCurrentRoute(window.location.hash || '#index.html');
-    });
 
     let heroAutoplayTimer = null;
     let currentHeroSlide = 0;
@@ -5576,17 +4988,17 @@
           const cat = header.getAttribute('data-cat');
           const isSpecial = (cat === 'especiales');
           const isSupplements = (cat === 'suplementos');
-          const currentSpecial = new URLSearchParams((window.location.hash.split('?')[1] || '')).get('special');
-          const currentCat = new URLSearchParams((window.location.hash.split('?')[1] || '')).get('cat');
+          const currentSpecial = new URLSearchParams(window.location.search).get('special');
+          const currentCat = new URLSearchParams(window.location.search).get('cat');
 
           // Si se hace clic en la categoría y aún no está seleccionada, seleccionarla y abrirla
           if (!isCaretClick) {
             if (isSpecial && !currentSpecial) {
-              navigateTo('#categoria.html?special=all');
+              navigateTo('categoria.html?special=all');
               return;
             }
             if (isSupplements && currentCat !== 'suplementos') {
-              navigateTo('#categoria.html?cat=suplementos');
+              navigateTo('categoria.html?cat=suplementos');
               return;
             }
           }
@@ -5728,11 +5140,11 @@
       authModal.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
       if (pendingCheckoutRedirect) {
-        const currentPath = parseRoute(window.location.hash).path;
+        const currentPath = parsePageUrl(getCurrentPageUrl()).path;
         if (currentPath.startsWith('checkout') || currentPath === 'cuenta.html' || currentPath === 'seguimiento-pedidos.html') {
-          const fallbackHash = currentPath.startsWith('checkout') ? '#carrito.html' : '#index.html';
-          if (window.location.hash !== fallbackHash) {
-            history.replaceState(null, '', fallbackHash);
+          const fallbackUrl = currentPath.startsWith('checkout') ? 'carrito.html' : 'index.html';
+          if (getCurrentPageUrl() !== fallbackUrl) {
+            window.location.replace(fallbackUrl);
           }
         }
         pendingCheckoutRedirect = null;
@@ -5771,12 +5183,12 @@
         e.preventDefault();
         const user = getCurrentUser();
         if (user) {
-          const currentPath = parseRoute(window.location.hash).path;
+          const currentPath = parsePageUrl(getCurrentPageUrl()).path;
           if (currentPath === 'cuenta.html' || currentPath === 'seguimiento-pedidos.html') {
             showToast('Ya te encuentras en Mi Cuenta', 'ph-user');
             return;
           }
-          navigateTo('#cuenta.html');
+          navigateTo('cuenta.html');
         } else {
           openAuthModal('login');
         }
@@ -6007,7 +5419,7 @@
       if (destination) {
         navigateTo(destination);
       } else {
-        navigateTo('#cuenta.html');
+        navigateTo('cuenta.html');
       }
     }
 
@@ -6096,14 +5508,14 @@
       if (destination) {
         navigateTo(destination);
       } else {
-        navigateTo('#cuenta.html');
+        navigateTo('cuenta.html');
       }
     }
 
     function logoutUser() {
       setCurrentUser(null);
       showToast('Sesión cerrada con éxito');
-      navigateTo('#index.html');
+      navigateTo('index.html');
     }
 
     function togglePasswordVisibility(inputId, btn) {
@@ -6270,7 +5682,7 @@
       } else {
         showToast('Información de cuenta e identificador actualizados', 'ph-check-circle');
       }
-      renderCurrentRoute('#cuenta.html');
+      refreshPageContent();
     }
 
     document.addEventListener('click', (e) => {
@@ -6288,26 +5700,36 @@
       const anchor = e.target.closest('a');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
-
-      if (href && href.startsWith('#') && !href.startsWith('#mas-vendidos')) {
-        e.preventDefault();
-
-        // Si vamos a un producto, guardar la posición previa y el id del producto
-        if (href.startsWith('#producto.html')) {
-          const match = href.match(/id=([^&]+)/);
-          saveCatalogPosition(match ? match[1] : null);
-        }
-
-        // Si nos encontramos en Inicio y hacemos clic en el título o inicio, mantenerse donde está
-        const currentRoute = parseRoute(window.location.hash);
-        const targetRoute = parseRoute(href);
-        if (currentRoute.path === 'index.html' && targetRoute.path === 'index.html') {
-          return;
-        }
-
-        navigateTo(href);
+      if (href && href.startsWith('producto.html')) {
+        const productUrl = new URL(href, window.location.href);
+        saveCatalogPosition(productUrl.searchParams.get('id'));
       }
     });
+
+    // Conservar el HTML nativo y aplicar solo la seleccion o el estado guardado.
+    function initializeCatalogPage() {
+      const { path, params } = parsePageUrl();
+      const main = document.getElementById('app');
+      if (!main) return;
+      if (path === 'categoria.html') {
+        if (params.cat || params.subcat || params.special || getLastVisitedProduct()) {
+          main.innerHTML = renderCategoryView(params);
+        }
+      } else if (path === 'producto.html') {
+        const product = PRODUCTS.find(item => item.id === (params.id || 'maca')) || PRODUCTS[0];
+        const previousPage = sessionStorage.getItem('sacha_prev_route') || '';
+        if (product.id !== 'maca' || isProductPickedUp(product.id) ||
+            localStorage.getItem(`reviews_${product.id}`) || previousPage.includes('cuenta.html')) {
+          main.innerHTML = renderProductView(params);
+        }
+        setLastVisitedProduct({
+          id: product.id,
+          name: product.name,
+          category: product.category,
+          categoryName: product.categoryName
+        });
+      }
+    }
 
     function initApp() {
       if ('scrollRestoration' in history) {
@@ -6317,8 +5739,8 @@
       updateCartBadge();
       updateCartDrawerUI();
       if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
-        const currentHash = window.location.hash || '#index.html';
-        if (!currentHash.includes('carrito.html') && !currentHash.includes('checkout')) {
+        const currentPageUrl = getCurrentPageUrl() || 'index.html';
+        if (!currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
           openCartDrawer();
         } else {
           closeCartDrawer();
@@ -6327,8 +5749,17 @@
         closeCartDrawer();
       }
       updateAuthUI();
-      const initialHash = window.location.hash || '#index.html';
-      renderCurrentRoute(initialHash);
+      updateActiveNav(parsePageUrl().path);
+      initializeCatalogPage();
+      setupDynamicListeners();
+      // Las tarjetas ya existen en el HTML; sincronizar solo los favoritos guardados.
+      PRODUCTS.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
+      const returningScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+      if (returningScroll !== null && sessionStorage.getItem('sacha_prev_route') === getCurrentPageUrl()) {
+        window.scrollTo({ top: Number(returningScroll) || 0, left: 0, behavior: 'instant' });
+        ['sacha_catalog_scroll_pos', 'sacha_prev_route', 'sacha_last_inspected_product_id', 'sacha_card_viewport_offset']
+          .forEach(key => sessionStorage.removeItem(key));
+      }
 
       // Sincronización del desplegable lateral del carrito al navegar con tecla Tab
       const cartDrawerEl = document.getElementById('cart-side-drawer');
@@ -6443,7 +5874,6 @@
       escapeHtml,
       getLastVisitedProduct,
       setLastVisitedProduct,
-      renderHomeView,
       renderCategoryView,
       saveCatalogPosition,
       handleBackToProducts,
@@ -6494,9 +5924,10 @@
       toggleOrderItemsView,
       renderAyudaView,
       renderPoliticasRetiroView,
-      parseRoute,
+      getCurrentPageUrl,
+      parsePageUrl,
       updateActiveNav,
-      renderCurrentRoute,
+      refreshPageContent,
       navigateTo,
       initHeroCarousel,
       setupHomeProductTabs,
@@ -6522,6 +5953,7 @@
       handlePasswordInputChange,
       validatePasswordMatch,
       updateAccountDetails,
+      initializeCatalogPage,
       initApp,
     });
 
@@ -6556,7 +5988,6 @@
       currentReviewUploadedImage: { configurable: true, enumerable: true, get: () => currentReviewUploadedImage, set: value => { currentReviewUploadedImage = value; } },
       currentAccountTab: { configurable: true, enumerable: true, get: () => currentAccountTab, set: value => { currentAccountTab = value; } },
       DEFAULT_ORDERS_MOCK: { configurable: true, enumerable: true, get: () => DEFAULT_ORDERS_MOCK },
-      previousRoutePath: { configurable: true, enumerable: true, get: () => previousRoutePath, set: value => { previousRoutePath = value; } },
       heroAutoplayTimer: { configurable: true, enumerable: true, get: () => heroAutoplayTimer, set: value => { heroAutoplayTimer = value; } },
       currentHeroSlide: { configurable: true, enumerable: true, get: () => currentHeroSlide, set: value => { currentHeroSlide = value; } },
       authModal: { configurable: true, enumerable: true, get: () => authModal },

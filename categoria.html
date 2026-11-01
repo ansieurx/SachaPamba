@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="es" xml:lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="content-language" content="es">
+  <meta name="language" content="Spanish">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sacha & Pamba — Tu tienda naturista en Quito</title>
+  
+  <!-- Tipografías: Fraunces (Botánica/Editorial) + Outfit (Cuerpo moderno) + Caveat (Manuscrita artesanal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Iconografía Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        /* Escalamos la tipografía base para accesibilidad, con proporciones equilibradas */
+        fontSize: {
+          'xs': ['1.05rem', { lineHeight: '1.5rem' }],     /* ~16.8px */
+          'sm': ['1.15rem', { lineHeight: '1.7rem' }],     /* ~18.4px */
+          'base': ['1.25rem', { lineHeight: '1.85rem' }],  /* ~20px */
+          'lg': ['1.35rem', { lineHeight: '1.9rem' }],     /* ~21.6px */
+          'xl': ['1.6rem', { lineHeight: '2.1rem' }],      /* ~25.6px */
+          '2xl': ['2rem', { lineHeight: '2.4rem' }],       /* ~32px */
+          '3xl': ['2.25rem', { lineHeight: '2.75rem' }],   /* ~36px */
+          '4xl': ['2.5rem', { lineHeight: '3rem' }],       /* ~40px */
+          '5xl': ['3rem', { lineHeight: '1' }],            /* ~48px */
+          '6xl': ['3.75rem', { lineHeight: '1' }],         /* ~60px */
+        },
+        extend: {
+          colors: {
+            brand: {
+              cream: '#FEFAE0',     // Fondo general cálido
+              forest: '#283618',    // Identidad, barra nav y footer
+              olive: '#CCD5AE',     // Fondo tarjetas y bordes
+              sunflower: '#E9C46A', // Botón de acción principal (CTA)
+              leaf: '#131A0B',      // Textos legibles y bordes oscuros
+              moss: '#606C38'       // Acentos vegetales
+            }
+          },
+          fontFamily: {
+            sans: ['"Outfit"', 'sans-serif'],
+            botanic: ['"Fraunces"', 'serif'],
+            hand: ['"Caveat"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Reglas globales de accesibilidad para textos muy pequeños */
+    .text-\[9px\],
+    .text-\[10px\],
+    .text-\[11px\] {
+      font-size: 1.05rem !important; /* Forzamos un tamaño mínimo legible (~16.8px) */
+      line-height: 1.5rem !important;
+    }
+
+    /* Ajuste de contenedores circulares (badges) para la letra más grande */
+    .w-5.h-5 { width: 1.75rem !important; height: 1.75rem !important; } 
+    .w-7.h-7 { width: 2.25rem !important; height: 2.25rem !important; }
+
+    /* Ampersand (&) estándar limpio sin diseño/florituras (idéntico a Outfit / imagen de referencia) */
+    .amp-normal {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      font-style: normal !important;
+      font-weight: inherit !important;
+      letter-spacing: normal !important;
+      display: inline;
+    }
+
+    /* Layout Fluido y Adaptable - Aprovechar el ancho total con espaciado consistente */
+    .max-w-4xl, 
+    .max-w-5xl, 
+    .max-w-6xl, 
+    .max-w-7xl {
+      max-width: 100% !important;
+      padding-left: clamp(1rem, 3.5vw, 2.5rem) !important;
+      padding-right: clamp(1rem, 3.5vw, 2.5rem) !important;
+      box-sizing: border-box !important;
+      transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      background-color: #FEFAE0;
+      color: #131A0B;
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    :focus-visible {
+      outline: 3px solid #E9C46A !important;
+      outline-offset: 2px;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .dropdown-enter {
+      animation: fadeInDropdown 0.15s ease-out forwards;
+    }
+    @keyframes fadeInDropdown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Solo mostrar la píldora de retiro cuando quepa holgadamente en la misma fila */
+    .pickup-header-pill {
+      display: none !important;
+    }
+    @media (min-width: 1420px) {
+      .pickup-header-pill {
+        display: flex !important;
+      }
+    }
+
+    /* Control del Header Inteligente (Zoom / Altura) */
+    .smart-header {
+      position: sticky;
+      top: 0;
+      z-index: 50 !important;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Pestañas de opciones bajo el carrusel: Sin hover cuando está seleccionado */
+    .tab-link-btn.is-active,
+    .tab-link-btn.is-active:hover {
+      background-color: #283618 !important;
+      color: #FEFAE0 !important;
+      border-color: #283618 !important;
+      font-weight: 800 !important;
+      cursor: default !important;
+    }
+    .smart-header .max-w-7xl {
+      padding-left: clamp(0.5rem, 2.5vw, 2rem) !important;
+      padding-right: clamp(0.5rem, 2.5vw, 2rem) !important;
+      box-sizing: border-box !important;
+      width: 100% !important;
+    }
+
+    /* Solución por altura del viewport y nivel de zoom:
+       En pantallas estándar, al superar el 140% de zoom (ej. 150% o más), la altura visible se reduce por debajo de los 635px.
+       Al desactivar el sticky a partir de un zoom superior al 140% basándonos en la altura, aseguramos que el header se mantenga
+       sticky hasta el 140% de zoom y nunca tape el contenido cuando hay poco espacio vertical disponible. */
+    @media (max-height: 635px) {
+      .smart-header {
+        position: relative !important;
+      }
+    }
+
+    /* Estilos del Carrusel / Panel Promocional */
+    .hero-nav-arrow {
+      width: 2.35rem !important;
+      height: 2.35rem !important;
+    }
+    @media (min-width: 640px) {
+      .hero-nav-arrow {
+        width: 2.75rem !important;
+        height: 2.75rem !important;
+      }
+    }
+
+    /* Adaptabilidad de Tarjetas de Productos: Consistencia y Organización Uniforme en Zoom */
+    .product-card {
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      overflow: hidden;
+      container-type: inline-size;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .product-card-footer {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: clamp(0.35rem, 2cqi, 0.75rem) !important;
+      padding: clamp(0.45rem, 1.4cqi, 0.65rem) clamp(0.5rem, 2cqi, 0.85rem) !important;
+      overflow: hidden !important;
+    }
+
+    .product-card-price {
+      min-width: 0 !important;
+      flex-shrink: 0 !important;
+    }
+    .product-card-price span {
+      font-size: clamp(0.92rem, 2.4cqi, 1.18rem) !important;
+      font-weight: 800 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap !important;
+      color: #FEFAE0 !important;
+    }
+
+    .product-card-actions {
+      min-width: 0 !important;
+      display: inline-flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      align-items: stretch !important;
+      gap: clamp(0.35rem, 2.4cqi, 0.7rem) !important;
+      margin-left: auto !important;
+      flex-shrink: 0 !important;
+    }
+
+    .product-card-actions a {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: clamp(0.3rem, 1.1cqi, 0.44rem) clamp(0.48rem, 2.4cqi, 0.8rem) !important;
+      font-size: clamp(0.8rem, 1.9cqi, 0.92rem) !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+      flex-shrink: 0 !important;
+      border-radius: 0.5rem !important;
+      box-sizing: border-box !important;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+    }
+
+    .product-card-actions button {
+      padding: clamp(0.3rem, 1.1cqi, 0.44rem) clamp(0.55rem, 2.8cqi, 0.95rem) !important;
+      font-size: clamp(0.8rem, 1.9cqi, 0.92rem) !important;
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+      flex-shrink: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: clamp(0.25rem, 0.8cqi, 0.38rem) !important;
+      border-radius: 0.5rem !important;
+      box-sizing: border-box !important;
+      transition: transform 0.1s ease, background-color 0.15s ease, color 0.15s ease !important;
+    }
+
+    .product-card-actions button i {
+      font-size: clamp(0.85rem, 2cqi, 1rem) !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* Transición fluida y consistente en cuadrículas */
+    #home-products-grid {
+      transition: opacity 0.2s ease;
+    }
+
+    .cursor-zoom-in {
+      cursor: zoom-in !important;
+    }
+
+    /* Adaptabilidad de Detalles Botánicos en Zoom */
+    .botanical-section {
+      container-type: inline-size;
+    }
+    @container (max-width: 620px) {
+      .botanical-details-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+      }
+    }
+
+    html {
+      scroll-behavior: auto !important;
+    }
+
+    /* Ocultar flechas/spinners en inputs numéricos */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+    input[type=number] {
+      -moz-appearance: textfield !important;
+      appearance: textfield !important;
+    }
+
+    /* Adaptabilidad del Carrito en Zoom */
+    .cart-items-container {
+      container-type: inline-size;
+    }
+    @container (max-width: 560px) {
+      .cart-item-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+      }
+      .cart-item-card > div:last-child {
+        border-top: 1px solid rgba(40, 54, 24, 0.15) !important;
+        padding-top: 0.65rem !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+      }
+      .cart-item-card .cart-del-desktop {
+        display: none !important;
+      }
+      .cart-item-card .cart-del-mobile {
+        display: inline-flex !important;
+      }
+      .cart-subtotal-label {
+        display: block !important;
+      }
+    }
+
+    :root {
+      --cart-zoom: 1;
+    }
+
+    /* Adaptación fluida del contenido de la página para que el carrito no se sobreponga */
+    body {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    body.is-sliding {
+      transition: padding-right 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    body.cart-drawer-open {
+      padding-right: calc(140px / var(--cart-zoom, 1)) !important;
+    }
+
+    body.cart-drawer-open #toast {
+      right: calc(1rem + (140px / var(--cart-zoom, 1))) !important;
+    }
+    @media (min-width: 640px) {
+      body.cart-drawer-open #toast {
+        right: calc(1.5rem + (140px / var(--cart-zoom, 1))) !important;
+      }
+    }
+
+    /* Desplegable Lateral Delgado del Carrito (Inmune a zoom: 100% estático, bordes idénticos de 1px) */
+    #cart-side-drawer {
+      width: 140px !important;
+      max-width: 140px !important;
+      height: calc(100vh * var(--cart-zoom, 1)) !important;
+      height: calc(100dvh * var(--cart-zoom, 1)) !important;
+      box-sizing: border-box !important;
+      overflow: visible;
+      border-left: 1px solid #5A6B4E !important;
+      box-shadow: -4px 0 16px -2px rgba(40, 54, 24, 0.15) !important;
+      zoom: calc(1 / var(--cart-zoom, 1));
+      transform: translateX(100%) !important;
+      transition: none !important;
+      z-index: 70 !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body.cart-drawer-open #cart-side-drawer,
+    #cart-side-drawer.is-open,
+    #cart-side-drawer.translate-x-0 {
+      transform: translateX(0) !important;
+      transition: none !important;
+    }
+
+    body.cart-drawer-open #cart-drawer-toggle-btn,
+    #cart-side-drawer.is-open #cart-drawer-toggle-btn,
+    #cart-side-drawer.translate-x-0 #cart-drawer-toggle-btn {
+      display: none !important;
+    }
+
+    /* Evitar que el desplazamiento por teclado herede scroll-margin-top dentro del desplegable */
+    #cart-side-drawer,
+    #cart-side-drawer *,
+    #cart-side-drawer a,
+    #cart-side-drawer button,
+    #cart-side-drawer input,
+    #cart-side-drawer [tabindex="0"] {
+      scroll-margin-top: 0 !important;
+      scroll-margin-bottom: 0 !important;
+    }
+
+    /* Capas modales y avisos por encima del desplegable */
+    #auth-modal,
+    #review-modal,
+    #confirm-remove-modal,
+    #image-lightbox-modal {
+      z-index: 100 !important;
+    }
+    #toast {
+      z-index: 110 !important;
+    }
+
+    /* La animación de deslizamiento SOLO ocurre al interactuar con los botones de abrir/cerrar */
+    #cart-side-drawer.is-sliding {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    #cart-drawer-toggle-btn {
+      border: 1px solid #5A6B4E !important;
+      border-right: none !important;
+    }
+
+    /* Mismo tipo y grosor de borde en todos los elementos del desplegable (1px uniforme y constante)
+       y dimensiones fijadas para prevenir cualquier movimiento o subpixel jitter al hacer zoom */
+    #cart-side-drawer .cart-drawer-header {
+      height: 36px !important;
+      min-height: 36px !important;
+      max-height: 36px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      border-bottom: 1px solid #5A6B4E !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      padding: 0 !important;
+      background-color: #5A6B4E !important;
+      color: #FEFAE0 !important;
+      cursor: pointer !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: background-color 0.15s ease, color 0.15s ease !important;
+      user-select: none !important;
+    }
+    #cart-side-drawer .cart-drawer-header:hover {
+      background-color: #4d5c42 !important;
+      color: #E9C46A !important;
+    }
+    #cart-side-drawer .cart-drawer-header:hover i {
+      color: #E9C46A !important;
+      transform: translateX(1px) !important;
+    }
+    #cart-side-drawer .cart-drawer-header:active {
+      background-color: #3e4a2f !important;
+    }
+    #cart-side-drawer .cart-drawer-header:active i {
+      transform: translateX(2px) !important;
+    }
+    #cart-side-drawer .cart-drawer-btn-container {
+      height: 44px !important;
+      min-height: 44px !important;
+      max-height: 44px !important;
+      padding: 7px 14px !important;
+      box-sizing: border-box !important;
+      border-bottom: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #cart-side-drawer .cart-drawer-btn-ir {
+      height: 30px !important;
+      min-height: 30px !important;
+      max-height: 30px !important;
+      width: 112px !important;
+      border: 1px solid #b89535 !important;
+      box-sizing: border-box !important;
+    }
+    #cart-side-drawer .cart-item-card {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      flex-shrink: 0 !important;
+    }
+    #cart-side-drawer .cart-item-row {
+      width: 100% !important;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 7px !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      flex-shrink: 0 !important;
+    }
+    #cart-side-drawer .cart-item-info {
+      width: 100% !important;
+      margin-top: 6px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      box-sizing: border-box !important;
+    }
+    #cart-side-drawer .cart-item-qty {
+      font-size: 16.5px !important;
+      line-height: 1.2 !important;
+      font-weight: 800 !important;
+      color: #283618 !important;
+      display: inline-flex !important;
+      align-items: baseline !important;
+      justify-content: center !important;
+      gap: 4px !important;
+    }
+    #cart-side-drawer .cart-item-qty-num {
+      font-size: 21px !important;
+      font-weight: 900 !important;
+      color: #131A0B !important;
+      line-height: 1 !important;
+    }
+    #cart-side-drawer .cart-item-price {
+      font-size: 18px !important;
+      line-height: 1.2 !important;
+      font-weight: 900 !important;
+      color: #131A0B !important;
+      margin-top: 3px !important;
+      display: block !important;
+    }
+    #cart-side-drawer .cart-qty-btn {
+      width: 20px !important;
+      height: 28px !important;
+      min-width: 20px !important;
+      min-height: 28px !important;
+      max-width: 20px !important;
+      max-height: 28px !important;
+      box-sizing: border-box !important;
+      border: 1px solid #283618 !important;
+      border-radius: 6px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      background-color: #283618 !important;
+      color: #FEFAE0 !important;
+      line-height: 1 !important;
+      user-select: none !important;
+      transition: background-color 0.15s, transform 0.1s !important;
+      cursor: pointer !important;
+    }
+    #cart-side-drawer .cart-qty-btn:hover {
+      background-color: #3e4a2f !important;
+    }
+    #cart-side-drawer .cart-qty-btn:active {
+      transform: scale(0.92) !important;
+    }
+    #cart-side-drawer .cart-qty-btn i {
+      font-weight: 900 !important;
+      font-size: 13px !important;
+      -webkit-text-stroke: 0.6px currentColor !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #cart-side-drawer .cart-thumb-wrapper {
+      width: 64px !important;
+      height: 64px !important;
+      min-width: 64px !important;
+      min-height: 64px !important;
+      position: relative !important;
+      flex-shrink: 0 !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      overflow: visible !important;
+    }
+    #cart-side-drawer .cart-thumb-box {
+      width: 64px !important;
+      height: 64px !important;
+      min-width: 64px !important;
+      min-height: 64px !important;
+      border: 1px solid #5A6B4E !important;
+      box-sizing: border-box !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn {
+      position: absolute !important;
+      top: -6px !important;
+      right: -6px !important;
+      left: auto !important;
+      width: 26px !important;
+      height: 26px !important;
+      min-width: 26px !important;
+      min-height: 26px !important;
+      max-width: 26px !important;
+      max-height: 26px !important;
+      box-sizing: border-box !important;
+      border: 2.5px solid #283618 !important;
+      border-radius: 9999px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      background-color: #CCD5AE !important;
+      color: #283618 !important;
+      cursor: pointer !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease !important;
+      z-index: 30 !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn i {
+      font-size: 14px !important;
+      font-weight: 900 !important;
+      -webkit-text-stroke: 1.3px currentColor !important;
+      color: #283618 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      transition: color 0.15s ease !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:hover {
+      background-color: #E9C46A !important;
+      color: #283618 !important;
+      border-color: #283618 !important;
+      box-shadow: 0 2px 6px rgba(233, 196, 106, 0.6) !important;
+      transform: scale(1.08) !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:hover i {
+      color: #283618 !important;
+    }
+    #cart-side-drawer .cart-delete-x-btn:active {
+      transform: scale(0.92) !important;
+    }
+    #cart-side-drawer .cart-qty-badge {
+      width: 24px !important;
+      height: 24px !important;
+      min-width: 24px !important;
+      min-height: 24px !important;
+      max-width: 24px !important;
+      max-height: 24px !important;
+      box-sizing: border-box !important;
+      border: 1.5px solid #FFFFFF !important;
+      border-radius: 9999px !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1 !important;
+      background-color: #283618 !important;
+      color: #FFFFFF !important;
+      font-size: 15px !important;
+      font-weight: 900 !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      pointer-events: none !important;
+      user-select: none !important;
+      letter-spacing: -0.5px !important;
+      text-align: center !important;
+    }
+    #cart-side-drawer #cart-drawer-footer {
+      height: 64px !important;
+      min-height: 64px !important;
+      max-height: 64px !important;
+      box-sizing: border-box !important;
+      padding: 6px 6px !important;
+      border-top: 1px solid #5A6B4E !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    #cart-side-drawer #cart-drawer-footer .cart-footer-title {
+      font-size: 15.5px !important;
+      line-height: 1.15 !important;
+      color: #E9C46A !important;
+      font-weight: 900 !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+    }
+    #cart-side-drawer #cart-drawer-footer #cart-drawer-total {
+      font-size: 20px !important;
+      line-height: 1.15 !important;
+      color: #FEFAE0 !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+      margin-top: 3px !important;
+    }
+
+    /* Lista de productos en desplegable: alineación estricta en píxeles enteros para evitar desplazamientos al hacer zoom */
+    #cart-drawer-items {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 26px 11px 20px 10px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 22px !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+    #cart-drawer-items > * {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+      flex-shrink: 0 !important;
+    }
+    #cart-drawer-items::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* Scrollbar sutil para el modal de autenticación */
+    #auth-modal::-webkit-scrollbar {
+      width: 6px;
+    }
+    #auth-modal::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 9999px;
+    }
+    #auth-modal::-webkit-scrollbar-thumb {
+      background: rgba(254, 250, 224, 0.3);
+      border-radius: 9999px;
+    }
+    #auth-modal::-webkit-scrollbar-thumb:hover {
+      background: rgba(254, 250, 224, 0.5);
+    }
+
+    /* Animación de despliegue para requisitos y confirmación de contraseña en Mi Cuenta y Registro */
+    #acc-password-reqs:not(.hidden),
+    #acc-confirm-password-wrapper:not(.hidden),
+    #reg-password-reqs:not(.hidden),
+    #reg-confirm-password-wrapper:not(.hidden) {
+      display: block;
+      animation: accPasswordSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes accPasswordSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    /* Garantizar que los contenedores en Mi Cuenta tengan espaciado limpio y nunca desborden en zoom */
+    #account-tab-orders,
+    #account-tab-personal,
+    #account-tab-favorites {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      overflow-x: clip;
+    }
+
+    /* ==========================================================================
+       TARJETA DE PRODUCTOS FAVORITOS ADAPTABLE (ZOOM & MULTI-DISPOSITIVO)
+       ========================================================================== */
+    .caja_fav {
+      container-type: inline-size;
+      container-name: cardfav;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Por defecto (móviles, espacios compactos y al hacer ZOOM en cualquier dispositivo):
+       Diseño vertical organizado: la imagen se mantiene al principio, con tamaño amplio,
+       cuadrada y visible sin achicarse ni cortarse, y los datos/botones debajo sin cortes */
+    .tarjeta_fav {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      box-sizing: border-box;
+      gap: 1.25rem;
+    }
+
+    /* Imagen amplia, cuadrada, sin achicarse ni deformarse */
+    .caja_img_fav {
+      width: 100% !important;
+      max-width: 18rem !important; /* ~288px: visible, amplia y proporcionada al principio */
+      aspect-ratio: 1 / 1 !important;
+      height: auto !important;
+      align-self: center !important;
+      margin: 0 auto;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0 !important;
+      background-color: var(--color-brand-cream, #FEFAE0);
+    }
+
+    .caja_img_fav img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      display: block;
+    }
+
+    .datos_fav {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    /* ÚNICAMENTE cuando el contenedor específico de la tarjeta dispone de espacio holgado
+       (>= 780px reales en el contenedor, sin zoom que reduzca el espacio disponible),
+       se distribuye horizontalmente con imagen fija a la izquierda y detalles a la derecha */
+    @container cardfav (min-width: 780px) {
+      .tarjeta_fav {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+      }
+
+      .caja_img_fav {
+        width: 12.5rem !important; /* 200px fija, cuadrada */
+        height: 12.5rem !important;
+        max-width: 12.5rem !important;
+        margin: 0 !important;
+        align-self: center !important;
+      }
+
+      .datos_fav {
+        flex: 1 1 0% !important;
+        min-height: 12.5rem !important;
+      }
+    }
+
+    /* ==========================================================================
+       TARJETA DE USUARIO CONECTADO EN CHECKOUT RETIRO (ADAPTABLE AL ZOOM)
+       ========================================================================== */
+    .caja_usuario_retiro {
+      container-type: inline-size;
+      container-name: userbox;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .tarjeta_usuario_retiro {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    @container userbox (min-width: 580px) {
+      .tarjeta_usuario_retiro {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+    }
+
+    /* Supresión total de movimientos, desplazamientos y animaciones al pulsar la pestaña de favoritos */
+    #account-tab-favorites,
+    #account-tab-favorites *,
+    .caja_fav,
+    .caja_fav *,
+    .tarjeta_fav,
+    .tarjeta_fav * {
+      animation: none !important;
+      transform: none !important;
+      transition-property: background-color, border-color, color, fill, stroke !important;
+      transition-duration: 0.15s !important;
+    }
+
+    .btn_ver_fav {
+      transition: background-color 0.15s ease !important;
+    }
+    .btn_agregar_fav {
+      transition: background-color 0.15s ease !important;
+    }
+    .btn_eliminar_fav {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0.75rem !important; /* Recuadro, no círculo */
+      box-shadow: none !important;
+      color: rgba(40, 54, 24, 0.6) !important;
+      cursor: pointer;
+      width: 2.25rem !important;
+      height: 2.25rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      line-height: 1 !important;
+      transition: background-color 0.15s ease, color 0.15s ease !important;
+    }
+    @media (min-width: 640px) {
+      .btn_eliminar_fav {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+      }
+    }
+    .btn_eliminar_fav:hover,
+    .btn_eliminar_fav:focus,
+    .btn_eliminar_fav:active {
+      background: #283618 !important; /* Recuadro verde oscuro de la página al hacer hover */
+      color: #E9C46A !important; /* Icono amarillo al hacer hover */
+      border: none !important;
+      box-shadow: none !important;
+    }
+    body.user-is-tabbing .btn_eliminar_fav:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.75rem !important;
+      background: #283618 !important;
+      color: #E9C46A !important;
+    }
+
+    #tab-btn-personal,
+    #tab-btn-orders,
+    #tab-btn-favorites {
+      transform: none !important;
+      transition-property: background-color, border-color, color, fill, stroke !important;
+      transition-duration: 0.15s !important;
+    }
+
+    /* Prevenir que el doble clic rápido active arrastres de imagen, rayas de selección o halos de foco cuadrados */
+    .product-card,
+    .product-card *,
+    .product-card-image-box,
+    .product-card-image-box *,
+    .card-fav-btn,
+    .card-fav-btn * {
+      -webkit-user-drag: none !important;
+      user-drag: none !important;
+      -webkit-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .card-fav-btn:focus:not(:focus-visible) {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .card-fav-btn:focus-visible,
+    body.user-is-tabbing .card-fav-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 12px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 9999px !important;
+    }
+
+    /* Espaciado garantizado para inputs con icono a la izquierda para evitar solapamientos */
+    .auth-input-with-icon {
+      padding-left: 2.85rem !important;
+    }
+
+    /* Garantizar que el encabezado del modal de autenticación mantenga su fila superior separada y sin solapamientos */
+    .auth-header-top {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 0.75rem !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      position: relative !important;
+    }
+    .auth-header-title-box {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+      overflow: hidden !important;
+    }
+    #auth-modal-close {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      position: static !important;
+      margin-left: auto !important;
+    }
+
+    /* Adaptabilidad de desplazamiento del modal de autenticación en cualquier nivel de zoom */
+    @media (max-height: 680px) {
+      #auth-modal-wrapper {
+        align-items: flex-start !important;
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+      }
+    }
+
+    /* ==========================================================================
+       TEXTO ACCESIBLE PARA SINTETIZADORES DE VOZ (TTS / READ ALOUD) Y LECTORES
+       Mantiene 100% la estética visual sin ocupar espacio ni alterar el diseño.
+       ========================================================================== */
+    .lector_texto_accesible {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      font-size: 14px;
+      line-height: 1.2;
+      color: transparent;
+      opacity: 0.001;
+      pointer-events: none;
+      user-select: none;
+      z-index: -1;
+    }
+
+    /* Ajuste de desplazamiento para que los elementos enfocados con tab queden visibles bajo el header fijo */
+    html {
+      scroll-padding-top: 140px;
+    }
+
+    article,
+    section,
+    .product-card,
+    .card-fav-btn,
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [tabindex="0"] {
+      scroll-margin-top: 140px;
+    }
+
+    /* ==========================================================================
+       NAVEGACIÓN POR TECLADO (TAB) - BORDE / MARCO AMARILLO DESTACADO
+       Garantiza que cualquier elemento enfocado o seleccionado por tabulador
+       quede claramente rodeado por un borde amarillo accesible y visible.
+       ========================================================================== */
+    :focus-visible,
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [role="button"]:focus-visible,
+    [role="tab"]:focus-visible,
+    [role="link"]:focus-visible,
+    [tabindex="0"]:focus-visible,
+    body.user-is-tabbing :focus {
+      outline: 3px solid #FACC15 !important; /* Borde amarillo canario de alta visibilidad */
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 12px 2px rgba(250, 204, 21, 0.75) !important;
+    }
+
+    /* Respetar curvaturas redondeadas en botones y pastillas */
+    .rounded-full:focus-visible,
+    button.rounded-full:focus-visible,
+    a.rounded-full:focus-visible,
+    body.user-is-tabbing .rounded-full:focus {
+      border-radius: 9999px !important;
+    }
+
+    .rounded-2xl:focus-visible,
+    body.user-is-tabbing .rounded-2xl:focus {
+      border-radius: 1rem !important;
+    }
+
+    .rounded-xl:focus-visible,
+    body.user-is-tabbing .rounded-xl:focus {
+      border-radius: 0.75rem !important;
+    }
+
+    /* Marco de enfoque adaptado a las cabeceras de categorías para evitar cortes */
+    .sidebar-cat-header {
+      border-radius: 0.875rem !important;
+    }
+    .sidebar-cat-header[aria-expanded="true"] {
+      border-radius: 0.875rem 0.875rem 0 0 !important;
+    }
+    .sidebar-cat-header:focus-visible,
+    body.user-is-tabbing .sidebar-cat-header:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.875rem !important;
+    }
+    .sidebar-cat-header[aria-expanded="true"]:focus-visible,
+    body.user-is-tabbing .sidebar-cat-header[aria-expanded="true"]:focus {
+      border-radius: 0.875rem 0.875rem 0 0 !important;
+    }
+
+    /* Marco de enfoque y visualización de selección en preguntas frecuentes (Ayuda/FAQ) */
+    .faq-btn {
+      border-radius: 1.35rem !important;
+    }
+    .faq-btn[aria-expanded="true"] {
+      border-radius: 1.35rem 1.35rem 0 0 !important;
+      background-color: #5a6b4e !important;
+      color: #FEFAE0 !important;
+    }
+    .faq-btn:focus-visible,
+    body.user-is-tabbing .faq-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 1.35rem !important;
+    }
+    .faq-btn[aria-expanded="true"]:focus-visible,
+    body.user-is-tabbing .faq-btn[aria-expanded="true"]:focus {
+      border-radius: 1.35rem 1.35rem 0 0 !important;
+    }
+
+    /* Enfoque visible de alta visibilidad para elementos del desplegable del carrito */
+    #cart-drawer-toggle-btn:focus-visible,
+    body.user-is-tabbing #cart-drawer-toggle-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 0.75rem 0 0 0.75rem !important;
+    }
+
+    #cart-side-drawer .cart-drawer-header:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-drawer-header:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+    }
+
+    #cart-side-drawer .cart-drawer-btn-ir:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-drawer-btn-ir:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 6px !important;
+    }
+
+    #cart-side-drawer .cart-qty-btn:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-qty-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 6px !important;
+    }
+
+    #cart-side-drawer .cart-delete-x-btn:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-delete-x-btn:focus {
+      outline: 3px solid #FACC15 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 0 2px #283618, 0 0 8px 1px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 9999px !important;
+    }
+
+    #cart-side-drawer .cart-hover-zoom:focus,
+    #cart-side-drawer .cart-hover-zoom:focus-visible,
+    body.user-is-tabbing #cart-side-drawer .cart-hover-zoom:focus {
+      opacity: 1 !important;
+      outline: 3px solid #FACC15 !important;
+      outline-offset: -2px !important;
+      box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
+      border-radius: 12px !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
+
+  <!-- ==========================================
+       1. ENCABEZADO Y NAVEGACIÓN PRINCIPAL (#283618)
+       ========================================== -->
+  <header role="banner" aria-label="Encabezado del sitio" class="smart-header bg-brand-forest text-brand-cream shadow-md transition-all">
+    <!-- Fila 1: Logo, Buscador y Utilidades -->
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-3 w-full box-border">
+      <div class="flex items-center justify-between gap-1.5 sm:gap-4 w-full">
+        
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-1 sm:gap-2.5 group flex-shrink-0" aria-label="Sacha &amp; Pamba, tu tienda naturista en Quito">
+          <div class="w-7 h-7 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
+            <i class="ph ph-plant text-base sm:text-2xl md:text-3xl"></i>
+          </div>
+          <div class="flex flex-col justify-center">
+            <span class="font-botanic text-[clamp(0.875rem,3.4vw,1.875rem)] font-bold tracking-tight text-brand-cream block leading-tight flex items-center whitespace-nowrap">
+              Sacha<span class="font-hand text-brand-sunflower text-[1.2em] sm:text-[1.4em] font-bold ml-1 sm:ml-2 mr-1 sm:mr-3 inline-block transform -rotate-12 align-baseline pr-0.5 sm:pr-2">&amp;</span>Pamba
+            </span>
+            <span class="text-[9px] sm:text-[10px] md:text-xs text-brand-olive tracking-wider sm:tracking-widest uppercase font-medium mt-0.5 block">
+              Tu tienda naturista en Quito
+            </span>
+          </div>
+        </a>
+
+        <!-- Buscador centrado con dropdown en vivo (Solo en pantallas grandes para no colisionar) -->
+        <div class="flex-1 max-w-md xl:max-w-lg hidden lg:block mx-4 relative min-w-[200px]" role="search" aria-label="Búsqueda de productos">
+          <form class="relative" onsubmit="event.preventDefault();" role="search">
+            <label for="live-search-input" class="sr-only">Buscar productos naturales</label>
+            <input 
+              type="search" 
+              id="live-search-input" 
+              placeholder="¿Qué producto natural buscas hoy? (ej. maca, sacha inchi...)"
+              class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 xl:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf focus:placeholder-brand-leaf/50 transition-all shadow-inner"
+              aria-label="Buscar productos naturales en la tienda"
+            >
+            <button type="submit" role="button" aria-label="Buscar productos" tabindex="-1" class="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
+              <i aria-hidden="true" class="ph-bold ph-magnifying-glass"></i>
+            </button>
+          </form>
+
+          <!-- Dropdown resultados de búsqueda -->
+          <div id="search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 bg-[#FEFAE0] text-brand-leaf rounded-2xl shadow-xl border border-brand-olive/50 overflow-hidden z-50 max-h-80 overflow-y-auto" role="region" aria-label="Resultados de búsqueda">
+          </div>
+        </div>
+
+        <!-- Acciones: Cuenta y Carrito -->
+        <div class="flex items-center gap-1 sm:gap-2.5 flex-shrink-0 ml-auto" role="group" aria-label="Acciones de usuario y compra">
+          <button 
+            type="button" 
+            role="button"
+            id="nav-auth-btn" 
+            class="flex items-center justify-center p-1 sm:p-2 lg:px-3 lg:py-2 rounded-full text-xs sm:text-sm font-semibold text-brand-cream hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0 cursor-pointer"
+            aria-label="Mi cuenta: Iniciar sesión"
+          >
+            <i aria-hidden="true" class="ph ph-user text-base sm:text-xl flex-shrink-0"></i>
+            <span id="nav-auth-label" class="sr-only sm:not-sr-only sm:inline">Iniciar Sesión</span>
+          </button>
+
+          <a href="carrito.html" role="button" class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 lg:px-4 py-1.5 lg:py-2 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm hover:bg-[#dcb556] transition-transform active:scale-95 shadow-sm flex-shrink-0 cursor-pointer" aria-label="Carrito de compras, 0 productos">
+            <i aria-hidden="true" class="ph ph-shopping-cart text-base sm:text-xl flex-shrink-0"></i>
+            <span class="sr-only sm:not-sr-only sm:inline">Carrito</span>
+            <span id="cart-counter-badge" aria-hidden="true" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-brand-forest text-brand-cream flex items-center justify-center text-[10px] sm:text-xs font-bold flex-shrink-0">
+              0
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Buscador en móvil y pantallas menores a lg (Ocupa su propia fila completa para no amontonar la superior) -->
+      <div class="mt-2.5 sm:mt-3 lg:hidden w-full" role="search" aria-label="Búsqueda de productos móvil">
+        <form class="relative" onsubmit="event.preventDefault();" role="search">
+          <label for="live-search-input-mobile" class="sr-only">Buscar productos naturales</label>
+          <input 
+            type="search" 
+            id="live-search-input-mobile" 
+            placeholder="Buscar productos naturales..."
+            class="w-full bg-white/10 text-brand-cream placeholder-brand-cream/60 border border-brand-cream/20 rounded-full py-2.5 sm:py-3 pl-11 pr-4 text-xs sm:text-sm focus:outline-none focus:bg-[#FEFAE0] focus:text-brand-leaf"
+            aria-label="Buscar productos naturales en la tienda"
+          >
+          <button type="submit" role="button" aria-label="Buscar productos" tabindex="-1" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-sunflower bg-transparent border-0 p-0 cursor-pointer flex items-center justify-center">
+            <i aria-hidden="true" class="ph-bold ph-magnifying-glass"></i>
+          </button>
+        </form>
+        <div id="search-dropdown-mobile" class="hidden absolute left-4 right-4 mt-1 bg-[#FEFAE0] text-brand-leaf rounded-xl shadow-xl border border-brand-olive/50 overflow-hidden z-50 max-h-64 overflow-y-auto" role="region" aria-label="Resultados de búsqueda">
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 2: Barra de Navegación -->
+    <div class="border-t border-white/10 bg-brand-forest">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between py-2.5 min-h-[52px] gap-y-3 gap-x-6 text-xs sm:text-sm">
+          
+          <!-- Enlaces de navegación principales -->
+          <nav role="navigation" aria-label="Navegación principal del sitio" class="flex flex-wrap items-center gap-1 sm:gap-2">
+            <a href="index.html" role="link" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+              Inicio
+            </a>
+
+            <!-- Botón Desplegable de Categorías (Apertura y Cierre por Clic) -->
+            <div class="relative" id="nav-category-container">
+              <button 
+                type="button" 
+                role="button"
+                id="nav-category-btn" 
+                aria-expanded="false" 
+                aria-haspopup="true" 
+                aria-controls="nav-category-menu"
+                aria-label="Categorías"
+                class="nav-section-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 focus:outline-none whitespace-nowrap cursor-pointer"
+              >
+                <span>Categorías</span>
+                <i aria-hidden="true" id="nav-category-caret" class="ph ph-caret-down text-sm transition-transform duration-200"></i>
+              </button>
+
+              <!-- Panel Desplegable Flotante -->
+              <div 
+                id="nav-category-menu" 
+                role="region"
+                aria-label="Catálogo de categorías"
+                class="hidden dropdown-enter absolute left-0 top-full mt-2 w-[92vw] sm:w-[500px] bg-[#FEFAE0] text-[#3e4a2f] rounded-2xl shadow-2xl border-2 border-[#283618] overflow-hidden z-50 p-4 sm:p-5"
+              >
+                <div class="flex items-center justify-between pb-3 mb-3 border-b-2 border-[#CCD5AE]">
+                  <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-full bg-[#E9C46A] flex items-center justify-center text-[#283618] font-bold text-base shadow-xs">
+                      <i aria-hidden="true" class="ph ph-plant"></i>
+                    </span>
+                    <h2 class="font-botanic font-bold text-base text-[#283618] uppercase tracking-wider">
+                      Explora Nuestro Catálogo Natural
+                    </h2>
+                  </div>
+                  <button type="button" id="nav-category-close" class="text-[#3e4a2f] hover:text-[#283618] hover:bg-[#CCD5AE]/40 p-2 rounded-full text-lg focus:outline-none transition-colors" aria-label="Cerrar menú">
+                    <i aria-hidden="true" class="ph ph-x"></i>
+                  </button>
+                </div>
+
+                <div class="mb-3">
+                  <a href="categoria.html" class="flex items-center justify-between px-4 py-3 rounded-xl bg-[#CCD5AE] hover:bg-[#E9C46A] border-2 border-[#3e4a2f] text-[#283618] transition-all text-base font-bold shadow-xs group">
+                    <span class="flex items-center gap-2.5">
+                      <i aria-hidden="true" class="ph ph-squares-four text-xl text-brand-forest"></i>
+                      <span>Ver Todos</span>
+                    </span>
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0] font-bold">10</span>
+                  </a>
+                </div>
+
+                <div class="space-y-3" id="nav-category-accordion">
+                  <!-- Tarjeta 1: Selección Especial -->
+                  <div class="nav-cat-card border-2 border-[#CCD5AE] rounded-2xl overflow-hidden bg-[#FEFAE0]">
+                    <div class="nav-cat-header flex items-center justify-between w-full p-4 hover:bg-[#CCD5AE]/50 text-[#3e4a2f] transition-colors cursor-pointer select-none" role="button" tabindex="0" aria-expanded="false" aria-label="Categoría: Selección Especial">
+                      <div class="flex items-center justify-between flex-1">
+                        <span class="flex items-center gap-2 text-sm font-bold text-[#283618]">
+                          <i aria-hidden="true" class="ph ph-sparkle text-lg text-brand-forest"></i>
+                          <span>Selección Especial</span>
+                        </span>
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full mr-2 bg-[#3e4a2f] text-[#FEFAE0]">
+                          8
+                        </span>
+                      </div>
+                      <span class="nav-cat-caret p-1 text-base transition-transform duration-200">
+                        <i aria-hidden="true" class="ph ph-caret-down font-bold text-[#283618]"></i>
+                      </span>
+                    </div>
+
+                    <div class="nav-subcat-drawer hidden bg-[#FEFAE0] border-t-2 border-[#CCD5AE] p-2 space-y-1">
+                      <a href="categoria.html?special=all" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors bg-[#E9C46A] text-[#283618] font-bold shadow-xs">
+                        <span>Ver Toda la Selección</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0]">8</span>
+                      </a>
+                      <a href="categoria.html?special=destacados" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <i aria-hidden="true" class="ph ph-star text-sm text-brand-sunflower"></i>
+                          <span>Destacados</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">4</span>
+                      </a>
+                      <a href="categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <i aria-hidden="true" class="ph ph-fire text-sm text-brand-sunflower"></i>
+                          <span>Más Vendidos</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">6</span>
+                      </a>
+                      <a href="categoria.html?special=nuevos" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <i aria-hidden="true" class="ph ph-plant text-sm text-brand-sunflower"></i>
+                          <span>Nuevos</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">4</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Tarjeta 2: Suplementos -->
+                  <div class="nav-cat-card border-2 border-[#CCD5AE] rounded-2xl overflow-hidden bg-[#FEFAE0]">
+                    <div class="nav-cat-header flex items-center justify-between w-full p-4 hover:bg-[#CCD5AE]/50 text-[#3e4a2f] transition-colors cursor-pointer select-none" role="button" tabindex="0" aria-expanded="false" aria-label="Categoría: Suplementos">
+                      <div class="flex items-center justify-between flex-1">
+                        <span class="flex items-center gap-2 text-sm font-bold text-[#283618]">
+                          <i aria-hidden="true" class="ph ph-lightning text-lg text-brand-forest"></i>
+                          <span>Suplementos</span>
+                        </span>
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full mr-2 bg-[#3e4a2f] text-[#FEFAE0]">
+                          10
+                        </span>
+                      </div>
+                      <span class="nav-cat-caret p-1 text-base transition-transform duration-200">
+                        <i aria-hidden="true" class="ph ph-caret-down font-bold text-[#283618]"></i>
+                      </span>
+                    </div>
+
+                    <div class="nav-subcat-drawer hidden bg-[#FEFAE0] border-t-2 border-[#CCD5AE] p-2 space-y-1">
+                      <a href="categoria.html?cat=suplementos" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors bg-[#E9C46A] text-[#283618] font-bold shadow-xs">
+                        <span>Ver Todos</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0]">10</span>
+                      </a>
+                      <a href="categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <span>Vitaminas &amp; Minerales</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">3</span>
+                      </a>
+                      <a href="categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <span>Remedios</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">2</span>
+                      </a>
+                      <a href="categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-5 pr-3 py-2 rounded-lg text-xs transition-all hover:bg-[#E9C46A] text-[#3e4a2f] font-semibold">
+                        <span class="flex items-center gap-1.5">
+                          <span>En Polvo</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#3e4a2f] text-[#FEFAE0]">5</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <a href="categoria.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+              Productos
+            </a>
+
+            <a href="ayuda.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap" aria-label="Ayuda y preguntas frecuentes">
+              Ayuda/FAQ
+            </a>
+
+            <a href="politicas-retiro.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+              Políticas de Retiro
+            </a>
+          </nav>
+
+          <!-- A la derecha: Punto de retiro físico en Quito (se oculta al achicar la ventana para evitar que salte de fila) -->
+          <div class="pickup-header-pill items-center gap-2 flex-shrink-0 ml-auto bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
+            <i aria-hidden="true" class="ph ph-map-pin text-brand-sunflower text-lg flex-shrink-0"></i>
+            <span class="text-brand-cream/90 text-sm whitespace-nowrap font-medium tracking-wide">González Suárez 420 <span class="amp-normal">&amp;</span> Coruña, Quito</span>
+            <div class="w-px h-4 bg-white/20 mx-1.5"></div>
+            <span class="text-brand-sunflower font-sans uppercase font-black text-xs tracking-widest whitespace-nowrap">
+              Retiro al instante
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Telón de fondo para cerrar dropdown -->
+  <div id="nav-category-backdrop" class="hidden fixed inset-0 bg-black/20 z-30"></div>
+
+  <!-- Modal de Iniciar Sesión y Registro -->
+  <div id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-black/60 backdrop-blur-xs transition-opacity duration-200 p-3 sm:p-6 text-center">
+    <div id="auth-modal-wrapper" class="min-h-full flex items-center justify-center p-0">
+      <div id="auth-modal-card" class="relative w-full max-w-md my-auto bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest overflow-hidden text-left transform transition-all animate-in fade-in zoom-in duration-200">
+        
+        <!-- Encabezado del Modal - Se queda en su sitio, arriba, y no sigue el desplazamiento hacia abajo al hacer scroll -->
+        <div id="auth-modal-header" class="bg-brand-forest text-brand-cream p-4 sm:p-6 pb-4 sm:pb-5 relative">
+          <!-- Fila Superior: Marca y Botón Cerrar en contenedor flex asegurado -->
+          <div class="auth-header-top flex items-center justify-between gap-3 mb-1.5 w-full">
+            <div class="auth-header-title-box flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 overflow-hidden">
+              <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
+                <i aria-hidden="true" class="ph ph-plant text-lg sm:text-xl"></i>
+              </span>
+              <h2 id="auth-modal-title" class="font-botanic font-bold text-base sm:text-lg text-brand-cream tracking-tight inline-flex items-center whitespace-nowrap leading-tight truncate">
+                <span>Sacha</span><span class="font-hand text-brand-sunflower text-[1.25em] font-bold mx-1.5 inline-block transform -rotate-12 align-baseline">&amp;</span><span>Pamba</span>
+              </h2>
+            </div>
+
+            <button 
+              type="button" 
+              role="button"
+              id="auth-modal-close" 
+              onclick="closeAuthModal()"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-brand-cream/80 hover:text-brand-sunflower transition-all flex items-center justify-center flex-shrink-0 cursor-pointer text-lg"
+              aria-label="Cerrar modal de acceso"
+            >
+              <i aria-hidden="true" class="ph ph-x"></i>
+            </button>
+          </div>
+          <p class="text-xs sm:text-sm text-brand-cream/80">Tu tienda naturista de confianza en Quito</p>
+
+        <!-- Pestañas -->
+        <div class="grid grid-cols-2 gap-2 mt-4 bg-white/10 p-1.5 rounded-2xl border border-white/15 text-sm font-bold" role="tablist" aria-label="Opciones de acceso">
+          <button 
+            type="button" 
+            role="tab"
+            aria-selected="true"
+            aria-controls="form-login"
+            id="tab-login-btn" 
+            onclick="switchAuthTab('login')" 
+            class="py-2 sm:py-2.5 rounded-xl text-center transition-all bg-brand-sunflower text-brand-leaf shadow-sm cursor-pointer"
+          >
+            Iniciar Sesión
+          </button>
+          <button 
+            type="button" 
+            role="tab"
+            aria-selected="false"
+            aria-controls="form-register"
+            id="tab-register-btn" 
+            onclick="switchAuthTab('register')" 
+            class="py-2 sm:py-2.5 rounded-xl text-center transition-all text-brand-cream/80 hover:text-white cursor-pointer"
+          >
+            Registrarse
+          </button>
+        </div>
+      </div>
+
+      <!-- Cuerpo del Formulario continuo sin scroll interno cortado -->
+      <div id="auth-modal-body" class="p-5 sm:p-6 bg-[#FEFAE0]">
+        
+        <!-- Formulario 1: Iniciar Sesión -->
+        <form id="form-login" onsubmit="handleLoginSubmit(event)" novalidate class="space-y-3.5 sm:space-y-4">
+          <div>
+            <label for="login-email" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="email" 
+                id="login-email" 
+                placeholder="ejemplo@sachaypamba.ec" 
+                value="maria.morales@ejemplo.ec"
+                oninput="clearFieldValidation('login-email')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+            </div>
+            <p id="login-email-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu correo electrónico.</span>
+            </p>
+          </div>
+
+          <div>
+            <label for="login-password" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Contraseña <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="login-password" 
+                placeholder="••••••••" 
+                value="123456"
+                oninput="clearFieldValidation('login-password')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('login-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar contraseña"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i aria-hidden="true" class="ph ph-eye text-lg"></i>
+              </button>
+            </div>
+            <p id="login-password-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu contraseña.</span>
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-brand-leaf/70 pt-1">
+            <label for="login-remember" class="flex items-center gap-1.5 cursor-pointer font-medium">
+              <input type="checkbox" id="login-remember" checked class="rounded accent-brand-forest w-4 h-4">
+              <span>Recordar mis datos</span>
+            </label>
+            <a href="javascript:void(0)" onclick="showToast('Enlace de recuperación enviado al correo')" class="text-brand-forest font-bold hover:underline">¿Olvidaste tu clave?</a>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3 sm:py-3.5 mt-2 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 cursor-pointer"
+          >
+            <i aria-hidden="true" class="ph ph-sign-in text-lg sm:text-xl"></i>
+            <span>Ingresar a mi cuenta</span>
+          </button>
+        </form>
+
+        <!-- Formulario 2: Registrarse -->
+        <form id="form-register" onsubmit="handleRegisterSubmit(event)" novalidate class="hidden space-y-3 sm:space-y-3.5">
+          <div>
+            <label for="reg-name" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Nombre Completo <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="reg-name" 
+                placeholder="Ej. María Emilia Morales" 
+                oninput="clearFieldValidation('reg-name')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+            </div>
+            <p id="reg-name-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu nombre completo.</span>
+            </p>
+          </div>
+
+          <div>
+            <label for="reg-email" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Correo Electrónico <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="email" 
+                id="reg-email" 
+                placeholder="tu@correo.ec" 
+                oninput="clearFieldValidation('reg-email')"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+            </div>
+            <p id="reg-email-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa un correo electrónico válido.</span>
+            </p>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="reg-username" class="block text-xs sm:text-sm font-bold text-brand-forest">Usuario</label>
+              <span class="text-[11px] font-semibold text-brand-leaf/60 italic">(Opcional)</span>
+            </div>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="reg-username" 
+                placeholder="Ej. maria_morales" 
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-phone" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Teléfono / Celular <span class="text-red-500">*</span></label>
+            <input 
+              type="tel" 
+              id="reg-phone" 
+              placeholder="099 876 5432" 
+              oninput="clearFieldValidation('reg-phone')"
+              class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+            >
+            <p id="reg-phone-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu número de teléfono o celular.</span>
+            </p>
+          </div>
+
+          <div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+              <div class="sm:col-span-1">
+                <label for="reg-doc-type" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Documento <span class="text-red-500">*</span></label>
+                <select 
+                  id="reg-doc-type" 
+                  class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-bold"
+                  onchange="clearFieldValidation('reg-id')"
+                >
+                  <option value="Cédula" selected>Cédula</option>
+                  <option value="Pasaporte">Pasaporte</option>
+                </select>
+              </div>
+              <div class="sm:col-span-2">
+                <label for="reg-id" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Número de Identificación <span class="text-red-500">*</span></label>
+                <input 
+                  type="text" 
+                  id="reg-id" 
+                  placeholder="Ej. 1723456789" 
+                  oninput="clearFieldValidation('reg-id')"
+                  class="w-full text-xs sm:text-sm py-2.5 sm:py-3 px-3.5 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-mono font-medium transition-colors"
+                >
+              </div>
+            </div>
+            <p id="reg-id-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa un número de identificación válido.</span>
+            </p>
+          </div>
+
+          <div>
+            <label for="reg-password" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1">Contraseña <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="reg-password" 
+                placeholder="Crea una contraseña segura" 
+                autocomplete="new-password"
+                oninput="handleRegPasswordInputChange(this.value)"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('reg-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar contraseña"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i aria-hidden="true" class="ph ph-eye text-lg"></i>
+              </button>
+            </div>
+
+            <!-- Lista de requisitos de contraseña: solo visible al escribir algo -->
+            <div id="reg-password-reqs" class="hidden space-y-1.5 p-3 rounded-xl bg-[#FEFAE0] border border-[#283618] text-xs select-none shadow-2xs mt-2">
+              <span class="block font-bold text-brand-forest mb-1">Requisitos de la contraseña:</span>
+              <div id="reg-req-length" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Tener al menos 8 caracteres</span>
+              </div>
+              <div id="reg-req-uppercase" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos una letra mayúscula</span>
+              </div>
+              <div id="reg-req-number" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos un número</span>
+              </div>
+              <div id="reg-req-special" class="flex items-center gap-2 text-brand-leaf/70 transition-colors">
+                <i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i>
+                <span>Incluir por lo menos un carácter especial (ej. !@#$%*.-)</span>
+              </div>
+            </div>
+            <p id="reg-password-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden">
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>La contraseña debe cumplir con todos los requisitos.</span>
+            </p>
+          </div>
+
+          <!-- Campo desplegable para confirmar contraseña: SOLO se despliega cuando se cumplen todos los requisitos -->
+          <div id="reg-confirm-password-wrapper" class="hidden space-y-1.5 pt-1">
+            <label for="reg-confirm-password" class="block text-brand-leaf/80 text-xs font-bold flex items-center gap-1.5">
+              <i aria-hidden="true" class="ph ph-shield-check text-brand-forest"></i>
+              <span>Confirmar Contraseña <span class="text-red-500">*</span></span>
+            </label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="reg-confirm-password" 
+                placeholder="Repite tu contraseña" 
+                oninput="validateRegPasswordMatch()"
+                autocomplete="new-password"
+                class="auth-input-with-icon w-full text-xs sm:text-sm py-2.5 sm:py-3 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
+                style="padding-left: 2.85rem !important;"
+              >
+              <i aria-hidden="true" class="ph ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+              <button 
+                type="button" 
+                onclick="togglePasswordVisibility('reg-confirm-password', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-forest/60 hover:text-brand-forest p-1 cursor-pointer"
+                title="Mostrar / Ocultar confirmación de contraseña"
+                aria-label="Mostrar u ocultar confirmación de contraseña"
+              >
+                <i aria-hidden="true" class="ph ph-eye text-lg"></i>
+              </button>
+            </div>
+            <p id="reg-password-match-msg" class="text-xs font-bold min-h-[1.25rem] hidden"></p>
+          </div>
+
+          <div class="pt-1.5 sm:pt-2">
+            <button 
+              type="submit" 
+              class="w-full py-3 sm:py-3.5 rounded-2xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95 cursor-pointer"
+            >
+              <i aria-hidden="true" class="ph ph-user-plus text-lg sm:text-xl"></i>
+              <span>Crear Cuenta y Continuar</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal de Calificar y Comentar Producto -->
+  <div id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200">
+    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-lg overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
+      
+      <div class="bg-brand-forest text-brand-cream p-6 pb-5 relative">
+        <button 
+          type="button" 
+          onclick="closeReviewModal()" 
+          class="absolute top-5 right-5 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
+          aria-label="Cerrar modal"
+        >
+          <i aria-hidden="true" class="ph ph-x"></i>
+        </button>
+
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-10 h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower">
+            <i aria-hidden="true" class="ph ph-star text-2xl"></i>
+          </span>
+          <h2 id="review-modal-title" class="font-botanic font-bold text-xl text-brand-cream tracking-tight">Calificar y comentar</h2>
+        </div>
+        <p class="text-sm text-brand-cream/80 font-medium" id="review-modal-product-name">Producto Botánico</p>
+        <div class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-brand-sunflower text-xs font-bold">
+          <i aria-hidden="true" class="ph ph-seal-check text-base"></i>
+          <span>Retiro verificado en Av. González Suárez 420</span>
+        </div>
+      </div>
+
+      <form onsubmit="submitReviewModal(event)" class="p-6 bg-[#FEFAE0] space-y-5 text-sm">
+        <input type="hidden" id="modal-review-product-id">
+
+        <div>
+          <label class="block font-bold text-brand-forest mb-2">Tu Calificación General:</label>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-1 text-3xl" id="modal-star-picker">
+              <button type="button" onclick="setModalRating(1)" class="star-btn text-amber-500 transition-transform active:scale-90"><i aria-hidden="true" class="ph-fill ph-star"></i></button>
+              <button type="button" onclick="setModalRating(2)" class="star-btn text-amber-500 transition-transform active:scale-90"><i aria-hidden="true" class="ph-fill ph-star"></i></button>
+              <button type="button" onclick="setModalRating(3)" class="star-btn text-amber-500 transition-transform active:scale-90"><i aria-hidden="true" class="ph-fill ph-star"></i></button>
+              <button type="button" onclick="setModalRating(4)" class="star-btn text-amber-500 transition-transform active:scale-90"><i aria-hidden="true" class="ph-fill ph-star"></i></button>
+              <button type="button" onclick="setModalRating(5)" class="star-btn text-amber-500 transition-transform active:scale-90"><i aria-hidden="true" class="ph-fill ph-star"></i></button>
+            </div>
+            <input type="hidden" id="modal-review-rating" value="5">
+            <span id="modal-rating-label" class="text-sm font-extrabold text-brand-forest">5 de 5 estrellas</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="modal-review-name" class="block font-bold text-brand-forest mb-1.5">Tu Nombre o Alias</label>
+          <input type="text" id="modal-review-name" required placeholder="Ej. Camila Morales" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-medium">
+        </div>
+
+        <div>
+          <label for="modal-review-comment" class="block font-bold text-brand-forest mb-1.5">Tu Comentario o Testimonio</label>
+          <textarea id="modal-review-comment" rows="3" required placeholder="Comparte tu experiencia tras retirarlo en tienda: aroma, textura, efectividad y cómo lo tomas..." class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest font-medium"></textarea>
+        </div>
+
+        <div>
+          <label for="modal-review-file" class="block font-bold text-brand-forest mb-1.5">Foto de tu producto (Opcional)</label>
+          <div class="border-2 border-dashed border-brand-forest/30 rounded-2xl p-5 text-center hover:bg-brand-olive/20 transition-colors cursor-pointer" onclick="triggerReviewFileUpload()">
+            <input type="file" id="modal-review-file" accept="image/*" class="hidden" onchange="handleModalReviewImage(event)">
+            <div id="modal-review-upload-prompt" class="space-y-1.5">
+              <i aria-hidden="true" class="ph ph-camera text-3xl text-brand-moss block"></i>
+              <span class="text-sm font-bold text-brand-forest block">Haz clic para subir una foto de tu producto</span>
+              <span class="text-xs text-brand-leaf/60 block font-medium">Comparte cómo se ve tu producto en casa</span>
+            </div>
+            <div id="modal-review-image-preview-box" class="hidden space-y-3">
+              <img id="modal-review-image-preview" src="" alt="Vista previa del producto" class="w-28 h-28 object-cover mx-auto rounded-xl border-2 border-brand-forest/30 shadow-sm">
+              <p class="text-xs text-brand-forest font-bold truncate max-w-xs mx-auto" id="modal-review-file-name"></p>
+              <button type="button" onclick="removeModalReviewImage(event)" class="text-sm text-red-600 hover:underline font-bold">Quitar imagen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeReviewModal()" class="px-5 py-3 rounded-xl border border-brand-forest/30 text-brand-forest font-bold hover:bg-brand-olive/30 transition-colors text-base">
+            Cancelar
+          </button>
+          <button type="submit" class="px-6 py-3 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold flex items-center gap-2 shadow-sm transition-transform active:scale-95 text-base">
+            <i aria-hidden="true" class="ph ph-paper-plane-tilt text-lg"></i>
+            <span>Publicar Reseña</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmación para Eliminar Producto al pulsar '-' -->
+  <div id="confirm-remove-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-remove-heading" aria-describedby="confirm-remove-desc" aria-hidden="true" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity duration-200">
+    <div class="bg-[#FEFAE0] rounded-3xl shadow-2xl border-2 border-brand-forest w-full max-w-sm sm:max-w-md overflow-hidden relative animate-in fade-in zoom-in duration-200 text-left">
+      
+      <!-- Encabezado del modal -->
+      <div class="bg-brand-forest text-brand-cream p-5 relative">
+        <button 
+          type="button" 
+          onclick="closeConfirmRemoveModal()" 
+          class="absolute top-4 right-4 text-brand-cream/70 hover:text-brand-sunflower text-2xl p-1 rounded-full focus:outline-none transition-colors"
+          aria-label="Cerrar modal"
+        >
+          <i aria-hidden="true" class="ph ph-x"></i>
+        </button>
+
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-brand-cream/10 border border-brand-sunflower/30 flex items-center justify-center text-brand-sunflower flex-shrink-0">
+            <i aria-hidden="true" class="ph ph-warning-circle text-2xl"></i>
+          </span>
+          <div>
+            <h2 id="confirm-remove-heading" class="font-botanic font-bold text-lg text-brand-cream tracking-tight">¿Eliminar producto?</h2>
+            <p class="text-xs text-brand-cream/80">Confirmación de acción</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-3.5 bg-[#CCD5AE]/40 p-3 rounded-2xl border border-brand-forest/20">
+          <img id="confirm-remove-img" src="" alt="Producto" class="w-12 h-12 object-cover rounded-xl bg-white border border-brand-forest/20 flex-shrink-0">
+          <div class="min-w-0 flex-1">
+            <h3 id="confirm-remove-title" class="font-botanic font-bold text-brand-forest text-sm truncate">Producto</h3>
+            <p id="confirm-remove-meta" class="text-xs text-brand-leaf/80 font-medium">1 unidad · $0.00</p>
+          </div>
+        </div>
+
+        <p id="confirm-remove-desc" class="text-xs sm:text-sm text-brand-leaf/90 leading-relaxed font-medium">
+          Vas a eliminar este producto de tu carrito de compras. ¿Deseas continuar para realizar esta acción?
+        </p>
+
+        <!-- Botones de Acción -->
+        <div class="flex items-center justify-end gap-2.5 pt-2">
+          <button 
+            type="button" 
+            onclick="closeConfirmRemoveModal()" 
+            class="px-4 py-2.5 rounded-full border border-brand-forest/30 text-brand-forest font-bold hover:bg-brand-olive/30 text-xs sm:text-sm transition-all active:scale-95"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            onclick="confirmRemoveProduct()" 
+            class="px-5 py-2.5 rounded-full bg-brand-forest text-brand-cream hover:bg-[#1a2410] font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-xs inline-flex items-center gap-1.5"
+          >
+            <i aria-hidden="true" class="ph ph-trash-simple text-base text-brand-sunflower"></i>
+            <span>Continuar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal Lightbox para Ampliar Imagen de Producto -->
+  <div id="image-lightbox-modal" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-5 bg-black/90 backdrop-blur-md transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen">
+    
+    <div id="image-lightbox-container" class="relative max-w-5xl w-full flex flex-col items-center justify-center select-none animate-in fade-in zoom-in duration-200" onclick="event.stopPropagation()">
+      
+      <!-- Barra superior: Información y botón cerrar -->
+      <div class="w-full flex items-center justify-between gap-3 text-white mb-2 px-2 z-10">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-sunflower flex-shrink-0"></span>
+          <span id="lightbox-product-title" class="font-botanic text-sm sm:text-lg md:text-xl font-bold text-[#FEFAE0] truncate drop-shadow-md">
+            Vista ampliada
+          </span>
+          <span id="lightbox-image-counter" class="text-xs sm:text-sm text-white/75 font-medium whitespace-nowrap hidden drop-shadow-sm">
+            (1/3)
+          </span>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="event.stopPropagation(); closeImageLightbox()" 
+          class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all flex-shrink-0 cursor-pointer shadow-lg"
+          aria-label="Cerrar imagen ampliada"
+        >
+          <i aria-hidden="true" class="ph ph-x text-2xl font-bold"></i>
+        </button>
+      </div>
+
+      <!-- Contenedor puro de la Imagen (sin rectángulos artificiales de fondo ni bordes vacíos) -->
+      <div id="image-lightbox-card" class="relative max-w-full flex items-center justify-center">
+        
+        <!-- Imagen principal ampliada a su tamaño máximo visible -->
+        <img 
+          id="lightbox-img" 
+          src="" 
+          alt="Imagen ampliada de producto" 
+          class="max-w-[92vw] sm:max-w-[88vw] max-h-[76vh] sm:max-h-[82vh] w-auto h-auto object-contain rounded-2xl shadow-2xl transition-all duration-200"
+        >
+
+        <!-- Botón Anterior -->
+        <button 
+          type="button" 
+          id="lightbox-prev-btn" 
+          onclick="event.stopPropagation(); navigateLightboxImage(-1)" 
+          class="hidden absolute left-2 sm:left-4 md:-left-12 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/85 active:scale-95 text-white flex items-center justify-center transition-all border border-white/25 cursor-pointer shadow-2xl z-20"
+          aria-label="Imagen anterior"
+        >
+          <i aria-hidden="true" class="ph ph-caret-left text-2xl sm:text-3xl font-bold"></i>
+        </button>
+
+        <!-- Botón Siguiente -->
+        <button 
+          type="button" 
+          id="lightbox-next-btn" 
+          onclick="event.stopPropagation(); navigateLightboxImage(1)" 
+          class="hidden absolute right-2 sm:right-4 md:-right-12 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/85 active:scale-95 text-white flex items-center justify-center transition-all border border-white/25 cursor-pointer shadow-2xl z-20"
+          aria-label="Imagen siguiente"
+        >
+          <i aria-hidden="true" class="ph ph-caret-right text-2xl sm:text-3xl font-bold"></i>
+        </button>
+      </div>
+
+      <!-- Tira de Miniaturas en el Lightbox si hay más de 1 imagen -->
+      <div id="lightbox-thumbnails-container" class="hidden flex items-center justify-center gap-2.5 sm:gap-3.5 mt-3 max-w-full overflow-x-auto py-1 z-10" onclick="event.stopPropagation()">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. CONTENEDOR DINÁMICO DE VISTAS (APP VIEW)
+       ========================================== -->
+  <main id="app" role="main" tabindex="-1" class="flex-1 w-full bg-brand-cream focus:outline-none relative z-10">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          
+          <nav aria-label="Miga de pan" class="flex items-center gap-2 text-sm text-brand-leaf/80 font-medium mb-4 flex-wrap bg-[#CCD5AE] py-1.5 px-3.5 rounded-xl border border-brand-forest/20 shadow-xs">
+            <a href="index.html" class="hover:text-brand-forest">Inicio</a>
+            <span>/</span>
+            
+              <span class="font-bold text-brand-forest">Productos</span>
+            
+            
+            
+            
+            
+          </nav>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
+            
+            <!-- Barra Lateral de Categorías (Organizada y con textos 100% visibles) -->
+            <aside role="region" aria-label="Filtros del catálogo" class="lg:col-span-4 xl:col-span-3 min-w-0 bg-brand-cream p-3.5 sm:p-4.5 rounded-3xl border-[3px] border-brand-forest shadow-sm space-y-3">
+              <div class="flex items-center justify-between pb-2.5 border-b-2 border-brand-forest/20 gap-2 flex-wrap">
+                <h2 class="font-botanic font-bold text-xs sm:text-sm text-brand-forest uppercase tracking-wider flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+                  <i aria-hidden="true" class="ph ph-funnel text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
+                  <span>Categorías</span>
+                </h2>
+                <a href="categoria.html" role="button" class="text-xs text-brand-forest hover:underline font-bold flex-shrink-0 ml-auto whitespace-nowrap" title="Restablecer filtros">Limpiar</a>
+              </div>
+
+              <!-- Botón Ver Todos -->
+              <a href="categoria.html" role="button" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-sunflower text-brand-leaf font-bold shadow-xs text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <i aria-hidden="true" class="ph ph-squares-four text-base flex-shrink-0 text-brand-forest"></i>
+                  <span class="font-bold whitespace-nowrap">Ver Todos</span>
+                </div>
+                <span class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full flex-shrink-0 bg-brand-forest text-brand-cream font-bold">10</span>
+              </a>
+
+              <!-- Acordeón 1: Selección Especial -->
+              <div class="border-2 border-brand-forest/20 rounded-2xl bg-brand-cream">
+                <button type="button" role="button" aria-expanded="false" aria-controls="sidebar-drawer-especiales" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 bg-brand-cream hover:bg-brand-olive/40 text-brand-leaf font-semibold transition-colors cursor-pointer select-none gap-1.5 rounded-2xl" data-cat="especiales">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <i aria-hidden="true" class="ph ph-sparkle text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Selección Especial</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-shrink-0">
+                    <span class="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream flex-shrink-0">8</span>
+                    <i aria-hidden="true" class="ph ph-caret-down text-xs sm:text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 "></i>
+                  </div>
+                </button>
+
+                <div id="sidebar-drawer-especiales" role="region" aria-label="Subcategorías de Selección Especial" class="sidebar-cat-drawer hidden bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
+                  <a href="categoria.html?special=all" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm hover:bg-brand-sunflower/40 text-brand-forest font-semibold transition-colors gap-2">
+                    <span class="whitespace-nowrap">Toda la Selección</span>
+                    <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">8</span>
+                  </a>
+                  <a href="categoria.html?special=destacados" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <i aria-hidden="true" class="ph ph-star text-sm text-brand-sunflower flex-shrink-0"></i>
+                      <span class="whitespace-nowrap">Destacados</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
+                  </a>
+                  <a href="categoria.html?special=mas-vendidos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <i aria-hidden="true" class="ph ph-fire text-sm text-brand-sunflower flex-shrink-0"></i>
+                      <span class="whitespace-nowrap">Más Vendidos</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">6</span>
+                  </a>
+                  <a href="categoria.html?special=nuevos" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <i aria-hidden="true" class="ph ph-plant text-sm text-brand-sunflower flex-shrink-0"></i>
+                      <span class="whitespace-nowrap">Nuevos</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">4</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Acordeón 2: Suplementos -->
+              <div class="border-2 border-brand-forest/20 rounded-2xl bg-brand-cream">
+                <button type="button" role="button" aria-expanded="false" aria-controls="sidebar-drawer-suplementos" class="sidebar-cat-header flex items-center justify-between w-full px-2.5 py-2 sm:px-3 sm:py-2.5 bg-brand-cream hover:bg-brand-olive/40 text-brand-leaf font-semibold transition-colors cursor-pointer select-none gap-1.5 rounded-2xl" data-cat="suplementos">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <i aria-hidden="true" class="ph ph-lightning text-sm sm:text-base text-brand-forest flex-shrink-0"></i>
+                    <span class="text-xs sm:text-sm font-bold text-brand-forest whitespace-nowrap">Suplementos</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-shrink-0">
+                    <span class="text-[10px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream flex-shrink-0">10</span>
+                    <i aria-hidden="true" class="ph ph-caret-down text-xs sm:text-sm transition-transform duration-200 text-brand-forest flex-shrink-0 "></i>
+                  </div>
+                </button>
+
+                <div id="sidebar-drawer-suplementos" role="region" aria-label="Subcategorías de Suplementos" class="sidebar-cat-drawer hidden bg-brand-cream border-t-2 border-brand-forest/15 p-2 space-y-1 rounded-b-2xl">
+                  <a href="categoria.html?cat=suplementos" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs sm:text-sm hover:bg-brand-sunflower/40 text-brand-forest font-semibold transition-colors gap-2">
+                    <span class="whitespace-nowrap">Todos los Suplementos</span>
+                    <span class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
+                  </a>
+                  <a href="categoria.html?cat=suplementos&subcat=vitaminas-minerales" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <span class="whitespace-nowrap">Vitaminas &amp; Minerales</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">3</span>
+                  </a>
+                  <a href="categoria.html?cat=suplementos&subcat=remedios" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <span class="whitespace-nowrap">Remedios Tradicionales</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">2</span>
+                  </a>
+                  <a href="categoria.html?cat=suplementos&subcat=suplementos-polvo" class="flex items-center justify-between pl-3 pr-2.5 py-1.5 rounded-lg text-xs hover:bg-brand-sunflower/40 text-brand-forest/90 font-medium transition-colors gap-2">
+                    <span class="whitespace-nowrap">En Polvo / Harinas</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">5</span>
+                  </a>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Columna Principal de Productos (Estructura de Redireccionamiento Inteligente en 3 Columnas) -->
+            <section role="region" aria-label="Listado de productos: Todos los Productos" class="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0">
+              <div class="flex items-center justify-between pb-4 border-b border-brand-olive/60">
+                <div class="min-w-0 pr-4">
+                  <h1 class="font-botanic text-2xl sm:text-3xl lg:text-4xl font-bold text-brand-forest truncate">
+                    Todos los Productos
+                  </h1>
+                  <p class="text-xs sm:text-sm text-brand-leaf/70 mt-1 font-normal">Mostrando <strong class="font-bold text-sm sm:text-base">10</strong> productos naturales</p>
+                </div>
+              </div>
+
+              
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                  
+        <article id="product-card-vitamina-c" role="article" aria-label="Producto: Vitamina C + Camu Camu Amazónico" onclick="handleProductCardClick(event, 'vitamina-c')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'vitamina-c')"
+              ondblclick="triggerFavoriteDblClick('vitamina-c', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas" 
+                alt="Vitamina C + Camu Camu Amazónico" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Vitamina%20C%20%2B%20Camu%20Camu%20Amaz%C3%B3nico'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Vitaminas y Minerales
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-vitamina-c" 
+                onclick="event.stopPropagation(); toggleFavorite('vitamina-c')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Quitar Vitamina C + Camu Camu Amazónico de favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.9 de 5 estrellas con 45 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.9</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(45 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=vitamina-c" tabindex="-1" onclick="saveCatalogPosition('vitamina-c')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Vitamina C + Camu Camu Amazónico
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">60 cápsulas vegetales</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Vitamina C natural biodisponible con pulpa de camu camu silvestre.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$13.50</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=vitamina-c" role="button" aria-label="Ver detalles de Vitamina C + Camu Camu Amazónico" onclick="saveCatalogPosition('vitamina-c')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('vitamina-c', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Vitamina C + Camu Camu Amazónico al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-omega-3" role="article" aria-label="Producto: Perlas de Omega 3, 6 y 9 de Sacha Inchi" onclick="handleProductCardClick(event, 'omega-3')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'omega-3')"
+              ondblclick="triggerFavoriteDblClick('omega-3', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://vivaelmusculo.com/img/cms/omega%203-6-9.png" 
+                alt="Perlas de Omega 3, 6 y 9 de Sacha Inchi" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Perlas%20de%20Omega%203%2C%206%20y%209%20de%20Sacha%20Inchi'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Vitaminas y Minerales
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-omega-3" 
+                onclick="event.stopPropagation(); toggleFavorite('omega-3')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Quitar Perlas de Omega 3, 6 y 9 de Sacha Inchi de favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 5.0 de 5 estrellas con 39 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">5.0</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(39 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=omega-3" tabindex="-1" onclick="saveCatalogPosition('omega-3')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Perlas de Omega 3, 6 y 9 de Sacha Inchi
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">90 perlas softgel</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Aceite vegetal prensado en frío virgen. Salud cardiovascular y cerebral.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$15.00</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=omega-3" role="button" aria-label="Ver detalles de Perlas de Omega 3, 6 y 9 de Sacha Inchi" onclick="saveCatalogPosition('omega-3')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('omega-3', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Perlas de Omega 3, 6 y 9 de Sacha Inchi al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-cloruro-magnesio" role="article" aria-label="Producto: Cloruro de Magnesio" onclick="handleProductCardClick(event, 'cloruro-magnesio')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'cloruro-magnesio')"
+              ondblclick="triggerFavoriteDblClick('cloruro-magnesio', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://cdn.clinicabaviera.com/blog/wp-content/uploads/2020/08/cloruro-de-magnesio-propiedades.jpg" 
+                alt="Cloruro de Magnesio" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Cloruro%20de%20Magnesio'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Vitaminas y Minerales
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-cloruro-magnesio" 
+                onclick="event.stopPropagation(); toggleFavorite('cloruro-magnesio')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Cloruro de Magnesio a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.8 de 5 estrellas con 52 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.8</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(52 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=cloruro-magnesio" tabindex="-1" onclick="saveCatalogPosition('cloruro-magnesio')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Cloruro de Magnesio
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">Fundita 100g cristales</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Equilibrio muscular, combate calambres y mejora la energía celular.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$4.50</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=cloruro-magnesio" role="button" aria-label="Ver detalles de Cloruro de Magnesio" onclick="saveCatalogPosition('cloruro-magnesio')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('cloruro-magnesio', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Cloruro de Magnesio al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-jarabe-sabila" role="article" aria-label="Producto: Jarabe de Sábila con Miel y Propóleo" onclick="handleProductCardClick(event, 'jarabe-sabila')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'jarabe-sabila')"
+              ondblclick="triggerFavoriteDblClick('jarabe-sabila', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://lavendita.es/wp-content/uploads/image-39.png" 
+                alt="Jarabe de Sábila con Miel y Propóleo" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Jarabe%20de%20S%C3%A1bila%20con%20Miel%20y%20Prop%C3%B3leo'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Remedios
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-jarabe-sabila" 
+                onclick="event.stopPropagation(); toggleFavorite('jarabe-sabila')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Quitar Jarabe de Sábila con Miel y Propóleo de favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.9 de 5 estrellas con 27 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.9</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(27 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=jarabe-sabila" tabindex="-1" onclick="saveCatalogPosition('jarabe-sabila')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Jarabe de Sábila con Miel y Propóleo
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">Botella 250ml</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Fórmula tradicional para gastritis, reflujo y regeneración de mucosa gástrica.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$8.50</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=jarabe-sabila" role="button" aria-label="Ver detalles de Jarabe de Sábila con Miel y Propóleo" onclick="saveCatalogPosition('jarabe-sabila')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('jarabe-sabila', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Jarabe de Sábila con Miel y Propóleo al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-capsulas-propoleo" role="article" aria-label="Producto: Cápsulas de Propóleo y Polen Andino" onclick="handleProductCardClick(event, 'capsulas-propoleo')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'capsulas-propoleo')"
+              ondblclick="triggerFavoriteDblClick('capsulas-propoleo', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PqkarzXXhxZydKUJr4HPhdgzwkxsACWWAAGsbNI7fu5R6NNYQ3hups0v&s=10" 
+                alt="Cápsulas de Propóleo y Polen Andino" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=C%C3%A1psulas%20de%20Prop%C3%B3leo%20y%20Polen%20Andino'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Remedios
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-capsulas-propoleo" 
+                onclick="event.stopPropagation(); toggleFavorite('capsulas-propoleo')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Cápsulas de Propóleo y Polen Andino a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.8 de 5 estrellas con 23 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.8</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(23 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=capsulas-propoleo" tabindex="-1" onclick="saveCatalogPosition('capsulas-propoleo')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Cápsulas de Propóleo y Polen Andino
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">60 cápsulas</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Defensas activas, vigorizante físico y protección invernal.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$11.00</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=capsulas-propoleo" role="button" aria-label="Ver detalles de Cápsulas de Propóleo y Polen Andino" onclick="saveCatalogPosition('capsulas-propoleo')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('capsulas-propoleo', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Cápsulas de Propóleo y Polen Andino al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-maca" role="article" aria-label="Producto: Maca Andina Negra Gelatinizada" onclick="handleProductCardClick(event, 'maca')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'maca')"
+              ondblclick="triggerFavoriteDblClick('maca', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOlBnDDUtiKOEEfB3vuVdLrztZySFMmJs29vRBK3j5-Yirc4KdygNS8m&s=10" 
+                alt="Maca Andina Negra Gelatinizada" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Maca%20Andina%20Negra%20Gelatinizada'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Suplementos en Polvo
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-maca" 
+                onclick="event.stopPropagation(); toggleFavorite('maca')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Maca Andina Negra Gelatinizada a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 5.0 de 5 estrellas con 58 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">5.0</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(58 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=maca" tabindex="-1" onclick="saveCatalogPosition('maca')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Maca Andina Negra Gelatinizada
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">250g polvo soluble</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Raíz andina adaptógena. Vigor, equilibrio hormonal y resistencia física sin irritar el estómago.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$8.50</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=maca" role="button" aria-label="Ver detalles de Maca Andina Negra Gelatinizada" onclick="saveCatalogPosition('maca')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('maca', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Maca Andina Negra Gelatinizada al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-cacao" role="article" aria-label="Producto: Cacao Fino de Aroma Puro 100%" onclick="handleProductCardClick(event, 'cacao')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'cacao')"
+              ondblclick="triggerFavoriteDblClick('cacao', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=700&q=80" 
+                alt="Cacao Fino de Aroma Puro 100%" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Cacao%20Fino%20de%20Aroma%20Puro%20100%25'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Suplementos en Polvo
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-cacao" 
+                onclick="event.stopPropagation(); toggleFavorite('cacao')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Cacao Fino de Aroma Puro 100% a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.9 de 5 estrellas con 47 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.9</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(47 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=cacao" tabindex="-1" onclick="saveCatalogPosition('cacao')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Cacao Fino de Aroma Puro 100%
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">200g polvo puro</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Cacao criollo de Los Ríos sin azúcares añadidos ni alcalinización. Teobromina y magnesio puro.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$6.00</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=cacao" role="button" aria-label="Ver detalles de Cacao Fino de Aroma Puro 100%" onclick="saveCatalogPosition('cacao')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('cacao', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Cacao Fino de Aroma Puro 100% al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-sacha-inchi-polvo" role="article" aria-label="Producto: Harina Proteica de Sacha Inchi" onclick="handleProductCardClick(event, 'sacha-inchi-polvo')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'sacha-inchi-polvo')"
+              ondblclick="triggerFavoriteDblClick('sacha-inchi-polvo', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=700&q=80" 
+                alt="Harina Proteica de Sacha Inchi" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Harina%20Proteica%20de%20Sacha%20Inchi'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Suplementos en Polvo
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-sacha-inchi-polvo" 
+                onclick="event.stopPropagation(); toggleFavorite('sacha-inchi-polvo')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Harina Proteica de Sacha Inchi a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.8 de 5 estrellas con 31 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.8</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(31 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=sacha-inchi-polvo" tabindex="-1" onclick="saveCatalogPosition('sacha-inchi-polvo')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Harina Proteica de Sacha Inchi
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">300g polvo proteico</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                60% proteína vegetal completa y digestible con aminoácidos esenciales.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$7.20</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=sacha-inchi-polvo" role="button" aria-label="Ver detalles de Harina Proteica de Sacha Inchi" onclick="saveCatalogPosition('sacha-inchi-polvo')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('sacha-inchi-polvo', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Harina Proteica de Sacha Inchi al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-moringa" role="article" aria-label="Producto: Moringa Orgánica en Polvo" onclick="handleProductCardClick(event, 'moringa')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'moringa')"
+              ondblclick="triggerFavoriteDblClick('moringa', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTip0lfEhomXU0Api86FkKXEX0de3shdA_Wa-zpGdJcRg&s" 
+                alt="Moringa Orgánica en Polvo" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Moringa%20Org%C3%A1nica%20en%20Polvo'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Suplementos en Polvo
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-moringa" 
+                onclick="event.stopPropagation(); toggleFavorite('moringa')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Moringa Orgánica en Polvo a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.7 de 5 estrellas con 26 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.7</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(26 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=moringa" tabindex="-1" onclick="saveCatalogPosition('moringa')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Moringa Orgánica en Polvo
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">150g polvo verde</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                El árbol de la vida. Multivitamínico verde rico en clorofila y hierro vegetal.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$5.50</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=moringa" role="button" aria-label="Ver detalles de Moringa Orgánica en Polvo" onclick="saveCatalogPosition('moringa')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('moringa', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Moringa Orgánica en Polvo al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+        <article id="product-card-colageno" role="article" aria-label="Producto: Colágeno Hidrolizado + Biotina y Camu Camu" onclick="handleProductCardClick(event, 'colageno')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div 
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
+              onclick="handleCardImageClick(event, 'colageno')"
+              ondblclick="triggerFavoriteDblClick('colageno', event)"
+              ondragstart="return false;"
+            >
+              <img 
+                src="https://www.nutrimea.com/cdn/shop/articles/Capture_d_ecran_2026-05-19_a_11.06.21_420c22a4-7e46-4463-82fd-1a52e0692427.png?v=1779871726&width=2048" 
+                alt="Colágeno Hidrolizado + Biotina y Camu Camu" 
+                draggable="false"
+                ondragstart="return false;"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+                onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text=Col%C3%A1geno%20Hidrolizado%20%2B%20Biotina%20y%20Camu%20Camu'"
+              >
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none">
+                Suplementos en Polvo
+              </span>
+              <button 
+                type="button" 
+                role="button"
+                id="card-fav-btn-colageno" 
+                onclick="event.stopPropagation(); toggleFavorite('colageno')" 
+                ondblclick="event.stopPropagation(); event.preventDefault();"
+                class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
+                aria-label="Añadir Colágeno Hidrolizado + Biotina y Camu Camu a favoritos"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación 4.9 de 5 estrellas con 68 reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0">4.9</span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap">(68 reseñas)</span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a href="producto.html?id=colageno" tabindex="-1" onclick="saveCatalogPosition('colageno')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors">
+                  Colágeno Hidrolizado + Biotina y Camu Camu
+                </a>
+              </h3>
+              
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block">350g con dosificador</span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]">
+                Péptidos bioactivos para articulaciones flexibles, uñas firmes y piel tersa.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap">$18.00</span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a href="producto.html?id=colageno" role="button" aria-label="Ver detalles de Colágeno Hidrolizado + Biotina y Camu Camu" onclick="saveCatalogPosition('colageno')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button 
+                type="button" 
+                role="button"
+                onclick="event.stopPropagation(); addToCart('colageno', 1)" 
+                class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer"
+                aria-label="Añadir Colágeno Hidrolizado + Biotina y Camu Camu al carrito"
+              >
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+      
+                </div>
+              
+            </section>
+
+          </div>
+
+        </div>
+      
+  </main>
+
+  <!-- ==========================================
+       3. PIE DE PÁGINA GLOBAL (FOOTER)
+       ========================================== -->
+  <footer role="contentinfo" aria-label="Pie de página" class="bg-brand-forest text-brand-cream border-t border-brand-forest/20 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-10 xl:gap-14">
+        
+        <!-- Columna 1 -->
+        <div role="region" aria-label="Identidad de la tienda" class="min-w-0 pr-0 xl:pr-6">
+          <div class="mb-4">
+            <a href="index.html" class="inline-flex items-center font-botanic text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-brand-cream whitespace-nowrap group hover:opacity-95 transition-opacity" aria-label="Sacha &amp; Pamba, tu tienda naturista en Quito">
+              Sacha<span class="font-hand text-brand-sunflower text-[1.25em] sm:text-[1.35em] font-bold ml-1.5 sm:ml-2 mr-2 sm:mr-3 inline-block transform -rotate-12 align-baseline pr-0.5 sm:pr-1.5">&amp;</span>Pamba
+            </a>
+          </div>
+          <p class="text-sm sm:text-base text-brand-cream/80 leading-relaxed mb-5 font-medium">
+            Tu tienda naturista de confianza en Quito, Ecuador. Productos puros del campo y la Amazonía directo a tu hogar.
+          </p>
+          <p class="font-sans font-bold uppercase tracking-widest text-sm text-brand-sunflower">
+            "Sentirse bien nunca fue tan natural."
+          </p>
+        </div>
+
+        <!-- Columna 2 -->
+        <nav role="navigation" aria-label="Atención y enlaces de ayuda" class="min-w-0">
+          <h2 class="font-botanic font-bold text-lg text-brand-cream mb-5 flex items-center gap-2">
+            <i aria-hidden="true" class="ph ph-phone-call text-brand-sunflower text-xl flex-shrink-0"></i>
+            <span>Atención <span class="amp-normal">&amp;</span> Ayuda</span>
+          </h2>
+          <ul class="space-y-3 text-sm text-brand-cream/90 font-medium">
+            <li class="flex items-center gap-2.5">
+              <i aria-hidden="true" class="ph ph-whatsapp-logo text-brand-sunflower text-lg"></i>
+              <span>+593 99 876 5432 / (02) 254-8990</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <i aria-hidden="true" class="ph ph-envelope text-brand-sunflower text-lg"></i>
+              <span>tienda@sachaypamba.ec</span>
+            </li>
+            <li class="pt-3">
+              <a href="ayuda.html" class="text-brand-sunflower hover:underline font-bold block mb-2">
+                Preguntas Frecuentes (FAQ)
+              </a>
+              <a href="politicas-retiro.html" class="hover:text-brand-cream block mb-2 hover:underline">
+                Políticas de Retiro en Tienda
+              </a>
+              <a href="seguimiento-pedidos.html" class="hover:text-brand-cream block hover:underline">
+                Seguimiento de Pedidos
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Columna 3 -->
+        <div role="region" aria-label="Punto físico de retiro" class="min-w-0">
+          <h2 class="font-botanic font-bold text-lg text-brand-cream mb-5 flex items-center gap-2">
+            <i aria-hidden="true" class="ph ph-storefront text-brand-sunflower text-xl"></i>
+            Punto de Retiro Físico
+          </h2>
+          <div class="bg-brand-cream/10 rounded-2xl p-5 border border-white/10 text-sm text-brand-cream/90 space-y-3">
+            <p class="flex items-start gap-2.5">
+              <i aria-hidden="true" class="ph ph-map-pin text-brand-sunflower text-lg mt-0.5 flex-shrink-0"></i>
+              <span class="font-medium"><strong>Dirección:</strong> Av. González Suárez 420 y Coruña, Quito, Ecuador.</span>
+            </p>
+            <p class="flex items-start gap-2.5">
+              <i aria-hidden="true" class="ph ph-clock text-brand-sunflower text-lg mt-0.5 flex-shrink-0"></i>
+              <span class="font-medium">
+                <strong>Horario de atención:</strong><br>
+                Lunes a Viernes: 08:30 – 18:30<br>
+                Sábados: 09:00 – 14:00
+              </span>
+            </p>
+            <div class="pt-3 mt-1 border-t border-white/10 flex items-center gap-2 text-brand-sunflower text-xs font-bold uppercase tracking-wide">
+              <i aria-hidden="true" class="ph ph-identification-card text-lg"></i>
+              <span>Lleva tu cédula y número de pedido para retirar.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
+  <aside id="cart-side-drawer" role="dialog" aria-modal="true" aria-label="Carrito de compras lateral" aria-hidden="true" class="fixed top-0 right-0 h-full w-[140px] z-[70] bg-[#FEFAE0] flex flex-col transform translate-x-full box-border">
+    <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
+    <button 
+      type="button" 
+      id="cart-drawer-toggle-btn"
+      onclick="toggleCartDrawer()" 
+      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-8 h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
+      aria-expanded="false"
+      aria-controls="cart-side-drawer"
+      aria-label="Abrir carrito lateral"
+      title="Desplegar carrito"
+    >
+      <i aria-hidden="true" id="cart-drawer-caret" class="ph ph-caret-left text-xl font-bold text-brand-cream transition-transform"></i>
+    </button>
+
+    <!-- Barra verde superior (#5A6B4E) completamente clickeable para ocultar/colapsar el carrito -->
+    <button 
+      type="button" 
+      onclick="collapseCartDrawer()" 
+      class="cart-drawer-header w-full bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream hover:text-brand-sunflower flex items-center justify-center flex-shrink-0 cursor-pointer transition-colors group select-none" 
+      aria-label="Ocultar carrito" 
+      title="Ocultar carrito"
+    >
+      <i aria-hidden="true" class="ph-bold ph-caret-right text-base transition-transform group-hover:translate-x-0.5 group-active:translate-x-1"></i>
+    </button>
+
+    <!-- Botón en la parte superior para ir al carrito (fuera del recuadro verde) -->
+    <div class="cart-drawer-btn-container bg-brand-cream flex flex-col items-center w-full flex-shrink-0">
+      <a 
+        href="carrito.html" 
+        onclick="closeCartDrawer()" 
+        class="cart-drawer-btn-ir w-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-[10px] rounded-md shadow-2xs transition-transform active:scale-95 flex items-center justify-center gap-1 cursor-pointer text-center"
+        title="Ir al Carrito"
+      >
+        <i aria-hidden="true" class="ph ph-shopping-cart text-xs font-bold"></i>
+        <span>Ir</span>
+      </a>
+    </div>
+
+    <!-- Lista de productos añadidos (solo la imagen del producto con indicador de cantidad) -->
+    <div id="cart-drawer-items" class="flex-1 overflow-y-auto overflow-x-hidden min-h-0 flex flex-col items-center">
+      <!-- Inyectado dinámicamente -->
+    </div>
+
+    <!-- Pie del desplegable: Solo el total con precio grande -->
+    <div id="cart-drawer-footer" class="bg-[#5A6B4E] flex flex-col items-center justify-center text-center flex-shrink-0">
+      <span class="cart-footer-title text-sm sm:text-base font-black text-brand-sunflower tracking-widest uppercase leading-tight">TOTAL</span>
+      <span id="cart-drawer-total" class="text-xl font-black text-brand-cream whitespace-nowrap leading-none mt-1">$0.00</span>
+    </div>
+  </aside>
+
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-md">
+    <div class="bg-[#CCD5AE] text-brand-forest px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl shadow-2xl flex items-center gap-2.5 sm:gap-3 border-2 border-brand-forest/30 pointer-events-auto">
+      <div id="toast-icon" class="text-brand-forest text-xl sm:text-2xl flex-shrink-0">
+        <i aria-hidden="true" class="ph ph-check-circle"></i>
+      </div>
+      <p id="toast-message" class="text-xs sm:text-sm font-bold tracking-wide text-brand-forest min-w-0 break-words flex-1">Mensaje del sistema</p>
+      <button 
+        id="toast-action" 
+        type="button" 
+        class="hidden flex-shrink-0 ml-1 sm:ml-2 px-3 py-1.5 bg-brand-forest hover:bg-[#1a2410] text-brand-sunflower rounded-xl text-xs sm:text-sm font-bold transition-all active:scale-95 shadow-xs flex items-center gap-1.5 cursor-pointer"
+      >
+        <i aria-hidden="true" class="ph ph-arrow-u-up-left font-bold text-sm"></i>
+        <span>Deshacer</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
