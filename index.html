@@ -401,7 +401,7 @@
               <input type="checkbox" id="login-remember" checked class="rounded accent-brand-forest w-4 h-4">
               <span>Recordar mis datos</span>
             </label>
-            <a href="javascript:void(0)" onclick="showToast('Enlace de recuperación enviado al correo')" class="text-brand-forest font-bold hover:underline">¿Olvidaste tu clave?</a>
+            <button type="button" onclick="showToast('Enlace de recuperación enviado al correo')" class="text-brand-forest font-bold hover:underline">¿Olvidaste tu clave?</button>
           </div>
 
           <button 
@@ -663,7 +663,7 @@
 
         <div>
           <label for="modal-review-file" class="block font-bold text-brand-forest mb-1.5">Foto de tu producto (Opcional)</label>
-          <div class="border-2 border-dashed border-brand-forest/30 rounded-2xl p-5 text-center hover:bg-brand-olive/20 transition-colors cursor-pointer" onclick="triggerReviewFileUpload()">
+          <div class="border-2 border-dashed border-brand-forest/30 rounded-2xl p-5 text-center hover:bg-brand-olive/20 transition-colors">
             <input type="file" id="modal-review-file" accept="image/*" class="hidden" onchange="handleModalReviewImage(event)" aria-label="Adjuntar una imagen a la reseña">
             <button id="modal-review-upload-prompt" class="space-y-1.5 block w-full" type="button" onclick="event.stopPropagation(); triggerReviewFileUpload()">
               <i aria-hidden="true" class="ph ph-camera text-3xl text-brand-moss block"></i>
@@ -757,7 +757,7 @@
   <!-- Modal Lightbox para Ampliar Imagen de Producto -->
   <div id="image-lightbox-modal" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-5 bg-black/90 backdrop-blur-md transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen" tabindex="-1" aria-hidden="true">
     
-    <div id="image-lightbox-container" class="relative max-w-5xl w-full flex flex-col items-center justify-center select-none animate-in fade-in zoom-in duration-200" onclick="event.stopPropagation()">
+    <div id="image-lightbox-container" class="relative max-w-5xl w-full flex flex-col items-center justify-center select-none animate-in fade-in zoom-in duration-200">
       
       <!-- Barra superior: Información y botón cerrar -->
       <div class="w-full flex items-center justify-between gap-3 text-white mb-2 px-2 z-10">
@@ -816,7 +816,7 @@
       </div>
 
       <!-- Tira de Miniaturas en el Lightbox si hay más de 1 imagen -->
-      <div id="lightbox-thumbnails-container" class="hidden flex items-center justify-center gap-2.5 sm:gap-3.5 mt-3 max-w-full overflow-x-auto py-1 z-10" onclick="event.stopPropagation()">
+      <div id="lightbox-thumbnails-container" class="hidden flex items-center justify-center gap-2.5 sm:gap-3.5 mt-3 max-w-full overflow-x-auto py-1 z-10">
       </div>
 
     </div>
@@ -1142,12 +1142,10 @@
           <!-- Cuadrícula Dinámica de Productos -->
           <h2 class="sr-only">Productos de la selección especial</h2><div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-opacity duration-200">
 
-        <article id="product-card-omega-3" role="article" aria-label="Producto: Perlas de Omega 3, 6 y 9 de Sacha Inchi" onclick="handleProductCardClick(event, 'omega-3')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+        <article id="product-card-omega-3" role="article" aria-label="Producto: Perlas de Omega 3, 6 y 9 de Sacha Inchi" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full">
           <div>
             <div
-              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
-              onclick="handleCardImageClick(event, 'omega-3')"
-              ondblclick="triggerFavoriteDblClick('omega-3', event)"
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs select-none"
               ondragstart="return false;"
             >
               <img decoding="async" loading="lazy"
@@ -1166,7 +1164,6 @@
                 role="button"
                 id="card-fav-btn-omega-3"
                 onclick="event.stopPropagation(); toggleFavorite('omega-3')"
-                ondblclick="event.stopPropagation(); event.preventDefault();"
                 class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#FEFAE0] hover:bg-white text-amber-500 border-2 border-brand-forest shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
                 aria-label="Quitar Perlas de Omega 3, 6 y 9 de Sacha Inchi de favoritos"
               >
@@ -1201,9 +1198,6 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="producto.html?id=omega-3"   onclick="saveCatalogPosition('omega-3')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
-                Ver
-              </a>
               <button
                 type="button"
                 role="button"
@@ -1219,12 +1213,10 @@
 
         </article>
 
-        <article id="product-card-maca" role="article" aria-label="Producto: Maca Andina Negra Gelatinizada" onclick="handleProductCardClick(event, 'maca')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+        <article id="product-card-maca" role="article" aria-label="Producto: Maca Andina Negra Gelatinizada" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full">
           <div>
             <div
-              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
-              onclick="handleCardImageClick(event, 'maca')"
-              ondblclick="triggerFavoriteDblClick('maca', event)"
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs select-none"
               ondragstart="return false;"
             >
               <img decoding="async" loading="lazy"
@@ -1243,7 +1235,6 @@
                 role="button"
                 id="card-fav-btn-maca"
                 onclick="event.stopPropagation(); toggleFavorite('maca')"
-                ondblclick="event.stopPropagation(); event.preventDefault();"
                 class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
                 aria-label="Añadir Maca Andina Negra Gelatinizada a favoritos"
               >
@@ -1278,9 +1269,6 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="producto.html?id=maca"   onclick="saveCatalogPosition('maca')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
-                Ver
-              </a>
               <button
                 type="button"
                 role="button"
@@ -1296,12 +1284,10 @@
 
         </article>
 
-        <article id="product-card-cacao" role="article" aria-label="Producto: Cacao Fino de Aroma Puro 100%" onclick="handleProductCardClick(event, 'cacao')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+        <article id="product-card-cacao" role="article" aria-label="Producto: Cacao Fino de Aroma Puro 100%" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full">
           <div>
             <div
-              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
-              onclick="handleCardImageClick(event, 'cacao')"
-              ondblclick="triggerFavoriteDblClick('cacao', event)"
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs select-none"
               ondragstart="return false;"
             >
               <img decoding="async" loading="lazy"
@@ -1320,7 +1306,6 @@
                 role="button"
                 id="card-fav-btn-cacao"
                 onclick="event.stopPropagation(); toggleFavorite('cacao')"
-                ondblclick="event.stopPropagation(); event.preventDefault();"
                 class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
                 aria-label="Añadir Cacao Fino de Aroma Puro 100% a favoritos"
               >
@@ -1355,9 +1340,6 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="producto.html?id=cacao"   onclick="saveCatalogPosition('cacao')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
-                Ver
-              </a>
               <button
                 type="button"
                 role="button"
@@ -1373,12 +1355,10 @@
 
         </article>
 
-        <article id="product-card-colageno" role="article" aria-label="Producto: Colágeno Hidrolizado + Biotina y Camu Camu" onclick="handleProductCardClick(event, 'colageno')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+        <article id="product-card-colageno" role="article" aria-label="Producto: Colágeno Hidrolizado + Biotina y Camu Camu" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full">
           <div>
             <div
-              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none"
-              onclick="handleCardImageClick(event, 'colageno')"
-              ondblclick="triggerFavoriteDblClick('colageno', event)"
+              class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs select-none"
               ondragstart="return false;"
             >
               <img decoding="async" loading="lazy"
@@ -1397,7 +1377,6 @@
                 role="button"
                 id="card-fav-btn-colageno"
                 onclick="event.stopPropagation(); toggleFavorite('colageno')"
-                ondblclick="event.stopPropagation(); event.preventDefault();"
                 class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none"
                 aria-label="Añadir Colágeno Hidrolizado + Biotina y Camu Camu a favoritos"
               >
@@ -1432,9 +1411,6 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a href="producto.html?id=colageno"   onclick="saveCatalogPosition('colageno')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
-                Ver
-              </a>
               <button
                 type="button"
                 role="button"
@@ -1486,7 +1462,7 @@
         <section aria-labelledby="home-why-heading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div class="bg-brand-forest text-brand-cream rounded-3xl p-8 sm:p-12 shadow-xl">
             <div class="text-center max-w-xl mx-auto mb-10">
-              <p class="font-sans uppercase tracking-widest font-bold text-sm text-brand-sunflower block mb-2.5">Nuestra Filosofía</p>
+              <p class="font-sans uppercase tracking-widest font-medium text-sm text-brand-sunflower block mb-2.5">Nuestra Filosofía</p>
               <h2 id="home-why-heading" class="font-botanic text-3xl sm:text-4xl font-bold flex items-center justify-center flex-wrap">¿Por qué elegir Sacha<span class="font-hand text-brand-sunflower text-[1.4em] font-bold ml-2 mr-3 inline-block transform -rotate-12 align-baseline">&amp;</span>Pamba?</h2>
             </div>
 
@@ -1545,7 +1521,7 @@
           <p class="text-sm sm:text-base text-brand-cream/80 leading-relaxed mb-5 font-medium">
             Tu tienda naturista de confianza en Quito, Ecuador. Productos puros del campo y la Amazonía directo a tu hogar.
           </p>
-          <p class="font-sans font-bold uppercase tracking-widest text-sm text-brand-sunflower">
+          <p class="font-sans font-medium tracking-wide text-sm text-brand-sunflower">
             "Sentirse bien nunca fue tan natural."
           </p>
         </div>
@@ -1682,16 +1658,16 @@
 
   <!-- Fragmentos HTML compartidos para actualizar datos sin generar vistas en JavaScript. -->
   <template id="product-card-template">
-        <article data-bind-attr-onclick="handleProductCardClick(event, '{{id}}')" data-bind-attr-aria-label="Producto: {{name}}" data-bind-attr-id="product-card-{{id}}" id="product-card-" role="article" aria-label="Producto: " onclick="handleProductCardClick(event, '')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+        <article data-bind-attr-aria-label="Producto: {{name}}" data-bind-attr-id="product-card-{{id}}" id="product-card-" role="article" aria-label="Producto: " class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full">
           <div>
-            <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleCardImageClick(event, '{{id}}')" class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none" onclick="handleCardImageClick(event, '')" ondblclick="triggerFavoriteDblClick('', event)" ondragstart="return false;">
+            <div class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs select-none">
               <img decoding="async" loading="lazy" data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" draggable="false" ondragstart="return false;" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
               <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none"><span data-bind-text="
                 {{subcategoryName}}
               ">
 
               </span></span>
-              <button data-bind-attr-aria-label="Añadir {{name}} a favoritos" data-bind-attr-onclick="event.stopPropagation(); toggleFavorite('{{id}}')" data-bind-attr-id="card-fav-btn-{{id}}" type="button" role="button" id="card-fav-btn-" onclick="event.stopPropagation(); toggleFavorite('')" ondblclick="event.stopPropagation(); event.preventDefault();" class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none" aria-label="Añadir  a favoritos">
+              <button data-bind-attr-aria-label="Añadir {{name}} a favoritos" data-bind-attr-onclick="toggleFavorite('{{id}}')" data-bind-attr-id="card-fav-btn-{{id}}" type="button" role="button" id="card-fav-btn-" onclick="toggleFavorite('')" class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none" aria-label="Añadir  a favoritos">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
               </button>
             </div>
@@ -1727,9 +1703,6 @@
             </div>
 
             <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
-              <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-aria-label="Ver: {{name}}" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id="  aria-label="Ver" onclick="saveCatalogPosition('')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
-                Ver
-              </a>
               <button data-bind-attr-aria-label="Añadir: {{name}}" data-bind-attr-onclick="event.stopPropagation(); addToCart('{{id}}', 1)" type="button" role="button" onclick="event.stopPropagation(); addToCart('', 1)" class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer" aria-label="Añadir">
                 <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
                 <span>Añadir</span>

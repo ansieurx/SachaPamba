@@ -1620,6 +1620,18 @@
       if (fileInput) fileInput.click();
     }
 
+    const reviewUploadPrompt = document.getElementById('modal-review-upload-prompt');
+    reviewUploadPrompt?.parentElement?.addEventListener('click', (event) => {
+      if (event.target.closest('button')) return;
+      triggerReviewFileUpload();
+    });
+    reviewUploadPrompt?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        triggerReviewFileUpload();
+      }
+    });
+
     function handleModalReviewImage(event) {
       const file = event.target.files && event.target.files[0];
       if (!file) return;
