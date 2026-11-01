@@ -538,6 +538,7 @@
        ========================================================================== */
     const FAVORITES_STORAGE_KEY = 'sacha_pamba_favorites';
     const FAVORITES_UNDO_STORAGE_KEY = 'sacha_pamba_favorites_undo';
+    const FAVORITE_UNDO_DURATION = 60_000;
 
     function getFavorites() {
       try {
@@ -618,6 +619,7 @@
     function toggleFavorite(productId, forceAdd = false) {
       const product = PRODUCTS.find(p => p.id === productId);
       if (!product) return false;
+      expireFavoriteUndoActions();
       const favs = getFavorites();
       const index = favs.indexOf(productId);
       const wasFavorite = index !== -1;
@@ -634,6 +636,9 @@
         if (!favoritesDisplayOrder.includes(productId)) favoritesDisplayOrder.push(productId);
       } else {
         favs.splice(index, 1);
+        // Una nueva eliminación confirma la anterior y sustituye su opción de deshacer.
+        favoriteUndoActions = Object.create(null);
+        pendingUndoFavorites = {};
       }
       if (canUndoRemoval) {
         favoriteUndoActions[productId] = {
@@ -641,6 +646,7 @@
           after: false,
           origin: 'favorites',
           index,
+          expiresAt: Date.now() + FAVORITE_UNDO_DURATION,
           token: `${Date.now()}-${Math.random().toString(36).slice(2)}`
         };
       } else {
@@ -668,11 +674,14 @@
             if (PRODUCTS.some(product => product.id === id) && action &&
                 action.before === true && action.after === false && action.origin === 'favorites' &&
                 Number.isInteger(action.index) && action.index >= 0 && typeof action.token === 'string' &&
+                Number.isFinite(action.expiresAt) && action.expiresAt > Date.now() &&
                 ids.includes(id) === action.after) actions[id] = action;
           });
         }
         const order = Array.isArray(saved?.order) ? [...new Set(saved.order.filter(id => typeof id === 'string'))] : [];
-        return { actions, order };
+        const latest = Object.entries(actions).sort((a, b) => b[1].expiresAt - a[1].expiresAt)[0];
+        const pending = latest ? { [latest[0]]: latest[1] } : Object.create(null);
+        return { actions: pending, order: order.filter(id => ids.includes(id) || Object.hasOwn(pending, id)) };
       } catch {
         return { actions: Object.create(null), order: [] };
       }
@@ -686,6 +695,37 @@
       }
     }
 
+    function expireFavoriteUndoActions() {
+      const ids = getFavorites();
+      let changed = false;
+      Object.entries(favoriteUndoActions).forEach(([id, action]) => {
+        if (!Number.isFinite(action.expiresAt) || action.expiresAt <= Date.now()) {
+          delete favoriteUndoActions[id];
+          delete pendingUndoFavorites[id];
+          if (!ids.includes(id)) favoritesDisplayOrder = favoritesDisplayOrder.filter(productId => productId !== id);
+          changed = true;
+        }
+      });
+      if (changed) saveFavoriteUndoState();
+      return changed;
+    }
+
+    function scheduleFavoriteUndoExpiration() {
+      if (favoriteUndoTimeout !== null) {
+        clearTimeout(favoriteUndoTimeout);
+        favoriteUndoTimeout = null;
+      }
+      const entry = Object.entries(favoriteUndoActions)[0];
+      if (!entry) return;
+      const [id, action] = entry;
+      favoriteUndoTimeout = setTimeout(() => {
+        if (favoriteUndoActions[id]?.token !== action.token) return;
+        favoriteUndoTimeout = null;
+        expireFavoriteUndoActions();
+        updateFavoritesTabContent();
+      }, Math.max(0, action.expiresAt - Date.now()));
+    }
+
     function reloadFavoritesFromStorage() {
       const state = readFavoriteUndoState();
       favoriteUndoActions = state.actions;
@@ -695,6 +735,7 @@
     }
 
     function undoFavoriteChange(productId, expectedToken = null) {
+      if (expireFavoriteUndoActions()) updateFavoritesTabContent();
       const action = favoriteUndoActions[productId];
       if (!action || action.before !== true || action.after !== false || action.origin !== 'favorites' ||
           (expectedToken !== null && action.token !== expectedToken)) return false;
@@ -790,6 +831,7 @@
     let filtro_cat = 'all';
     let filtro_subcat = 'all';
     let pendingUndoFavorites = {};
+    let favoriteUndoTimeout = null;
     const initialFavoriteUndoState = readFavoriteUndoState();
     let favoriteUndoActions = initialFavoriteUndoState.actions;
     let favoritesDisplayOrder = initialFavoriteUndoState.order;
@@ -3224,6 +3266,8 @@
     }
 
     function updateFavoritesTabContent() {
+      expireFavoriteUndoActions();
+      scheduleFavoriteUndoExpiration();
       const list = document.querySelector('[data-favorites-items]');
       if (!list) return;
       const ids = getFavorites();
@@ -3378,6 +3422,8 @@
       toggleFavorite,
       readFavoriteUndoState,
       saveFavoriteUndoState,
+      expireFavoriteUndoActions,
+      scheduleFavoriteUndoExpiration,
       reloadFavoritesFromStorage,
       undoFavoriteChange,
       handleCardImageClick,
@@ -3551,6 +3597,9 @@
         reloadFavoritesFromStorage();
       }
     });
+
+    saveFavoriteUndoState();
+    scheduleFavoriteUndoExpiration();
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
