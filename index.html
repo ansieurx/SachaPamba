@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="content-language" content="es">
   <meta name="language" content="Spanish">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="preconnect" href="https://plus.unsplash.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sacha & Pamba — Tu tienda naturista en Quito</title>
   
@@ -1989,14 +1991,18 @@
             <div id="hero-carousel" role="region" aria-roledescription="carrusel" aria-label="Promociones y novedades" class="relative w-full min-h-[460px] sm:min-h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-none hover:shadow-[0_25px_50px_-12px_rgba(40,54,24,0.4)] border-2 border-brand-forest/15 hover:border-brand-forest/35 transition-all duration-300 bg-brand-forest grid grid-cols-1 grid-rows-1">
 
               <!-- SLIDE 1: Sentirse bien nunca fue tan natural -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Primer bloque del carrusel: Herbolaria Viva y Tradición Ancestral, 1 de 4" aria-current="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-100 pointer-events-auto z-10 flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Primer bloque del carrusel: Herbolaria Viva y Tradición Ancestral, 1 de 4" aria-current="true" class="hero-slide col-start-1 row-start-1 opacity-100 pointer-events-auto z-10 flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual natural andino/amazónico -->
                 <img
                   src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80"
                   alt="Valles andinos y naturaleza viva"
                   class="absolute inset-0 w-full h-full object-cover object-center"
                   loading="eager"
-                  onerror="this.src='https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80'"
+                  decoding="async"
+                  fetchpriority="high"
+                  srcset="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=640&q=80 640w, https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=960&q=80 960w, https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1440&q=80 1440w, https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80 1920w"
+                  sizes="100vw"
+                  onerror="this.onerror=null; this.removeAttribute('srcset'); this.src='https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80'"
                 >
                 <!-- Gradiente unificado para legibilidad y contraste -->
                 <div class="absolute inset-0 bg-black/45 sm:bg-black/40 backdrop-brightness-95"></div>
@@ -2036,14 +2042,18 @@
               </div>
 
               <!-- SLIDE 2: Promoción de Bienvenida & Descuento para Nuevos Clientes -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida, 2 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Segundo bloque del carrusel: Beneficio Exclusivo de Bienvenida, 2 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual -->
                 <img
                   src="https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=1920&q=80"
                   alt="Persona consumiendo productos orgánicos y naturales feliz"
                   class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1527887980323-88b77f646535?auto=format&fit=crop&w=1920&q=80'"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="low"
+                  srcset="https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=640&q=80 640w, https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=960&q=80 960w, https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=1440&q=80 1440w, https://plus.unsplash.com/premium_photo-1670262456358-11ecc6386d1a?auto=format&fit=crop&w=1920&q=80 1920w"
+                  sizes="100vw"
+                  onerror="this.onerror=null; this.removeAttribute('srcset'); this.src='https://images.unsplash.com/photo-1527887980323-88b77f646535?auto=format&fit=crop&w=1920&q=80'"
                 >
                 <!-- Gradiente unificado con mayor contraste para fondo claro -->
                 <div class="absolute inset-0 bg-black/55 sm:bg-black/50 backdrop-brightness-90"></div>
@@ -2084,14 +2094,18 @@
               </div>
 
               <!-- SLIDE 3: Novedades / Cosecha Dorada Amazónica -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica, 3 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Tercer bloque del carrusel: Novedades y Cosecha Solar Amazónica, 3 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual cálido atardecer -->
                 <img
                   src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80"
                   alt="Cosecha dorada y selva amazónica"
                   class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=1920&q=80'"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="low"
+                  srcset="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=640&q=80 640w, https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=960&q=80 960w, https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1440&q=80 1440w, https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80 1920w"
+                  sizes="100vw"
+                  onerror="this.onerror=null; this.removeAttribute('srcset'); this.src='https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=1920&q=80'"
                 >
                 <!-- Gradiente unificado -->
                 <div class="absolute inset-0 bg-black/45 sm:bg-black/40 backdrop-brightness-95"></div>
@@ -2132,14 +2146,18 @@
               </div>
 
               <!-- SLIDE 4: Superalimentos de Máxima Pureza -->
-              <div role="group" aria-roledescription="diapositiva" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad, 4 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
+              <div role="group" aria-roledescription="diapositiva" aria-label="Cuarto bloque del carrusel: Superalimentos con Máxima Calidad, 4 de 4" aria-hidden="true" class="hero-slide col-start-1 row-start-1 opacity-0 pointer-events-none z-0 invisible flex items-center justify-center w-full h-full relative">
                 <!-- Fondo visual verde botánico -->
                 <img
                   src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1920&q=80"
                   alt="Hojas medicinales y superalimentos puros"
                   class="absolute inset-0 w-full h-full object-cover object-center"
-                  loading="lazy"
-                  onerror="this.src='https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=1920&q=80'"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="low"
+                  srcset="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=640&q=80 640w, https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=960&q=80 960w, https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1440&q=80 1440w, https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1920&q=80 1920w"
+                  sizes="100vw"
+                  onerror="this.onerror=null; this.removeAttribute('srcset'); this.src='https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=1920&q=80'"
                 >
                 <!-- Gradiente unificado con mayor contraste para hojas -->
                 <div class="absolute inset-0 bg-black/55 sm:bg-black/50 backdrop-brightness-90"></div>
@@ -2188,9 +2206,9 @@
                 type="button"
                 aria-label="Diapositiva anterior"
                 title="Diapositiva anterior"
-                class="hero-nav-arrow absolute left-2 sm:left-3.5 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
+                class="hero-nav-arrow absolute left-2 sm:left-3.5 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white hover:bg-brand-cream text-brand-forest shadow-xl flex items-center justify-center transition-colors duration-150 focus:outline-none cursor-pointer border border-black/10"
               >
-                <i aria-hidden="true" class="ph ph-caret-left text-base sm:text-lg font-bold"></i>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>
                 <span class="sr-only">Diapositiva anterior</span>
               </button>
 
@@ -2200,9 +2218,9 @@
                 type="button"
                 aria-label="Siguiente diapositiva"
                 title="Siguiente diapositiva"
-                class="hero-nav-arrow absolute right-2 sm:right-3.5 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 hover:bg-white text-brand-forest shadow-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none backdrop-blur-xs cursor-pointer border border-black/10"
+                class="hero-nav-arrow absolute right-2 sm:right-3.5 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white hover:bg-brand-cream text-brand-forest shadow-xl flex items-center justify-center transition-colors duration-150 focus:outline-none cursor-pointer border border-black/10"
               >
-                <i aria-hidden="true" class="ph ph-caret-right text-base sm:text-lg font-bold"></i>
+                <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
                 <span class="sr-only">Siguiente diapositiva</span>
               </button>
 

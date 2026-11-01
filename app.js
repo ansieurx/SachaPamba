@@ -2170,16 +2170,12 @@
         if (!config) return;
         currentActiveTab = tabKey;
 
-        // Actualizar Cuadrícula de Productos con suave transición
+        // Actualizar los productos inmediatamente, incluso al cambiar de pestaña rápidamente.
         const gridEl = document.getElementById('home-products-grid');
         if (gridEl) {
-          gridEl.classList.add('opacity-0');
-          setTimeout(() => {
-            const products = PRODUCTS.filter(config.filter).slice(0, 4);
-            gridEl.replaceChildren(...products.map(product => cloneTemplate('product-card-template', productValues(product))));
-            products.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
-            gridEl.classList.remove('opacity-0');
-          }, 150);
+          const products = PRODUCTS.filter(config.filter).slice(0, 4);
+          gridEl.replaceChildren(...products.map(product => cloneTemplate('product-card-template', productValues(product))));
+          products.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
         }
 
         // Actualizar el texto accesible de Selección Especial indicando qué elemento está seleccionado
