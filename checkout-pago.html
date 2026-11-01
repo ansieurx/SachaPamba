@@ -1411,7 +1411,7 @@
               Ayuda/FAQ
             </a>
 
-            <a href="politicas-retiro.html" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
+            <a href="ayuda.html#politicas-retiro" class="nav-section-link px-3 py-1.5 rounded-lg font-bold transition-all text-brand-cream/90 hover:bg-white/10 whitespace-nowrap">
               Políticas de Retiro
             </a>
           </nav>
@@ -1975,80 +1975,63 @@
        ========================================== -->
   <main id="app" role="main" tabindex="-1" class="flex-1 w-full bg-brand-cream focus:outline-none relative z-10">
 
+
         <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8 w-full box-border">
           <div class="lector_texto_accesible" role="status" aria-live="polite" aria-atomic="true" lang="es">
             <p lang="es">Paso 3 de 4: Método de pago y facturación.</p>
           </div>
-          
+
           <div class="mb-5 text-left">
-            <button 
-              type="button" 
-              role="button"
-              onclick="navigateTo('checkout-retiro.html')" 
-              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer"
-              aria-label="Volver al paso de retiro en tienda"
-            >
+            <button type="button" role="button" onclick="navigateTo('checkout-retiro.html')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold transition-all shadow-xs border border-brand-forest active:scale-95 group cursor-pointer" aria-label="Volver al paso de retiro en tienda">
               <i aria-hidden="true" class="ph ph-arrow-left text-base font-bold group-hover:-translate-x-0.5 text-brand-sunflower transition-transform"></i>
               <span>Volver a Retiro</span>
             </button>
           </div>
 
-          
+
         <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
           <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
-            
+
                   <li class="inline-flex items-center">
-                    <button 
-                      type="button" 
-                      onclick="handleStepperNav('carrito.html')" 
-                      class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" 
-                      title="Volver al Paso 1: Carrito"
-                      aria-label="Volver al Paso 1: Carrito"
-                    >
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
                       <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
                         <i aria-hidden="true" class="ph ph-check font-bold"></i>
                       </span>
                       <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
                     </button>
                   </li>
-                
+
                 <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
-              
+
                   <li class="inline-flex items-center">
-                    <button 
-                      type="button" 
-                      onclick="handleStepperNav('checkout-retiro.html')" 
-                      class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" 
-                      title="Volver al Paso 2: Retiro"
-                      aria-label="Volver al Paso 2: Retiro"
-                    >
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 2: Retiro" aria-label="Volver al Paso 2: Retiro">
                       <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
                         <i aria-hidden="true" class="ph ph-check font-bold"></i>
                       </span>
                       <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
                     </button>
                   </li>
-                
+
                 <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
-              
+
                   <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
                     <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">3</span>
                     <span class="text-brand-forest font-bold">Pago</span>
                   </li>
-                
+
                 <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
-              
+
                   <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
                     <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
                     <span class="text-brand-forest/60">Confirmación</span>
                   </li>
-                
+
           </ol>
         </nav>
-      
+
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start w-full box-border">
-            
+
             <section role="region" aria-label="Método de pago y facturación" class="lg:col-span-7 bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-6 lg:p-7 shadow-sm space-y-6 sm:space-y-7 text-left w-full box-border">
               <div>
                 <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1" aria-hidden="true">Paso 3 de 4</span>
@@ -2062,14 +2045,7 @@
 
               <!-- Selector de Método -->
               <div role="radiogroup" aria-label="Método de pago" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4" id="payment-methods-selector">
-                <button 
-                  type="button" 
-                  role="radio"
-                  aria-checked="true"
-                  onclick="selectPaymentOption('tarjeta')" 
-                  id="pay-opt-tarjeta" 
-                  class="border-2 border-brand-forest bg-[#CCD5AE] rounded-2xl p-4 flex flex-col gap-1.5 text-left transition-all shadow-xs cursor-pointer box-border"
-                >
+                <button type="button" role="radio" aria-checked="true" onclick="selectPaymentOption('tarjeta')" id="pay-opt-tarjeta" class="border-2 border-brand-forest bg-[#CCD5AE] rounded-2xl p-4 flex flex-col gap-1.5 text-left transition-all shadow-xs cursor-pointer box-border">
                   <div class="flex items-center justify-between gap-2 w-full">
                     <span class="text-sm font-bold text-brand-forest">Tarjeta Débito / Crédito</span>
                     <i aria-hidden="true" class="ph ph-credit-card text-brand-forest text-xl flex-shrink-0"></i>
@@ -2077,14 +2053,7 @@
                   <span class="text-xs text-brand-leaf/70 font-medium mt-1">Visa, Mastercard, Diners, Amex</span>
                 </button>
 
-                <button 
-                  type="button" 
-                  role="radio"
-                  aria-checked="false"
-                  onclick="selectPaymentOption('tienda')" 
-                  id="pay-opt-tienda" 
-                  class="border-2 border-brand-forest/20 bg-brand-cream opacity-80 hover:opacity-100 rounded-2xl p-4 flex flex-col gap-1.5 text-left transition-all shadow-xs cursor-pointer box-border"
-                >
+                <button type="button" role="radio" aria-checked="false" onclick="selectPaymentOption('tienda')" id="pay-opt-tienda" class="border-2 border-brand-forest/20 bg-brand-cream opacity-80 hover:opacity-100 rounded-2xl p-4 flex flex-col gap-1.5 text-left transition-all shadow-xs cursor-pointer box-border">
                   <div class="flex items-center justify-between gap-2 w-full">
                     <span class="text-sm font-bold text-brand-forest">Pagar al Retirar</span>
                     <i aria-hidden="true" class="ph ph-storefront text-brand-forest text-xl flex-shrink-0"></i>
@@ -2094,7 +2063,7 @@
               </div>
 
               <!-- Panel 1: Datos de Tarjeta en Verde Oliva Claro (#CCD5AE) -->
-              <div id="card-fields-container" class=" space-y-4 sm:space-y-5 bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs box-border w-full">
+              <div id="card-fields-container" class="space-y-4 sm:space-y-5 bg-[#CCD5AE] p-4 sm:p-6 rounded-2xl border-2 border-brand-forest/30 shadow-xs box-border w-full">
                 <div>
                   <label for="checkout-card-num" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Número de Tarjeta</label>
                   <div class="relative w-full">
@@ -2124,7 +2093,7 @@
                   <span>Pago presencial en tienda física</span>
                 </div>
                 <p class="text-brand-forest/90 leading-relaxed font-medium text-xs sm:text-sm pl-0.5">
-                  Podrás abonar los <strong>$0.00</strong> directamente en mostrador al retirar tu paquete en Av. González Suárez 420. Aceptamos efectivo, tarjetas de débito/crédito y transferencia bancaria directa.
+                  Podrás abonar los <strong><span data-bind-text="${{total}}">$0.00</span></strong> directamente en mostrador al retirar tu paquete en Av. González Suárez 420. Aceptamos efectivo, tarjetas de débito/crédito y transferencia bancaria directa.
                 </p>
               </div>
 
@@ -2152,17 +2121,13 @@
                 </div>
               </div>
 
-              <button 
-                type="button" 
-                role="button"
-                onclick="processPayment()" 
-                id="btn-confirm-checkout" 
-                class="w-full py-3.5 sm:py-4 px-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 mt-4 cursor-pointer text-center leading-tight"
-              >
+              <button type="button" role="button" onclick="processPayment()" id="btn-confirm-checkout" class="w-full py-3.5 sm:py-4 px-4 rounded-full bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 mt-4 cursor-pointer text-center leading-tight">
                 <i aria-hidden="true" class="ph ph-lock-key text-xl flex-shrink-0"></i>
-                <span id="btn-confirm-checkout-text" class="text-center">
+                <span id="btn-confirm-checkout-text" class="text-center"><span data-bind-text="
+                  Pagar ${{total}} y Confirmar Pedido
+                ">
                   Pagar $0.00 y Confirmar Pedido
-                </span>
+                </span></span>
               </button>
             </section>
 
@@ -2171,13 +2136,13 @@
               <h2 id="checkout-pago-summary-heading" class="font-botanic font-bold text-lg sm:text-xl text-brand-forest border-b border-brand-forest/20 pb-3">
                 Resumen de Compra
               </h2>
-              <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-                
+              <div data-checkout-items="" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+
               </div>
               <div class="pt-4 border-t border-brand-forest/20 space-y-1.5">
                 <div class="flex justify-between font-bold text-base text-brand-forest items-center">
                   <span>Total a pagar:</span>
-                  <span class="font-botanic text-xl sm:text-2xl text-brand-forest">$0.00</span>
+                  <span class="font-botanic text-xl sm:text-2xl text-brand-forest"><span data-bind-text="${{total}}">$0.00</span></span>
                 </div>
                 <p class="text-[11px] sm:text-xs text-brand-leaf/80 font-medium flex items-center gap-1.5 pt-0.5">
                   <i aria-hidden="true" class="ph ph-check-circle text-brand-forest text-sm flex-shrink-0"></i>
@@ -2189,8 +2154,9 @@
           </div>
 
         </div>
-      
-  </main>
+
+
+</main>
 
   <!-- ==========================================
        3. PIE DE PÁGINA GLOBAL (FOOTER)
@@ -2233,10 +2199,10 @@
               <a href="ayuda.html" class="text-brand-sunflower hover:underline font-bold block mb-2">
                 Preguntas Frecuentes (FAQ)
               </a>
-              <a href="politicas-retiro.html" class="hover:text-brand-cream block mb-2 hover:underline">
+              <a href="ayuda.html#politicas-retiro" class="hover:text-brand-cream block mb-2 hover:underline">
                 Políticas de Retiro en Tienda
               </a>
-              <a href="seguimiento-pedidos.html" class="hover:text-brand-cream block hover:underline">
+              <a href="cuenta.html?tab=orders" class="hover:text-brand-cream block hover:underline">
                 Seguimiento de Pedidos
               </a>
             </li>
@@ -2343,6 +2309,1041 @@
     </div>
   </div>
 
+
+  <!-- Fragmentos HTML compartidos para actualizar datos sin generar vistas en JavaScript. -->
+  <template id="product-card-template">
+        <article data-bind-attr-onclick="handleProductCardClick(event, '{{id}}')" data-bind-attr-aria-label="Producto: {{name}}" data-bind-attr-id="product-card-{{id}}" id="product-card-" role="article" aria-label="Producto: " onclick="handleProductCardClick(event, '')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
+          <div>
+            <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleCardImageClick(event, '{{id}}')" class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none" onclick="handleCardImageClick(event, '')" ondblclick="triggerFavoriteDblClick('', event)" ondragstart="return false;">
+              <img data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" draggable="false" ondragstart="return false;" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
+              <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none"><span data-bind-text="
+                {{subcategoryName}}
+              ">
+
+              </span></span>
+              <button data-bind-attr-aria-label="Añadir {{name}} a favoritos" data-bind-attr-onclick="event.stopPropagation(); toggleFavorite('{{id}}')" data-bind-attr-id="card-fav-btn-{{id}}" type="button" role="button" id="card-fav-btn-" onclick="event.stopPropagation(); toggleFavorite('')" ondblclick="event.stopPropagation(); event.preventDefault();" class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center transition-all active:scale-90 cursor-pointer select-none focus:outline-none" aria-label="Añadir  a favoritos">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-4.5 sm:h-4.5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-left mb-3 sm:mb-4">
+              <div data-bind-attr-aria-label="Calificación {{rating}} de 5 estrellas con {{reviewsCount}} reseñas" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#CCD5AE] border border-brand-forest/15 text-brand-forest text-xs font-semibold shadow-2xs flex-wrap max-w-full" aria-label="Calificación  de 5 estrellas con  reseñas">
+                <i aria-hidden="true" class="ph-fill ph-star text-amber-600 text-sm flex-shrink-0"></i>
+                <span class="font-extrabold text-brand-forest flex-shrink-0"><span data-bind-text="{{rating}}"></span></span>
+                <span class="text-brand-forest/80 text-[11px] font-medium whitespace-nowrap"><span data-bind-text="({{reviewsCount}} reseñas)">( reseñas)</span></span>
+              </div>
+
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
+                <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" tabindex="-1" onclick="saveCatalogPosition('')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors"><span data-bind-text="
+                  {{name}}
+                ">
+
+                </span></a>
+              </h3>
+
+              <span class="text-xs sm:text-sm text-brand-moss font-bold block"><span data-bind-text="{{size}}"></span></span>
+
+              <p class="text-xs text-brand-leaf/75 line-clamp-2 leading-relaxed font-medium min-h-[2.4rem]"><span data-bind-text="
+                {{shortDesc}}
+              ">
+
+              </span></p>
+            </div>
+          </div>
+
+          <div class="product-card-footer mt-auto bg-[#283618] px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-brand-forest/30 flex items-center justify-between gap-2 sm:gap-2.5 shadow-xs">
+            <div class="product-card-price min-w-0 flex-shrink-0">
+              <span class="text-base lg:text-lg font-extrabold text-brand-cream block leading-tight tracking-tight whitespace-nowrap"><span data-bind-text="${{price}}">$</span></span>
+            </div>
+
+            <div class="product-card-actions flex items-stretch gap-2 sm:gap-2.5 flex-shrink-0">
+              <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-aria-label="Ver detalles de {{name}}" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" role="button" aria-label="Ver detalles de " onclick="saveCatalogPosition('')" class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs font-bold transition-colors shadow-xs border border-brand-forest/20 text-center whitespace-nowrap">
+                Ver
+              </a>
+              <button data-bind-attr-aria-label="Añadir {{name}} al carrito" data-bind-attr-onclick="event.stopPropagation(); addToCart('{{id}}', 1)" type="button" role="button" onclick="event.stopPropagation(); addToCart('', 1)" class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs font-bold flex items-center justify-center gap-1.5 transition-transform active:scale-95 shadow-xs whitespace-nowrap cursor-pointer" aria-label="Añadir  al carrito">
+                <i aria-hidden="true" class="ph ph-shopping-cart text-sm flex-shrink-0"></i>
+                <span>Añadir</span>
+              </button>
+            </div>
+          </div>
+
+        </article>
+</template>
+  <template id="favorite-card-template">
+        <article data-bind-attr-aria-label="Producto favorito: {{name}}" role="article" aria-label="Producto favorito: " class="caja_fav w-full">
+          <div data-bind-attr-onclick="handleProductCardClick(event, '{{id}}')" data-bind-attr-id="fav-card-{{id}}" id="fav-card-" class="tarjeta_fav bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest hover:border-[#1a2410] p-4 sm:p-5 hover:shadow-md group cursor-pointer w-full box-border relative" onclick="handleProductCardClick(event, '')">
+
+            <!-- Botón de basurero para eliminar de favoritos en la esquina superior derecha -->
+            <button data-bind-attr-aria-label="Eliminar {{name}} de favoritos" data-bind-attr-onclick="event.stopPropagation(); toggleFavorite('{{id}}')" type="button" role="button" onclick="event.stopPropagation(); toggleFavorite('')" class="btn_eliminar_fav absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center cursor-pointer select-none" title="Eliminar de favoritos" aria-label="Eliminar  de favoritos">
+              <i aria-hidden="true" class="ph ph-trash text-lg sm:text-xl font-bold"></i>
+            </button>
+
+            <!-- Imagen del producto siempre cuadrada, nunca estirada ni encogida -->
+            <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleCardImageClick(event, '{{id}}')" class="caja_img_fav product-card-image-box bg-brand-cream border border-brand-forest/20 shadow-xs select-none" onclick="handleCardImageClick(event, '')" ondblclick="triggerFavoriteDblClick('', event)" ondragstart="return false;">
+              <img data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" draggable="false" ondragstart="return false;" class="w-full h-full object-cover pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
+              <button data-bind-attr-onclick="event.stopPropagation(); toggleFavorite('{{id}}')" data-bind-attr-id="card-fav-btn-{{id}}" type="button" role="button" id="card-fav-btn-" onclick="event.stopPropagation(); toggleFavorite('')" ondblclick="event.stopPropagation(); event.preventDefault();" class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center cursor-pointer select-none focus:outline-none" aria-label="Añadir a favoritos">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+              </button>
+            </div>
+
+            <!-- Columna de detalles del producto con ancho completo y organización adaptable -->
+            <div class="datos_fav space-y-3">
+              <div class="min-w-0 space-y-1.5 pr-9 sm:pr-11">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-forest text-brand-cream text-[11px] sm:text-xs font-bold tracking-wide shadow-2xs border border-brand-forest/20 max-w-full truncate">
+                    Suplementos
+                  </span>
+                </div>
+                <h3 data-bind-attr-title="{{name}}" class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="">
+                  <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" tabindex="-1" onclick="saveCatalogPosition('')"><span data-bind-text="
+                    {{name}}
+                  ">
+
+                  </span></a>
+                </h3>
+                <span class="text-xs sm:text-sm text-brand-moss font-bold block pt-0.5"><span data-bind-text="{{size}}"></span></span>
+              </div>
+
+              <!-- Fila de precio y botones de acción nunca cortados y con espaciado amplio -->
+              <div data-bind-attr-aria-label="Acciones de compra para {{name}}" class="mt-3 pt-3 border-t border-brand-forest/15 flex flex-wrap items-center justify-between gap-3 w-full" role="group" aria-label="Acciones de compra para ">
+                <span class="text-base sm:text-lg md:text-xl font-extrabold text-brand-forest leading-none whitespace-nowrap"><span data-bind-text="${{price}}">$</span></span>
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  <a data-bind-attr-aria-label="Ver detalle de {{name}}" data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" role="button" onclick="saveCatalogPosition('')" class="btn_ver_fav flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2 sm:py-2.5 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest text-xs sm:text-sm font-bold shadow-2xs border-2 border-brand-forest text-center whitespace-nowrap cursor-pointer transition-colors" aria-label="Ver detalle de ">
+                    <span>Ver</span>
+                  </a>
+                  <button data-bind-attr-aria-label="Añadir {{name}} al carrito" data-bind-attr-onclick="event.stopPropagation(); addToCart('{{id}}', 1)" type="button" role="button" onclick="event.stopPropagation(); addToCart('', 1)" class="btn_agregar_fav flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-xs cursor-pointer whitespace-nowrap transition-colors" aria-label="Añadir  al carrito">
+                    <i aria-hidden="true" class="ph ph-shopping-cart text-sm sm:text-base text-brand-sunflower flex-shrink-0"></i>
+                    <span>Añadir</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </article>
+</template>
+  <template id="favorite-undo-template">
+        <article data-bind-attr-aria-label="Producto {{name}} eliminado de favoritos" role="status" aria-label="Producto  eliminado de favoritos" class="caja_fav w-full">
+          <div data-bind-attr-id="fav-undo-{{id}}" id="fav-undo-" class="tarjeta_fav bg-[#FEFAE0] rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-dashed border-brand-forest/40 p-4 sm:p-5 w-full box-border flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+
+            <div class="flex items-center gap-3.5 min-w-0 w-full sm:w-auto flex-1">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream border border-brand-forest/20 flex-shrink-0 shadow-2xs">
+                <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-full h-full object-cover opacity-60 grayscale" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
+              </div>
+              <div class="min-w-0 space-y-1 text-left flex-1">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 rounded-md bg-brand-forest/15 text-brand-forest text-[11px] font-bold">
+                    Eliminado de favoritos
+                  </span>
+                </div>
+                <h3 data-bind-attr-title="{{name}}" class="font-botanic font-bold text-sm sm:text-base md:text-lg text-brand-forest leading-snug line-clamp-2 break-words" title=""><span data-bind-text="
+                  {{name}}
+                ">
+
+                </span></h3>
+                <p class="text-[11px] sm:text-xs text-brand-leaf/70 font-medium">
+                  Se quitó este producto de tu lista de favoritos.
+                </p>
+              </div>
+            </div>
+
+            <!-- Botón Deshacer en el lugar donde estaba el producto -->
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end flex-shrink-0">
+              <button data-bind-attr-aria-label="Deshacer y restaurar {{name}} a favoritos" data-bind-attr-onclick="undoRemoveFavorite('{{id}}')" type="button" role="button" onclick="undoRemoveFavorite('')" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs sm:text-sm shadow-xs transition-transform active:scale-95 border-2 border-brand-forest/20 cursor-pointer whitespace-nowrap w-full sm:w-auto" aria-label="Deshacer y restaurar  a favoritos">
+                <i aria-hidden="true" class="ph ph-arrow-u-up-left text-base sm:text-lg font-bold"></i>
+                <span>Deshacer</span>
+              </button>
+            </div>
+
+          </div>
+        </article>
+</template>
+  <template id="favorites-empty-template">
+
+          <div class="text-center py-10 sm:py-14 px-4 bg-[#FEFAE0] rounded-3xl border-2 border-dashed border-brand-forest/30 space-y-4">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-brand-forest/10 text-brand-forest flex items-center justify-center text-3xl sm:text-4xl">
+              <i aria-hidden="true" class="ph ph-heart-break text-brand-forest/60"></i>
+            </div>
+            <div class="max-w-md mx-auto space-y-1.5">
+              <h3 class="font-botanic font-bold text-lg sm:text-xl text-brand-forest">
+                Aún no tienes productos favoritos
+              </h3>
+              <p class="text-xs sm:text-sm text-brand-leaf/80 leading-relaxed font-medium">
+                Guarda tus productos preferidos haciendo clic en el corazón verde oscuro o haciendo doble clic sobre su imagen en el catálogo.
+              </p>
+            </div>
+            <div class="pt-2">
+              <button type="button" onclick="navigateTo('categoria.html')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95 cursor-pointer border border-brand-forest">
+                <i aria-hidden="true" class="ph ph-compass text-base text-brand-sunflower"></i>
+                <span>Explorar Catálogo</span>
+              </button>
+            </div>
+          </div>
+
+</template>
+  <template id="favorites-filter-empty-template">
+
+          <div class="text-center py-10 sm:py-12 px-4 bg-[#FEFAE0] rounded-3xl border-2 border-dashed border-brand-forest/30 space-y-3">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-brand-forest/10 text-brand-forest flex items-center justify-center text-2xl sm:text-3xl">
+              <i aria-hidden="true" class="ph ph-magnifying-glass text-brand-forest/60"></i>
+            </div>
+            <div class="max-w-md mx-auto space-y-1">
+              <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest">
+                Sin favoritos en esta selección
+              </h3>
+              <p class="text-xs sm:text-sm text-brand-leaf/80 font-medium">
+                No tienes productos favoritos que coincidan con la categoría o subcategoría seleccionada.
+              </p>
+            </div>
+            <div class="pt-1">
+              <button type="button" onclick="resetFavFilters()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 cursor-pointer">
+                <i aria-hidden="true" class="ph ph-funnel-x text-sm text-brand-sunflower"></i>
+                <span>Restablecer filtros</span>
+              </button>
+            </div>
+          </div>
+
+</template>
+  <template id="cart-drawer-empty-template">
+          <div class="text-center py-6 px-2 space-y-1.5">
+            <i aria-hidden="true" class="ph ph-shopping-bag text-2xl text-brand-forest/40 block mx-auto"></i>
+            <p class="text-xs font-bold text-brand-forest">Aún no hay productos</p>
+            <p class="text-[11px] text-brand-forest/70 font-medium">Tus productos añadidos aparecerán aquí.</p>
+          </div>
+</template>
+  <template id="cart-drawer-item-template">
+        <div data-bind-attr-title="{{name}} ({{quantity}} ud.)" class="cart-item-card" title=" ( ud.)">
+          <div class="cart-item-row">
+            <!-- Botón restar (-) fuera del recuadro -->
+            <button data-bind-attr-aria-label="Quitar una unidad de {{name}}" data-bind-attr-onclick="event.stopPropagation(); updateCartQuantity('{{id}}', -1)" type="button" onclick="event.stopPropagation(); updateCartQuantity('', -1)" class="cart-qty-btn cart-qty-minus" title="Quitar una unidad" aria-label="Quitar una unidad de ">
+              <i aria-hidden="true" class="ph-bold ph-minus"></i>
+            </button>
+
+            <!-- Recuadro del producto con lupa en hover y botón circular X para eliminar -->
+            <div class="cart-thumb-wrapper">
+              <!-- Botón circular en la esquina derecha con una X para eliminar -->
+              <button data-bind-attr-aria-label="Eliminar {{name}} del carrito" data-bind-attr-title="Eliminar {{name}}" data-bind-attr-onclick="event.stopPropagation(); removeFromCart('{{id}}')" type="button" onclick="event.stopPropagation(); removeFromCart('')" class="cart-delete-x-btn" title="Eliminar " aria-label="Eliminar  del carrito">
+                <i aria-hidden="true" class="ph-bold ph-x"></i>
+              </button>
+
+              <div class="cart-thumb-box w-16 h-16 rounded-xl overflow-hidden bg-white shadow-xs group cursor-pointer relative">
+                <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
+                <!-- Capa con icono de lupa visible al hacer hover para ver el producto -->
+                <a data-bind-attr-aria-label="Ver detalle de {{name}}" data-bind-attr-title="Ver {{name}}" data-bind-attr-onclick="event.stopPropagation(); navigateTo('producto.html?id={{id}}');" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" onclick="event.stopPropagation(); navigateTo('producto.html?id=');" class="cart-hover-zoom absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-20" title="Ver " aria-label="Ver detalle de ">
+                  <i aria-hidden="true" class="ph ph-magnifying-glass text-2xl text-brand-cream hover:text-brand-sunflower hover:scale-110 active:scale-95 transition-all"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Botón sumar (+) fuera del recuadro -->
+            <button data-bind-attr-aria-label="Añadir una unidad de {{name}}" data-bind-attr-onclick="event.stopPropagation(); updateCartQuantity('{{id}}', 1)" type="button" onclick="event.stopPropagation(); updateCartQuantity('', 1)" class="cart-qty-btn cart-qty-plus" title="Añadir una unidad" aria-label="Añadir una unidad de ">
+              <i aria-hidden="true" class="ph-bold ph-plus"></i>
+            </button>
+          </div>
+
+          <!-- Debajo del recuadro: cant: y el número, seguido del precio -->
+          <div class="cart-item-info">
+            <span class="cart-item-qty">cant: <strong class="cart-item-qty-num"><span data-bind-text="{{quantity}}"></span></strong></span>
+            <span class="cart-item-price"><span data-bind-text="${{lineTotal}}">$</span></span>
+          </div>
+        </div>
+</template>
+  <template id="cart-item-template"><article data-bind-attr-aria-label="Producto: {{name}}" role="article" aria-label="Producto: " class="cart-item-card bg-brand-cream rounded-2xl border-2 border-brand-forest/30 p-3.5 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 shadow-xs">
+
+                    <!-- Bloque Superior: Imagen + Nombre + Tamaño/Precio + Botón Eliminar Móvil -->
+                    <div class="cart-item-top flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                      <a data-bind-attr-aria-label="Ver detalles de {{name}}" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" tabindex="-1" class="flex-shrink-0 block" aria-label="Ver detalles de ">
+                        <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0 hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
+                      </a>
+
+                      <div class="min-w-0 flex-1 text-left">
+                        <h3 class="font-botanic font-bold text-sm sm:text-base text-brand-forest leading-snug break-words">
+                          <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="hover:text-brand-moss transition-colors"><span data-bind-text="
+                            {{name}}
+                          ">
+
+                          </span></a>
+                        </h3>
+                        <p class="text-xs text-brand-leaf/75 font-medium mt-0.5 break-words">
+                          <span><span data-bind-text="{{size}}"></span></span>
+                          <span class="mx-1 text-brand-forest/40">•</span>
+                          <span class="font-bold text-brand-forest"><span data-bind-text="${{price}}">$</span></span>
+                          <span class="text-brand-leaf/60"> c/u</span>
+                        </p>
+                      </div>
+
+                      <!-- Botón Eliminar en Móvil o al hacer Zoom -->
+                      <button data-bind-attr-aria-label="Eliminar {{name}} del carrito" data-bind-attr-onclick="removeFromCart('{{id}}')" type="button" role="button" onclick="removeFromCart('')" class="cart-del-mobile md:hidden text-brand-leaf/40 hover:text-brand-sunflower hover:bg-brand-forest p-2 rounded-xl transition-colors active:scale-95 flex-shrink-0 self-start ml-auto cursor-pointer" title="Eliminar del carrito" aria-label="Eliminar  del carrito">
+                        <i aria-hidden="true" class="ph ph-trash text-lg"></i>
+                      </button>
+                    </div>
+
+                    <!-- Bloque Inferior: Selector Cantidad + Subtotal + Eliminar Desktop -->
+                    <div class="cart-item-bottom flex items-center justify-between md:justify-end gap-3 sm:gap-4 pt-2.5 md:pt-0 border-t border-brand-forest/10 md:border-t-0 flex-shrink-0">
+
+                      <!-- Selector Cantidad -->
+                      <div data-bind-attr-aria-label="Cantidad para {{name}}" class="flex items-center border-2 border-brand-forest/30 rounded-xl bg-brand-cream overflow-hidden shadow-2xs flex-shrink-0" role="group" aria-label="Cantidad para ">
+                        <button data-bind-attr-aria-label="Disminuir cantidad de {{name}}" data-bind-attr-onclick="updateCartQuantity('{{id}}', -1)" type="button" role="button" onclick="updateCartQuantity('', -1)" class="px-2.5 sm:px-3 py-1.5 text-sm font-bold text-brand-forest hover:bg-brand-olive/50 active:scale-95 transition-transform cursor-pointer" aria-label="Disminuir cantidad de ">-</button>
+                        <span data-bind-attr-aria-label="Cantidad: {{quantity}}" class="w-8 sm:w-10 text-center text-sm font-bold text-brand-leaf select-none" aria-label="Cantidad: "><span data-bind-text="{{quantity}}"></span></span>
+                        <button data-bind-attr-aria-label="Aumentar cantidad de {{name}}" data-bind-attr-onclick="updateCartQuantity('{{id}}', 1)" type="button" role="button" onclick="updateCartQuantity('', 1)" class="px-2.5 sm:px-3 py-1.5 text-sm font-bold text-brand-forest hover:bg-brand-olive/50 active:scale-95 transition-transform cursor-pointer" aria-label="Aumentar cantidad de ">+</button>
+                      </div>
+
+                      <!-- Total Ítem -->
+                      <div class="text-right min-w-[75px] sm:min-w-[90px] flex-shrink-0">
+                        <span class="cart-subtotal-label text-[10px] text-brand-leaf/60 font-bold uppercase tracking-wider block md:hidden">Subtotal</span>
+                        <span class="text-base sm:text-lg font-extrabold text-brand-forest whitespace-nowrap"><span data-bind-text="${{lineTotal}}">$</span></span>
+                      </div>
+
+                      <!-- Botón Eliminar Desktop -->
+                      <button data-bind-attr-aria-label="Eliminar {{name}} del carrito" data-bind-attr-onclick="removeFromCart('{{id}}')" type="button" role="button" onclick="removeFromCart('')" class="cart-del-desktop hidden md:inline-flex text-brand-leaf/40 hover:text-brand-sunflower hover:bg-brand-forest p-2.5 rounded-xl transition-colors active:scale-95 flex-shrink-0 cursor-pointer" title="Eliminar del carrito" aria-label="Eliminar  del carrito">
+                        <i aria-hidden="true" class="ph ph-trash text-xl"></i>
+                      </button>
+                    </div>
+
+                  </article></template>
+  <template id="checkout-step-1-1">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">1</span>
+                    <span class="text-brand-forest font-bold">Carrito</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 2 de 4: Retiro pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">2</span>
+                    <span class="text-brand-forest/60">Retiro</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 3 de 4: Pago pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">3</span>
+                    <span class="text-brand-forest/60">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-1-2">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">1</span>
+                    <span class="text-brand-forest font-bold">Carrito</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Avanzar directamente al Paso 2: Retiro (ya alcanzado previamente)" aria-label="Avanzar directamente al Paso 2: Retiro (ya alcanzado previamente)">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        2
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 3 de 4: Pago pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">3</span>
+                    <span class="text-brand-forest/60">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-1-3">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">1</span>
+                    <span class="text-brand-forest font-bold">Carrito</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Avanzar directamente al Paso 2: Retiro (ya alcanzado previamente)" aria-label="Avanzar directamente al Paso 2: Retiro (ya alcanzado previamente)">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        2
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-pago.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Avanzar directamente al Paso 3: Pago (ya alcanzado previamente)" aria-label="Avanzar directamente al Paso 3: Pago (ya alcanzado previamente)">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        3
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Pago</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-2-1">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">2</span>
+                    <span class="text-brand-forest font-bold">Retiro</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 3 de 4: Pago pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">3</span>
+                    <span class="text-brand-forest/60">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-2-2">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">2</span>
+                    <span class="text-brand-forest font-bold">Retiro</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 3 de 4: Pago pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">3</span>
+                    <span class="text-brand-forest/60">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-2-3">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">2</span>
+                    <span class="text-brand-forest font-bold">Retiro</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-pago.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Avanzar directamente al Paso 3: Pago (ya alcanzado previamente)" aria-label="Avanzar directamente al Paso 3: Pago (ya alcanzado previamente)">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        3
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Pago</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-3-1">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 2: Retiro" aria-label="Volver al Paso 2: Retiro">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">3</span>
+                    <span class="text-brand-forest font-bold">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-3-2">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 2: Retiro" aria-label="Volver al Paso 2: Retiro">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">3</span>
+                    <span class="text-brand-forest font-bold">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-3-3">
+        <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs">
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('carrito.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 1: Carrito" aria-label="Volver al Paso 1: Carrito">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Carrito</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center">
+                    <button type="button" onclick="handleStepperNav('checkout-retiro.html')" class="inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95" title="Volver al Paso 2: Retiro" aria-label="Volver al Paso 2: Retiro">
+                      <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm group-hover:bg-brand-forest group-hover:text-brand-sunflower transition-colors shadow-2xs flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                      </span>
+                      <span class="text-brand-forest font-semibold group-hover:underline">Retiro</span>
+                    </button>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 cursor-default" aria-current="step">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold flex-shrink-0">3</span>
+                    <span class="text-brand-forest font-bold">Pago</span>
+                  </li>
+
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-forest/20 flex-shrink-0"></span>
+
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso 4 de 4: Confirmación pendiente">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">4</span>
+                    <span class="text-brand-forest/60">Confirmación</span>
+                  </li>
+
+          </ol>
+        </nav>
+</template>
+  <template id="checkout-step-4-4">
+          <nav aria-label="Progreso del pedido: Paso 4 de 4, Confirmación" class="flex items-center justify-center mb-8 sm:mb-10">
+            <div class="lector_texto_accesible" role="region" aria-label="Paso actual del proceso de compra" lang="es">
+              <p lang="es">Paso actual: Paso 4 de 4, Confirmación.</p>
+            </div>
+            <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs select-none pointer-events-none cursor-default" title="Pedido finalizado. No se permite volver a pasos anteriores.">
+
+                <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-75" aria-label="Paso 1 de 4: Carrito completado">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
+                    <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                  </span>
+                  <span class="text-brand-forest font-semibold">Carrito</span>
+                </li>
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-75" aria-label="Paso 2 de 4: Retiro completado">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
+                    <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                  </span>
+                  <span class="text-brand-forest font-semibold">Retiro</span>
+                </li>
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-75" aria-label="Paso 3 de 4: Pago completado">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-olive text-brand-forest flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
+                    <i aria-hidden="true" class="ph ph-check font-bold"></i>
+                  </span>
+                  <span class="text-brand-forest font-semibold">Pago</span>
+                </li>
+                <span aria-hidden="true" class="w-4 sm:w-8 h-0.5 bg-brand-olive flex-shrink-0"></span>
+
+                <li class="inline-flex items-center gap-1.5 sm:gap-2" aria-current="step" aria-label="Paso actual: Paso 4 de 4, Confirmación">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-sunflower text-brand-leaf shadow-xs flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
+                    4
+                  </span>
+                  <span class="text-brand-forest font-bold">Confirmación</span>
+                </li>
+
+
+            </ol>
+          </nav>
+</template>
+  <template id="checkout-summary-item-template"><div class="flex justify-between items-center text-sm py-1.5 border-b border-brand-forest/10 last:border-b-0">
+                    <span class="text-brand-leaf/80 truncate pr-3 font-medium text-xs sm:text-sm"><span data-bind-text="{{quantity}}x {{name}}">x </span></span>
+                    <span class="font-bold text-brand-forest whitespace-nowrap text-xs sm:text-sm"><span data-bind-text="${{lineTotal}}">$</span></span>
+                  </div></template>
+  <template id="product-thumbnail-template"><button data-bind-attr-aria-label="Ver imagen {{imageNumber}}" data-bind-attr-onclick="switchProductImage('{{image}}', this, {{index}})" type="button" tabindex="-1" onclick="switchProductImage('', this, )" class="product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-[3px] border-brand-forest ring-2 ring-brand-sunflower scale-105 opacity-100 shadow-md bg-brand-cream p-1.5 transition-all cursor-pointer" aria-label="Ver imagen ">
+                        <img data-bind-attr-alt="Vista {{imageNumber}}" data-bind-attr-src="{{image}}" src="" alt="Vista " class="w-full h-full object-cover rounded-xl" onerror="this.src='https://placehold.co/200x200/CCD5AE/283618?text=Vista+1'">
+                      </button></template>
+  <template id="product-pickup-pending-template">
+
+                    <div class="space-y-2">
+                      <p class="text-brand-forest text-base leading-relaxed">
+                        <strong class="font-bold">Nota de la Tienda:</strong> Solo podrás calificar y escribir comentarios una vez que hayas retirado tu producto en nuestra tienda física de Quito.
+                      </p>
+                      <button data-bind-attr-onclick="toggleProductPickupDemo('{{id}}')" type="button" onclick="toggleProductPickupDemo('')" class="text-xs text-brand-moss hover:underline font-bold flex items-center gap-1.5 pt-1">
+                        <i aria-hidden="true" class="ph ph-arrows-clockwise text-sm"></i>
+                        <span>(Simular retiro en tienda para probar el botón)</span>
+                      </button>
+                    </div>
+
+</template>
+  <template id="product-pickup-ready-template">
+
+                    <div class="space-y-4 pt-1">
+                      <div class="flex items-start justify-between gap-4">
+                        <div>
+                          <span class="text-sm sm:text-base font-bold text-brand-forest flex items-center gap-1.5">
+                            <i aria-hidden="true" class="ph ph-seal-check text-xl text-brand-forest flex-shrink-0"></i>
+                            <span>¡Has retirado este producto en tienda!</span>
+                          </span>
+                          <p class="text-xs sm:text-sm text-brand-leaf/80 mt-1 font-medium">Ya puedes compartir tu experiencia con nuestra comunidad.</p>
+                        </div>
+                        <button data-bind-attr-onclick="toggleProductPickupDemo('{{id}}')" type="button" onclick="toggleProductPickupDemo('')" class="p-2 rounded-lg bg-brand-cream border border-brand-forest/20 text-brand-forest/60 hover:text-brand-forest text-sm shadow-xs transition-colors flex-shrink-0" title="Restablecer estado no retirado">
+                          <i aria-hidden="true" class="ph ph-arrow-counter-clockwise text-base"></i>
+                        </button>
+                      </div>
+
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="hidden sm:block"></div>
+                        <button data-bind-attr-onclick="openReviewModal('{{id}}')" type="button" onclick="openReviewModal('')" class="w-full py-3 px-4 rounded-xl bg-brand-forest hover:bg-[#1a2410] text-brand-cream font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95">
+                          <i aria-hidden="true" class="ph ph-star text-brand-sunflower text-lg"></i>
+                          <span>Calificar y comentar</span>
+                        </button>
+                      </div>
+                    </div>
+
+</template>
+  <template id="review-template">
+        <div class="bg-brand-cream rounded-2xl border border-brand-forest/20 p-4 sm:p-5 space-y-3 shadow-sm text-left">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-brand-forest/10 sm:border-b-0 sm:pb-0">
+            <div class="flex items-center gap-3 min-w-0">
+              <div data-bind-text="{{initial}}" class="w-10 h-10 rounded-full bg-brand-forest text-brand-sunflower flex items-center justify-center font-bold text-sm shadow-xs flex-shrink-0">
+                S
+              </div>
+              <div class="min-w-0">
+                <h3 class="font-bold text-sm text-brand-forest leading-tight break-words"><span data-bind-text="{{name}}"></span></h3>
+                <span class="text-xs text-brand-leaf/60 font-medium block"><span data-bind-text="{{date}}"></span></span>
+              </div>
+            </div>
+
+            <div class="flex items-center flex-wrap gap-2.5 flex-shrink-0">
+              <div data-review-stars="" class="flex text-amber-500 text-sm flex-shrink-0">
+                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+              </div>
+
+                <span data-review-verified="" class="inline-flex items-center gap-1.5 text-xs bg-[#CCD5AE] text-brand-forest font-bold px-2.5 py-1 rounded-xl border border-brand-forest/20 shadow-xs whitespace-nowrap flex-shrink-0">
+                  <i aria-hidden="true" class="ph ph-seal-check text-sm text-brand-forest"></i>
+                  <span>Retirado en tienda física</span>
+                </span>
+
+            </div>
+          </div>
+
+          <p class="text-sm text-brand-leaf/80 leading-relaxed font-medium italic break-words pl-1"><span data-bind-text="
+            &quot;{{comment}}&quot;
+          ">
+            ""
+          </span></p>
+
+
+            <div data-review-photo="" class="pt-2 pl-1">
+              <img data-bind-attr-src="{{image}}" src="" alt="Foto del producto compartida por el cliente" class="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-xl border-2 border-brand-forest/20 shadow-sm cursor-pointer hover:opacity-90 transition-opacity" title="Clic para ver foto en tamaño original">
+              <span class="text-xs text-brand-leaf/50 block mt-1.5 font-medium">Foto compartida por el cliente</span>
+            </div>
+
+        </div>
+</template>
+  <template id="lightbox-thumbnail-template"><button data-bind-attr-aria-label="Ver imagen {{imageNumber}}" data-bind-attr-onclick="event.stopPropagation(); navigateLightboxImageTo({{index}})" type="button" onclick="event.stopPropagation(); navigateLightboxImageTo()" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-brand-sunflower scale-105 ring-2 ring-brand-sunflower/60 opacity-100 shadow-md transition-all flex-shrink-0 cursor-pointer bg-black/40 p-0.5" aria-label="Ver imagen ">
+              <img data-bind-attr-alt="Miniatura {{imageNumber}}" data-bind-attr-src="{{image}}" src="" alt="Miniatura " class="w-full h-full object-cover rounded-lg pointer-events-none">
+            </button></template>
+  <template id="latest-order-item-template"><div class="flex items-center gap-3 bg-[#FEFAE0] rounded-xl p-2.5 border border-brand-forest/20 shadow-xs text-brand-forest">
+                      <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
+                      <div class="flex-1 min-w-0 text-left">
+                        <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="text-xs font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5"><span data-bind-text="
+                          {{name}}
+                        ">
+
+                        </span></a>
+                        <p class="text-[11px] text-brand-leaf/70 font-medium truncate"><span data-bind-text="{{size}} • Cant: "> • Cant: </span><strong><span data-bind-text="{{quantity}}"></span></strong></p>
+                        <p class="text-xs text-brand-forest font-extrabold mt-0.5"><span data-bind-text="${{lineTotal}} USD">$ USD</span></p>
+                      </div>
+                    </div></template>
+  <template id="history-order-item-template"><div class="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-brand-cream border border-brand-forest/20 text-sm shadow-2xs">
+                            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                              <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-brand-forest/20 flex-shrink-0" onerror="this.src='https://placehold.co/80x80/CCD5AE/283618?text=Item'">
+                              <div class="min-w-0 flex-1">
+                                <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="font-bold text-xs sm:text-sm text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5"><span data-bind-text="
+                                  {{name}}
+                                ">
+
+                                </span></a>
+                                <span class="text-[11px] sm:text-xs text-brand-leaf/70 block font-medium truncate"><span data-bind-text="{{size}}"></span></span>
+                              </div>
+                            </div>
+
+                            <div class="text-right flex-shrink-0 pl-2">
+                              <span class="font-extrabold text-brand-forest block text-sm sm:text-base mb-0.5"><span data-bind-text="${{lineTotal}}">$</span></span>
+                              <span class="text-[11px] sm:text-xs text-brand-leaf/70 font-semibold"><span data-bind-text="{{quantity}} x ${{price}}"> x $</span></span>
+                            </div>
+                          </div></template>
+  <template id="latest-order-template"><div data-latest-order="" class="bg-brand-forest text-brand-cream rounded-3xl p-4 sm:p-5 shadow-lg border-2 border-brand-forest text-left space-y-3 sm:space-y-3.5 box-border w-full">
+
+              <!-- Fila Superior: Datos de Orden + Precio a la izquierda, Selector de Estado y Ver Productos a la derecha -->
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4 pb-3 border-b border-white/15 w-full box-border">
+                <div class="space-y-1 min-w-0 max-w-full">
+                  <span class="text-[11px] uppercase tracking-wider text-brand-sunflower font-extrabold flex items-center gap-1.5">
+                    <i aria-hidden="true" class="ph ph-package text-sm flex-shrink-0"></i>
+                    <span>Estado del Último Pedido</span>
+                  </span>
+                  <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                    <h3 class="font-mono text-xl sm:text-2xl font-black text-brand-cream break-all"><span data-bind-text="
+                      {{number}}
+                    ">
+
+                    </span></h3>
+                    <span class="bg-[#FEFAE0] text-brand-forest font-black text-xs sm:text-sm px-3 py-1 rounded-full shadow-2xs whitespace-nowrap"><span data-bind-text="
+                      ${{total}} USD
+                    ">
+                      $ USD
+                    </span></span>
+                  </div>
+                  <p class="text-[11px] sm:text-xs text-brand-cream/80 font-medium pt-0.5">
+                    Fecha: <strong class="text-brand-cream"><span data-bind-text="{{date}}"></span></strong> • Modalidad: <strong class="text-brand-cream"><span data-bind-text="{{method}}"></span></strong>
+                  </p>
+                </div>
+
+                <!-- Controles: Selector de Estado y Botón Ver Productos organizados y 100% contenidos sin desbordar el contenedor -->
+                <div class="flex flex-wrap items-center lg:items-end justify-start lg:justify-end gap-2.5 max-w-full">
+                  <div class="flex items-center gap-2 max-w-full flex-wrap">
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-sunflower flex items-center gap-1.5 flex-shrink-0">
+                      <i aria-hidden="true" class="ph ph-arrows-clockwise text-sm flex-shrink-0"></i>
+                      <span>Estado:</span>
+                    </span>
+                    <div class="relative inline-block" id="dropdown-wrapper-latest">
+                      <button type="button" onclick="toggleStatusDropdown('latest', event)" class="inline-flex items-center justify-between gap-2.5 px-3.5 py-1.5 rounded-xl bg-[#FEFAE0] text-brand-forest text-xs sm:text-sm font-bold border border-brand-sunflower/50 shadow-xs hover:bg-white transition-colors cursor-pointer text-left focus:outline-none whitespace-nowrap" id="status-btn-latest" aria-haspopup="listbox" aria-expanded="false">
+                        <span data-bind-text="{{status}}" class="font-black text-brand-forest">Recibido</span>
+                        <i aria-hidden="true" class="ph ph-caret-down text-brand-forest text-xs font-bold flex-shrink-0 transition-transform duration-200"></i>
+                      </button>
+                      <div id="status-menu-latest" class="hidden absolute z-50 left-0 lg:left-auto lg:right-0 top-full mt-1.5 min-w-full w-max max-w-[90vw] bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/60 shadow-2xl py-1.5" role="listbox">
+
+                          <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Recibido')" data-order-status="Recibido" type="button" onclick="selectCustomOrderStatus('', 'Recibido')" class="w-full px-3.5 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-sunflower bg-brand-forest/60" role="option" aria-selected="true">
+                            <span class="whitespace-nowrap flex-shrink-0">Recibido</span>
+                            <i aria-hidden="true" class="ph ph-check text-brand-sunflower text-xs flex-shrink-0"></i>
+                          </button>
+
+                          <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'En Tienda')" data-order-status="En Tienda" type="button" onclick="selectCustomOrderStatus('', 'En Tienda')" class="w-full px-3.5 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                            <span class="whitespace-nowrap flex-shrink-0">En Tienda</span>
+
+                          </button>
+
+                          <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Listo para Retiro')" data-order-status="Listo para Retiro" type="button" onclick="selectCustomOrderStatus('', 'Listo para Retiro')" class="w-full px-3.5 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                            <span class="whitespace-nowrap flex-shrink-0">Listo para Retiro</span>
+
+                          </button>
+
+                          <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Entregado')" data-order-status="Entregado" type="button" onclick="selectCustomOrderStatus('', 'Entregado')" class="w-full px-3.5 py-1.5 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                            <span class="whitespace-nowrap flex-shrink-0">Entregado</span>
+
+                          </button>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="button" onclick="toggleOrderItemsView('latest-order-items', this)" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-xs transition-transform active:scale-95 shadow-xs border border-brand-forest/20 whitespace-nowrap flex-shrink-0">
+                    <i aria-hidden="true" class="ph ph-package text-sm flex-shrink-0"></i>
+                    <span data-bind-text="Ver productos ({{itemCount}})" class="whitespace-nowrap flex-shrink-0">Ver productos (1)</span>
+                    <i aria-hidden="true" class="ph ph-caret-down text-xs transition-transform duration-200 flex-shrink-0"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Productos desplegables de la última orden (oculto por defecto) -->
+              <div id="latest-order-items" class="hidden pt-1 space-y-2.5">
+                <span class="text-xs font-bold text-brand-sunflower uppercase tracking-wider block">
+                  Productos en esta orden:
+                </span>
+                <div data-order-items="" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3"></div>
+              </div>
+
+              <!-- Línea de Tiempo de 4 Pasos Compacta -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 text-sm text-left">
+                <div data-order-level="1" class="space-y-0.5 opacity-100">
+                  <div class="flex items-center gap-1.5 font-bold text-brand-sunflower text-xs sm:text-sm">
+                    <i aria-hidden="true" class="ph ph-check-circle text-base text-brand-sunflower"></i>
+                    <span>1. Recibido</span>
+                  </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">Orden registrada.</p>
+                </div>
+
+                <div data-order-level="2" class="space-y-0.5 opacity-40">
+                  <div class="flex items-center gap-1.5 font-bold text-brand-cream/60 text-xs sm:text-sm">
+                    <i aria-hidden="true" class="ph ph-circle-dashed text-base"></i>
+                    <span>2. En Tienda</span>
+                  </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">Empaque biodegradable.</p>
+                </div>
+
+                <div data-order-level="3" class="space-y-0.5 opacity-40">
+                  <div class="flex items-center gap-1.5 font-bold text-brand-cream/60 text-xs sm:text-sm">
+                    <i aria-hidden="true" class="ph ph-circle-dashed text-base"></i>
+                    <span>3. Listo para Retiro</span>
+                  </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">González Suárez 420, Quito.</p>
+                </div>
+
+                <div data-order-level="4" class="space-y-0.5 opacity-40">
+                  <div class="flex items-center gap-1.5 font-bold text-brand-cream/60 text-xs sm:text-sm">
+                    <i aria-hidden="true" class="ph ph-circle-dashed text-base"></i>
+                    <span>4. Entregado</span>
+                  </div>
+                  <p class="text-[11px] text-brand-cream/80 font-medium leading-snug pl-0.5">
+                    Firma y recepción conforme.
+                  </p>
+                </div>
+              </div>
+
+            </div></template>
+  <template id="history-order-template"><div data-order-card="" class="p-4 sm:p-5 rounded-2xl bg-[#FEFAE0] border-2 border-brand-forest/30 text-sm space-y-4 transition-all hover:border-brand-forest shadow-xs">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div class="min-w-0">
+                        <span class="font-mono text-sm sm:text-base font-extrabold text-brand-forest block mb-1 break-all"><span data-bind-text="
+                          {{number}}
+                        ">
+
+                        </span></span>
+                        <span class="text-xs text-brand-leaf/80 font-medium block"><span data-bind-text="
+                          Fecha: {{date}} • Modalidad: ">
+                          Fecha:  • Modalidad: </span><strong><span data-bind-text="{{method}}"></span></strong>
+                        </span>
+                      </div>
+
+                      <div class="text-left sm:text-right flex-shrink-0">
+                        <span class="text-base sm:text-lg font-black text-brand-forest block mb-0.5"><span data-bind-text="
+                          ${{total}} USD
+                        ">
+                          $ USD
+                        </span></span>
+                        <span data-bind-text="{{itemCount}} {{itemLabel}}" class="text-[11px] text-brand-leaf/70 font-bold uppercase tracking-wider block">
+                          1 producto
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Fila de Estado: Selector limpio, 100% adaptable y sin desbordes -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-brand-forest/20 flex-wrap">
+                      <div class="space-y-1 w-full sm:w-auto max-w-full">
+                        <span class="text-[11px] sm:text-xs font-extrabold text-brand-forest uppercase tracking-wider flex items-center gap-1">
+                          <i aria-hidden="true" class="ph ph-tag text-xs"></i>
+                          <span>Estado:</span>
+                        </span>
+                        <div data-bind-attr-id="dropdown-wrapper-{{index}}" class="relative inline-block w-full sm:w-auto max-w-full" id="dropdown-wrapper-">
+                          <button data-bind-attr-id="status-btn-{{index}}" data-bind-attr-onclick="toggleStatusDropdown('{{index}}', event)" type="button" onclick="toggleStatusDropdown('', event)" class="w-full sm:w-auto max-w-full min-w-[160px] inline-flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-xl bg-brand-forest text-brand-cream text-xs sm:text-sm font-bold border border-brand-forest shadow-xs hover:bg-[#1f2b13] transition-colors cursor-pointer text-left focus:outline-none whitespace-nowrap" id="status-btn-" aria-haspopup="listbox" aria-expanded="false">
+                            <span data-bind-text="{{status}}" class="whitespace-nowrap flex-shrink-0">Recibido</span>
+                            <i aria-hidden="true" class="ph ph-caret-down text-brand-sunflower text-xs font-bold flex-shrink-0 transition-transform duration-200"></i>
+                          </button>
+                          <div data-bind-attr-id="status-menu-{{index}}" id="status-menu-" class="hidden absolute z-50 left-0 top-full mt-1.5 min-w-full w-max max-w-[90vw] bg-[#18230F] text-brand-cream rounded-xl border border-brand-forest/60 shadow-2xl py-1.5" role="listbox">
+
+                              <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Recibido')" data-order-status="Recibido" type="button" onclick="selectCustomOrderStatus('', 'Recibido')" class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-sunflower bg-brand-forest/60" role="option" aria-selected="true">
+                                <span class="whitespace-nowrap">Recibido</span>
+                                <i aria-hidden="true" class="ph ph-check text-brand-sunflower text-xs flex-shrink-0"></i>
+                              </button>
+
+                              <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'En Tienda')" data-order-status="En Tienda" type="button" onclick="selectCustomOrderStatus('', 'En Tienda')" class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                                <span class="whitespace-nowrap">En Tienda</span>
+
+                              </button>
+
+                              <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Listo para Retiro')" data-order-status="Listo para Retiro" type="button" onclick="selectCustomOrderStatus('', 'Listo para Retiro')" class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                                <span class="whitespace-nowrap">Listo para Retiro</span>
+
+                              </button>
+
+                              <button data-bind-attr-onclick="selectCustomOrderStatus('{{number}}', 'Entregado')" data-order-status="Entregado" type="button" onclick="selectCustomOrderStatus('', 'Entregado')" class="w-full px-3.5 py-2 text-left text-xs sm:text-sm font-bold flex items-center justify-between gap-3 hover:bg-brand-forest transition-colors text-brand-cream" role="option" aria-selected="false">
+                                <span class="whitespace-nowrap">Entregado</span>
+
+                              </button>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <button data-bind-attr-onclick="toggleOrderItemsView('order-items-{{index}}', this)" type="button" onclick="toggleOrderItemsView('order-items-', this)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf text-xs sm:text-sm font-bold transition-transform active:scale-95 shadow-xs border border-brand-forest/20 flex-shrink-0">
+                        <i aria-hidden="true" class="ph ph-shopping-cart text-base flex-shrink-0"></i>
+                        <span data-bind-text="Ver productos ({{itemCount}})" class="whitespace-nowrap">Ver productos (1)</span>
+                        <i aria-hidden="true" class="ph ph-caret-down text-xs transition-transform duration-200 flex-shrink-0"></i>
+                      </button>
+                    </div>
+
+                    <!-- Panel de Productos -->
+                    <div data-bind-attr-id="order-items-{{index}}" id="order-items-" class="hidden pt-4 border-t border-brand-forest/20 space-y-3">
+                      <span class="text-[11px] font-bold text-brand-forest uppercase tracking-wider block mb-2">
+                        Productos incluidos en este pedido:
+                      </span>
+                      <div data-order-items="" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1"></div>
+                    </div>
+
+                  </div></template>
+  <template id="catalog-empty-template"><div class="bg-brand-cream rounded-3xl p-12 text-center border-[3px] border-brand-forest">
+                  <i aria-hidden="true" class="ph ph-magnifying-glass text-5xl text-brand-forest/50 mb-4 block"></i>
+                  <h2 class="font-botanic text-xl font-bold text-brand-forest">No hay productos en esta selección</h2>
+                  <p class="text-sm text-brand-forest/80 mt-2 mb-5 font-medium">Prueba seleccionando otra subcategoría o consulta nuestro catálogo completo.</p>
+                  <a href="categoria.html" class="inline-block px-6 py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-sm shadow-xs hover:bg-[#dcb556]">
+                    Ver todos los productos
+                  </a>
+                </div></template>
+  <template id="breadcrumb-link-template"><a data-bind-attr-href="{{href}}" href="" class="hover:text-brand-forest"><span data-bind-text="{{label}}"></span></a></template>
+  <template id="breadcrumb-text-template"><span class="font-bold text-brand-forest"><span data-bind-text="{{label}}"></span></span></template>
+  <template id="breadcrumb-separator-template"><span>/</span></template>
+  <template id="heart-filled-template"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg></template>
+  <template id="heart-outline-template"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg></template>
+  <template id="ui-icon-template"><i data-bind-attr-class="ph {{icon}}" aria-hidden="true" class="ph"></i></template>
+  <template id="toast-action-template"><i aria-hidden="true" class="ph ph-arrow-u-up-left font-bold text-sm"></i><span><span data-bind-text="{{label}}"></span></span></template>
+  <template id="favorite-detail-label-template"><span data-bind-attr-id="detail-fav-btn-text-{{id}}" id="detail-fav-btn-text-" class="whitespace-nowrap font-bold"><span data-bind-text="{{label}}"></span></span></template>
+  <template id="favorites-tab-label-template"><span>Productos Favoritos</span></template>
+  <template id="rating-star-template"><i data-bind-attr-class="{{icon}}" aria-hidden="true"></i></template>
+  <template id="password-match-failed-template"><i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i> <span>Las contraseñas no coinciden</span></template>
+  <template id="password-match-success-template"><i aria-hidden="true" class="ph-bold ph-check text-green-600 text-sm flex-shrink-0"></i> <span>Las contraseñas coinciden</span></template>
+  <template id="search-item-template">
+          <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="flex items-center gap-3.5 p-3.5 hover:bg-brand-cream border-b border-brand-olive/30 last:border-none transition-colors group">
+            <img data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-brand-olive flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
+            <div class="flex-1 min-w-0 text-left">
+              <span class="text-sm font-bold text-brand-forest truncate group-hover:text-brand-moss block"><span data-bind-text="{{name}}"></span></span>
+              <p class="text-xs text-brand-leaf/70 font-medium"><span data-bind-text="{{subcategoryName}} • ${{price}}"> • $</span></p>
+            </div>
+            <i aria-hidden="true" class="ph ph-arrow-right text-lg text-brand-moss group-hover:translate-x-1 transition-transform"></i>
+          </a>
+</template>
+  <template id="search-empty-template">
+            <div class="p-5 text-center text-sm text-brand-leaf/60 font-medium">
+              No encontramos productos para "<strong class="text-brand-forest"><span data-bind-text="{{query}}"></span></strong>"
+            </div>
+</template>
   <script type="module" src="app.js"></script>
 </body>
 </html>
