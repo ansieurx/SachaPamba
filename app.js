@@ -1263,30 +1263,72 @@
     let currentDetailGalleryIndex = 0;
     let lightboxCurrentGallery = [];
     let lightboxCurrentIndex = 0;
+    let lightboxOpenRequest = 0;
+    const preparedProductImages = new Map();
+    const productImageRequests = new WeakMap();
+    const renderedLightboxGalleries = new WeakMap();
+
+    function prepareProductImage(src) {
+      if (preparedProductImages.has(src)) return preparedProductImages.get(src);
+      const image = new Image();
+      image.decoding = 'async';
+      image.fetchPriority = 'low';
+      const entry = { image, ready: false };
+      entry.promise = new Promise(resolve => {
+        const fail = () => {
+          if (preparedProductImages.get(src) === entry) preparedProductImages.delete(src);
+          resolve(false);
+        };
+        image.onerror = fail;
+        image.onload = () => {
+          const decoded = typeof image.decode === 'function' ? image.decode() : Promise.resolve();
+          decoded.then(() => {
+            entry.ready = true;
+            resolve(true);
+          }, fail);
+        };
+      });
+      preparedProductImages.set(src, entry);
+      image.src = src;
+      return entry;
+    }
+
+    function showPreparedProductImage(img, src, onShown = () => {}) {
+      const request = {};
+      productImageRequests.set(img, request);
+      const commit = loaded => {
+        if (!loaded || !img.isConnected || productImageRequests.get(img) !== request) return false;
+        if (img.getAttribute('src') !== src) img.src = src;
+        onShown();
+        return true;
+      };
+      if (img.getAttribute('src') === src && img.complete && img.naturalWidth > 0) {
+        return Promise.resolve(commit(true));
+      }
+      const entry = prepareProductImage(src);
+      entry.image.fetchPriority = 'high';
+      return entry.ready ? Promise.resolve(commit(true)) : entry.promise.then(commit);
+    }
 
     function getCurrentImageIndex() {
       return currentDetailGalleryIndex || 0;
     }
 
     function switchProductImage(imageSrc, btnElement, imageIndex = 0) {
-      currentDetailGalleryIndex = imageIndex;
       const mainImg = document.getElementById('main-product-img');
-      if (!mainImg) return;
+      if (!mainImg || !imageSrc) return;
+      return showPreparedProductImage(mainImg, imageSrc, () => {
+        currentDetailGalleryIndex = imageIndex;
 
-      mainImg.style.opacity = '0.3';
-      setTimeout(() => {
-        mainImg.src = imageSrc;
-        mainImg.style.opacity = '1';
-      }, 120);
+        const thumbnails = document.querySelectorAll('.product-thumb-btn');
+        thumbnails.forEach(btn => {
+          btn.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-brand-forest/30 opacity-75 hover:opacity-100 bg-brand-cream p-1.5 transition-all shadow-sm cursor-pointer';
+        });
 
-      const thumbnails = document.querySelectorAll('.product-thumb-btn');
-      thumbnails.forEach(btn => {
-        btn.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-brand-forest/30 opacity-75 hover:opacity-100 bg-brand-cream p-1.5 transition-all shadow-sm cursor-pointer';
+        if (btnElement) {
+          btnElement.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-[3px] border-brand-forest ring-2 ring-brand-sunflower scale-105 opacity-100 bg-brand-cream p-1.5 transition-all shadow-md cursor-pointer';
+        }
       });
-
-      if (btnElement) {
-        btnElement.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-[3px] border-brand-forest ring-2 ring-brand-sunflower scale-105 opacity-100 bg-brand-cream p-1.5 transition-all shadow-md cursor-pointer';
-      }
     }
 
     function openImageLightbox(productId, imageIndex = 0) {
@@ -1296,33 +1338,25 @@
       const gallery = (product.images && product.images.length > 0) ? product.images : [product.image];
       lightboxCurrentGallery = gallery;
       lightboxCurrentIndex = Math.max(0, Math.min(gallery.length - 1, parseInt(imageIndex, 10) || 0));
+      gallery.forEach(src => prepareProductImage(src));
+      const request = ++lightboxOpenRequest;
 
       const modal = document.getElementById('image-lightbox-modal');
       const titleEl = document.getElementById('lightbox-product-title');
       if (titleEl) titleEl.textContent = product.name;
 
-      updateLightboxImage();
-
-      if (modal) {
+      return updateLightboxImage().then(shown => {
+        if (!shown || request !== lightboxOpenRequest || !modal) return;
         modal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
-      }
+      });
     }
 
     function syncDetailGalleryImage(index) {
-      currentDetailGalleryIndex = index;
       const mainImg = document.getElementById('main-product-img');
-      if (mainImg && lightboxCurrentGallery && lightboxCurrentGallery[index]) {
-        mainImg.src = lightboxCurrentGallery[index];
-      }
-      const thumbnails = document.querySelectorAll('.product-thumb-btn');
-      thumbnails.forEach((btn, idx) => {
-        if (idx === index) {
-          btn.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-[3px] border-brand-forest ring-2 ring-brand-sunflower scale-105 opacity-100 bg-brand-cream p-1.5 transition-all shadow-md cursor-pointer';
-        } else {
-          btn.className = 'product-thumb-btn w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-brand-forest/30 opacity-75 hover:opacity-100 bg-brand-cream p-1.5 transition-all shadow-sm cursor-pointer';
-        }
-      });
+      if (!mainImg || !lightboxCurrentGallery[index]) return;
+      const button = document.querySelectorAll('.product-thumb-btn')[index];
+      return switchProductImage(lightboxCurrentGallery[index], button, index);
     }
 
     function navigateLightboxImage(delta) {
@@ -1340,6 +1374,7 @@
     }
 
     function closeImageLightbox() {
+      lightboxOpenRequest++;
       const modal = document.getElementById('image-lightbox-modal');
       if (!modal) return;
       modal.classList.add('hidden');
@@ -3266,6 +3301,7 @@
       const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
       bindValues(root, productValues(product));
       const gallery = product.images?.length ? product.images : [product.image];
+      gallery.forEach(src => prepareProductImage(src));
       const thumbs = root.querySelector('[data-product-thumbnails]');
       thumbs.replaceChildren(...gallery.map((image,index) => cloneTemplate('product-thumbnail-template',{image,index,imageNumber:index+1})));
       const buttons = thumbs.querySelectorAll('.product-thumb-btn');
@@ -3415,21 +3451,27 @@
 
     function updateLightboxImage() {
       const img=document.getElementById('lightbox-img');
-      if(!img||!lightboxCurrentGallery.length)return;
-      img.src=lightboxCurrentGallery[lightboxCurrentIndex];
-      const multiple=lightboxCurrentGallery.length>1;
-      const counter=document.getElementById('lightbox-image-counter');
-      if(counter){counter.textContent=`(${lightboxCurrentIndex+1}/${lightboxCurrentGallery.length})`;counter.classList.toggle('hidden',!multiple);}
-      ['lightbox-prev-btn','lightbox-next-btn'].forEach(id=>document.getElementById(id)?.classList.toggle('hidden',!multiple));
-      const thumbs=document.getElementById('lightbox-thumbnails-container');
-      if(thumbs){
-        thumbs.classList.toggle('hidden',!multiple);
-        thumbs.replaceChildren(...lightboxCurrentGallery.map((image,index)=>{
-          const fragment=cloneTemplate('lightbox-thumbnail-template',{image,index,imageNumber:index+1});
-          if(index!==lightboxCurrentIndex)fragment.firstElementChild.className='w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-white/30 opacity-60 hover:opacity-100 transition-all flex-shrink-0 cursor-pointer bg-black/40 p-0.5';
-          return fragment;
-        }));
-      }
+      if(!img||!lightboxCurrentGallery.length)return Promise.resolve(false);
+      const index = lightboxCurrentIndex;
+      return showPreparedProductImage(img, lightboxCurrentGallery[index], () => {
+        const multiple=lightboxCurrentGallery.length>1;
+        const counter=document.getElementById('lightbox-image-counter');
+        if(counter){counter.textContent=`(${index+1}/${lightboxCurrentGallery.length})`;counter.classList.toggle('hidden',!multiple);}
+        ['lightbox-prev-btn','lightbox-next-btn'].forEach(id=>document.getElementById(id)?.classList.toggle('hidden',!multiple));
+        const thumbs=document.getElementById('lightbox-thumbnails-container');
+        if(thumbs){
+          thumbs.classList.toggle('hidden',!multiple);
+          if (renderedLightboxGalleries.get(thumbs) !== lightboxCurrentGallery) {
+            thumbs.replaceChildren(...lightboxCurrentGallery.map((image,index) => cloneTemplate('lightbox-thumbnail-template',{image,index,imageNumber:index+1})));
+            renderedLightboxGalleries.set(thumbs, lightboxCurrentGallery);
+          }
+          [...thumbs.children].forEach((button, position) => {
+            button.className = position === index
+              ? 'w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-brand-sunflower scale-105 ring-2 ring-brand-sunflower/60 opacity-100 shadow-md transition-all flex-shrink-0 cursor-pointer bg-black/40 p-0.5'
+              : 'w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-white/30 opacity-60 hover:opacity-100 transition-all flex-shrink-0 cursor-pointer bg-black/40 p-0.5';
+          });
+        }
+      });
     }
 
     // Funciones compartidas por los eventos inline de los archivos fisicos.
