@@ -628,19 +628,24 @@
 
       favs.forEach(id => { if (!favoritesDisplayOrder.includes(id)) favoritesDisplayOrder.push(id); });
       const added = !wasFavorite;
-      const action = {
-        before: wasFavorite,
-        after: added,
-        index: wasFavorite ? index : favs.length,
-        token: `${Date.now()}-${Math.random().toString(36).slice(2)}`
-      };
+      const canUndoRemoval = !added && currentAccountTab === 'favorites' && !!document.querySelector('[data-favorites-items]');
       if (added) {
         favs.push(productId);
         if (!favoritesDisplayOrder.includes(productId)) favoritesDisplayOrder.push(productId);
       } else {
         favs.splice(index, 1);
       }
-      favoriteUndoActions[productId] = action;
+      if (canUndoRemoval) {
+        favoriteUndoActions[productId] = {
+          before: true,
+          after: false,
+          origin: 'favorites',
+          index,
+          token: `${Date.now()}-${Math.random().toString(36).slice(2)}`
+        };
+      } else {
+        delete favoriteUndoActions[productId];
+      }
       saveFavorites(favs);
       saveFavoriteUndoState();
       updateFavoriteUI(productId, added);
@@ -648,8 +653,7 @@
 
       showToast(
         `"${product.name}" ${added ? 'añadido a tus favoritos' : 'eliminado de favoritos'}`,
-        getHeartIconSVG(added, added ? 'w-5 h-5 text-brand-sunflower' : 'w-5 h-5 text-brand-forest'),
-        { label: 'Deshacer', duration: 8000, onClick: () => undoFavoriteChange(productId, action.token) }
+        getHeartIconSVG(added, added ? 'w-5 h-5 text-brand-sunflower' : 'w-5 h-5 text-brand-forest')
       );
       return added;
     }
@@ -662,7 +666,7 @@
         if (saved && saved.actions && typeof saved.actions === 'object') {
           Object.entries(saved.actions).forEach(([id, action]) => {
             if (PRODUCTS.some(product => product.id === id) && action &&
-                typeof action.before === 'boolean' && action.after === !action.before &&
+                action.before === true && action.after === false && action.origin === 'favorites' &&
                 Number.isInteger(action.index) && action.index >= 0 && typeof action.token === 'string' &&
                 ids.includes(id) === action.after) actions[id] = action;
           });
@@ -692,7 +696,8 @@
 
     function undoFavoriteChange(productId, expectedToken = null) {
       const action = favoriteUndoActions[productId];
-      if (!action || (expectedToken !== null && action.token !== expectedToken)) return false;
+      if (!action || action.before !== true || action.after !== false || action.origin !== 'favorites' ||
+          (expectedToken !== null && action.token !== expectedToken)) return false;
       const favs = getFavorites();
       if (favs.includes(productId) !== action.after) {
         delete favoriteUndoActions[productId];
@@ -700,15 +705,10 @@
         updateFavoritesTabContent();
         return false;
       }
-      if (action.before) {
-        const position = favoritesDisplayOrder.indexOf(productId);
-        const nextId = position < 0 ? null : favoritesDisplayOrder.slice(position + 1).find(id => favs.includes(id));
-        const insertionIndex = position < 0 ? Math.min(action.index, favs.length) : nextId ? favs.indexOf(nextId) : favs.length;
-        favs.splice(insertionIndex, 0, productId);
-      } else {
-        favs.splice(favs.indexOf(productId), 1);
-        favoritesDisplayOrder = favoritesDisplayOrder.filter(id => id !== productId);
-      }
+      const position = favoritesDisplayOrder.indexOf(productId);
+      const nextId = position < 0 ? null : favoritesDisplayOrder.slice(position + 1).find(id => favs.includes(id));
+      const insertionIndex = position < 0 ? Math.min(action.index, favs.length) : nextId ? favs.indexOf(nextId) : favs.length;
+      favs.splice(insertionIndex, 0, productId);
       delete favoriteUndoActions[productId];
       delete pendingUndoFavorites[productId];
       saveFavorites(favs);
@@ -3229,7 +3229,7 @@
       const ids = getFavorites();
       pendingUndoFavorites = {};
       Object.entries(favoriteUndoActions).forEach(([id, action]) => {
-        if (ids.includes(id) !== action.after) {
+        if (action.before !== true || action.after !== false || action.origin !== 'favorites' || ids.includes(id)) {
           delete favoriteUndoActions[id];
         } else if (action.before && !action.after) {
           const product = PRODUCTS.find(p => p.id === id);
@@ -3246,19 +3246,18 @@
         const removed = !!pendingUndoFavorites[product.id];
         const fragment = cloneTemplate(removed ? 'favorite-undo-template' : 'favorite-card-template', productValues(product));
         const action = favoriteUndoActions[product.id];
-        if (action) {
-          const button = removed ? fragment.querySelector('button') : cloneTemplate('favorite-undo-template', productValues(product)).querySelector('button');
+        if (removed && action) {
+          const button = fragment.querySelector('button');
           button.removeAttribute('onclick');
           button.removeAttribute('data-bind-attr-onclick');
           button.removeAttribute('data-bind-attr-aria-label');
           button.setAttribute('data-favorite-undo', product.id);
-          button.setAttribute('aria-label', `Deshacer ${removed ? 'eliminación' : 'incorporación'} de ${product.name} en favoritos`);
+          button.setAttribute('aria-label', `Deshacer eliminación de ${product.name} en favoritos`);
           button.onclick = event => {
             event.preventDefault();
             event.stopPropagation();
             undoFavoriteChange(product.id, action.token);
           };
-          if (!removed) fragment.querySelector('[role="group"]').append(button);
         }
         return fragment;
       }) : [cloneTemplate(all.length?'favorites-filter-empty-template':'favorites-empty-template')]));
