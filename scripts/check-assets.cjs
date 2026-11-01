@@ -13,6 +13,9 @@ for (const page of pages) {
   const html = fs.readFileSync(page, 'utf8');
   assert(html.includes('href="assets/site.css"'), `${page}: missing shared styles`);
   assert(html.includes('rel="modulepreload" href="app.js"'), `${page}: missing early script load`);
+  if (page === 'producto.html') {
+    assert(!/id="main-product-img"[^>]*transition-opacity/.test(html), 'Product gallery image must not fade when changed');
+  }
   assert(!/cdn\.tailwindcss\.com|unpkg\.com\/@phosphor-icons|fonts\.googleapis\.com/.test(html), `${page}: render-blocking CDN dependency`);
   for (const [, file] of html.matchAll(/(?:href|src)="(assets\/[^"?#]+)"/g)) {
     assert(fs.existsSync(file), `${page}: missing ${file}`);
@@ -34,6 +37,6 @@ for (const icon of iconNames) {
     assert(rules.has(`.${weight}.${icon}:before`), `Missing icon: ${weight} ${icon}`);
   }
 }
-assert(css.includes('@view-transition'), 'Missing native page transition');
+assert(!css.includes('@view-transition'), 'Native page transitions must remain disabled to prevent flicker');
 assert(css.includes('prefers-reduced-motion'), 'Missing reduced motion support');
 console.log(`OK: ${pages.length} pages, local fonts, ${iconNames.size} icons and dynamic styles.`);

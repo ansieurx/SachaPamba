@@ -7,21 +7,6 @@ html {
   color-scheme: light;
 }
 
-/* Keep both page snapshots opaque: fading both exposes the browser canvas. */
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-group(root) {
-  animation-duration: 0s;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
 #lightbox-img {
   transition: none;
 }
@@ -32,10 +17,6 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  ::view-transition-old(root), ::view-transition-new(root) {
-    animation: none;
   }
 }
 
