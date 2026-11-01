@@ -37,6 +37,6 @@ for (const icon of iconNames) {
     assert(rules.has(`.${weight}.${icon}:before`), `Missing icon: ${weight} ${icon}`);
   }
 }
-assert(!css.includes('@view-transition'), 'Native page transitions must remain disabled to prevent flicker');
+assert(css.includes('@view-transition{navigation:none}'), 'Cross-document transitions must remain disabled to prevent flicker');
 assert(css.includes('prefers-reduced-motion'), 'Missing reduced motion support');
 console.log(`OK: ${pages.length} pages, local fonts, ${iconNames.size} icons and dynamic styles.`);

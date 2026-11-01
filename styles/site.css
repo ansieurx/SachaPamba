@@ -7,8 +7,18 @@ html {
   color-scheme: light;
 }
 
+@view-transition {
+  navigation: none;
+}
+
+#main-product-img,
 #lightbox-img {
-  transition: none;
+  transition: none !important;
+}
+
+.product-thumb-btn,
+#lightbox-thumbnails-container > button {
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
