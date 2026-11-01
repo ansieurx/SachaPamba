@@ -537,6 +537,7 @@
        GESTIÓN DE PRODUCTOS FAVORITOS
        ========================================================================== */
     const FAVORITES_STORAGE_KEY = 'sacha_pamba_favorites';
+    const FAVORITES_UNDO_STORAGE_KEY = 'sacha_pamba_favorites_undo';
 
     function getFavorites() {
       try {
@@ -547,7 +548,8 @@
           localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(initial));
           return initial;
         }
-        return JSON.parse(raw) || [];
+        const favorites = JSON.parse(raw);
+        return Array.isArray(favorites) ? [...new Set(favorites.filter(id => typeof id === 'string'))] : [];
       } catch (e) {
         return ['omega-3', 'vitamina-c'];
       }
@@ -614,50 +616,108 @@
     }
 
     function toggleFavorite(productId, forceAdd = false) {
-      let favs = getFavorites();
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return false;
+      const favs = getFavorites();
       const index = favs.indexOf(productId);
-      let added = false;
-
-      if (index > -1) {
-        if (forceAdd) {
-          added = true;
-        } else {
-          favs.splice(index, 1);
-          added = false;
-        }
-      } else {
-        favs.push(productId);
-        added = true;
+      const wasFavorite = index !== -1;
+      if (forceAdd && wasFavorite) {
+        updateFavoriteUI(productId, true);
+        return true;
       }
 
-      saveFavorites(favs);
-      updateFavoriteUI(productId, added);
-
-      const prod = PRODUCTS.find(p => p.id === productId);
-      const prodName = prod ? prod.name : 'Producto';
-
+      favs.forEach(id => { if (!favoritesDisplayOrder.includes(id)) favoritesDisplayOrder.push(id); });
+      const added = !wasFavorite;
+      const action = {
+        before: wasFavorite,
+        after: added,
+        index: wasFavorite ? index : favs.length,
+        token: `${Date.now()}-${Math.random().toString(36).slice(2)}`
+      };
       if (added) {
-        showToast(`"${prodName}" añadido a tus favoritos`, getHeartIconSVG(true, 'w-5 h-5 text-brand-sunflower'));
+        favs.push(productId);
+        if (!favoritesDisplayOrder.includes(productId)) favoritesDisplayOrder.push(productId);
       } else {
-        showToast(`"${prodName}" eliminado de favoritos`, getHeartIconSVG(false, 'w-5 h-5 text-brand-forest'));
+        favs.splice(index, 1);
       }
+      favoriteUndoActions[productId] = action;
+      saveFavorites(favs);
+      saveFavoriteUndoState();
+      updateFavoriteUI(productId, added);
+      updateFavoritesTabContent();
 
-      // Si el usuario está visualizando la pestaña de favoritos en Mi Cuenta, refrescar la lista
-      if (typeof currentAccountTab !== 'undefined' && currentAccountTab === 'favorites') {
-        if (!added && prod) {
-          // Si otro producto se elimina de favoritos, quitar el anterior producto que estaba con deshacer
-          const previousUndoIds = Object.keys(pendingUndoFavorites);
-          if (previousUndoIds.length > 0) {
-            favoritesDisplayOrder = favoritesDisplayOrder.filter(id => !previousUndoIds.includes(id));
-          }
-          pendingUndoFavorites = { [productId]: prod };
-        } else if (added) {
-          delete pendingUndoFavorites[productId];
-        }
-        updateFavoritesTabContent();
-      }
-
+      showToast(
+        `"${product.name}" ${added ? 'añadido a tus favoritos' : 'eliminado de favoritos'}`,
+        getHeartIconSVG(added, added ? 'w-5 h-5 text-brand-sunflower' : 'w-5 h-5 text-brand-forest'),
+        { label: 'Deshacer', duration: 8000, onClick: () => undoFavoriteChange(productId, action.token) }
+      );
       return added;
+    }
+
+    function readFavoriteUndoState() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(FAVORITES_UNDO_STORAGE_KEY) || '{}');
+        const ids = getFavorites();
+        const actions = Object.create(null);
+        if (saved && saved.actions && typeof saved.actions === 'object') {
+          Object.entries(saved.actions).forEach(([id, action]) => {
+            if (PRODUCTS.some(product => product.id === id) && action &&
+                typeof action.before === 'boolean' && action.after === !action.before &&
+                Number.isInteger(action.index) && action.index >= 0 && typeof action.token === 'string' &&
+                ids.includes(id) === action.after) actions[id] = action;
+          });
+        }
+        const order = Array.isArray(saved?.order) ? [...new Set(saved.order.filter(id => typeof id === 'string'))] : [];
+        return { actions, order };
+      } catch {
+        return { actions: Object.create(null), order: [] };
+      }
+    }
+
+    function saveFavoriteUndoState() {
+      try {
+        sessionStorage.setItem(FAVORITES_UNDO_STORAGE_KEY, JSON.stringify({ actions: favoriteUndoActions, order: favoritesDisplayOrder }));
+      } catch (error) {
+        console.error('No se pudo guardar la opción de deshacer favoritos:', error);
+      }
+    }
+
+    function reloadFavoritesFromStorage() {
+      const state = readFavoriteUndoState();
+      favoriteUndoActions = state.actions;
+      favoritesDisplayOrder = state.order;
+      updateFavoritesTabContent();
+      PRODUCTS.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
+    }
+
+    function undoFavoriteChange(productId, expectedToken = null) {
+      const action = favoriteUndoActions[productId];
+      if (!action || (expectedToken !== null && action.token !== expectedToken)) return false;
+      const favs = getFavorites();
+      if (favs.includes(productId) !== action.after) {
+        delete favoriteUndoActions[productId];
+        saveFavoriteUndoState();
+        updateFavoritesTabContent();
+        return false;
+      }
+      if (action.before) {
+        const position = favoritesDisplayOrder.indexOf(productId);
+        const nextId = position < 0 ? null : favoritesDisplayOrder.slice(position + 1).find(id => favs.includes(id));
+        const insertionIndex = position < 0 ? Math.min(action.index, favs.length) : nextId ? favs.indexOf(nextId) : favs.length;
+        favs.splice(insertionIndex, 0, productId);
+      } else {
+        favs.splice(favs.indexOf(productId), 1);
+        favoritesDisplayOrder = favoritesDisplayOrder.filter(id => id !== productId);
+      }
+      delete favoriteUndoActions[productId];
+      delete pendingUndoFavorites[productId];
+      saveFavorites(favs);
+      saveFavoriteUndoState();
+      updateFavoriteUI(productId, action.before);
+      updateFavoritesTabContent();
+      const product = PRODUCTS.find(p => p.id === productId);
+      showToast(`Cambio de favoritos deshecho: ${product ? product.name : productId}`);
+      return true;
     }
 
     let cardImageClickTimer = null;
@@ -730,14 +790,14 @@
     let filtro_cat = 'all';
     let filtro_subcat = 'all';
     let pendingUndoFavorites = {};
-    let favoritesDisplayOrder = [];
+    const initialFavoriteUndoState = readFavoriteUndoState();
+    let favoriteUndoActions = initialFavoriteUndoState.actions;
+    let favoritesDisplayOrder = initialFavoriteUndoState.order;
 
     // Tarjeta con botón de deshacer en el lugar exacto del producto eliminado en la página de favoritos
 
     function undoRemoveFavorite(productId) {
-      if (!productId) return;
-      delete pendingUndoFavorites[productId];
-      toggleFavorite(productId, true);
+      return undoFavoriteChange(productId);
     }
 
     function getCatalogCategoriesAndSubcategories() {
@@ -1681,20 +1741,13 @@
       if (tabKey === 'personal') {
         tabPersonal.classList.remove('hidden');
         btnPersonal.className = activeClass;
-        pendingUndoFavorites = {};
-        favoritesDisplayOrder = [];
       } else if (tabKey === 'orders') {
         tabOrders.classList.remove('hidden');
         btnOrders.className = activeClass;
-        pendingUndoFavorites = {};
-        favoritesDisplayOrder = [];
       } else if (tabKey === 'favorites') {
         tabFavorites.classList.remove('hidden');
         btnFavorites.className = activeClass;
-        // Solo inyectar si el contenedor estuviera vacío para evitar doble renderizado y parpadeos
-        if (!tabFavorites.firstElementChild) {
-          updateFavoritesTabContent();
-        }
+        updateFavoritesTabContent();
       }
       btnFavorites.replaceChildren(getHeartIconSVG(tabKey === 'favorites', 'w-5 h-5 flex-shrink-0'), cloneTemplate('favorites-tab-label-template'));
     }
@@ -1870,16 +1923,29 @@
       return (window.location.pathname.split('/').pop() || 'index.html') + window.location.search;
     }
 
-    function updateActiveNav(path) {
-      document.querySelectorAll('.nav-section-link').forEach(link => {
-        const href = link.getAttribute('href') || '';
-        const cleanHref = href;
-        if (cleanHref && (cleanHref === path || (path === 'index.html' && cleanHref === 'index.html'))) {
+    function updateActiveNav(path = getPageName()) {
+      const currentUrl = new URL(window.location.href);
+      const links = [...document.querySelectorAll('.nav-section-link')];
+      const candidates = links.filter(link => {
+        const href = link.getAttribute('href');
+        if (!href) return false;
+        const url = new URL(href, currentUrl);
+        return url.origin === currentUrl.origin && (url.pathname.split('/').pop() || 'index.html') === path;
+      });
+      const activeLink = candidates.find(link => {
+        const url = new URL(link.getAttribute('href'), currentUrl);
+        return url.hash && url.hash === currentUrl.hash;
+      }) || candidates.find(link => !new URL(link.getAttribute('href'), currentUrl).hash);
+
+      links.forEach(link => {
+        if (link === activeLink) {
           link.classList.add('bg-brand-olive', 'text-brand-forest', 'shadow-xs');
           link.classList.remove('bg-white/10', 'text-brand-cream/90');
+          link.setAttribute('aria-current', new URL(link.getAttribute('href'), currentUrl).hash ? 'location' : 'page');
         } else {
           link.classList.remove('bg-brand-olive', 'text-brand-forest', 'shadow-xs');
           link.classList.add('text-brand-cream/90');
+          link.removeAttribute('aria-current');
         }
       });
     }
@@ -3161,12 +3227,42 @@
       const list = document.querySelector('[data-favorites-items]');
       if (!list) return;
       const ids = getFavorites();
+      pendingUndoFavorites = {};
+      Object.entries(favoriteUndoActions).forEach(([id, action]) => {
+        if (ids.includes(id) !== action.after) {
+          delete favoriteUndoActions[id];
+        } else if (action.before && !action.after) {
+          const product = PRODUCTS.find(p => p.id === id);
+          if (product) pendingUndoFavorites[id] = product;
+        }
+      });
       if (!favoritesDisplayOrder.length) favoritesDisplayOrder = [...ids];
       ids.forEach(id => { if(!favoritesDisplayOrder.includes(id)) favoritesDisplayOrder.push(id); });
+      Object.keys(pendingUndoFavorites).forEach(id => { if(!favoritesDisplayOrder.includes(id)) favoritesDisplayOrder.push(id); });
       favoritesDisplayOrder = favoritesDisplayOrder.filter(id => ids.includes(id) || pendingUndoFavorites[id]);
       const all = favoritesDisplayOrder.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
       const filtered = all.filter(p => (filtro_cat==='all'||p.category===filtro_cat)&&(filtro_subcat==='all'||p.subcategory===filtro_subcat));
-      list.replaceChildren(...(filtered.length ? filtered.map(p => cloneTemplate(pendingUndoFavorites[p.id]?'favorite-undo-template':'favorite-card-template',productValues(p))) : [cloneTemplate(all.length?'favorites-filter-empty-template':'favorites-empty-template')]));
+      list.replaceChildren(...(filtered.length ? filtered.map(product => {
+        const removed = !!pendingUndoFavorites[product.id];
+        const fragment = cloneTemplate(removed ? 'favorite-undo-template' : 'favorite-card-template', productValues(product));
+        const action = favoriteUndoActions[product.id];
+        if (action) {
+          const button = removed ? fragment.querySelector('button') : cloneTemplate('favorite-undo-template', productValues(product)).querySelector('button');
+          button.removeAttribute('onclick');
+          button.removeAttribute('data-bind-attr-onclick');
+          button.removeAttribute('data-bind-attr-aria-label');
+          button.setAttribute('data-favorite-undo', product.id);
+          button.setAttribute('aria-label', `Deshacer ${removed ? 'eliminación' : 'incorporación'} de ${product.name} en favoritos`);
+          button.onclick = event => {
+            event.preventDefault();
+            event.stopPropagation();
+            undoFavoriteChange(product.id, action.token);
+          };
+          if (!removed) fragment.querySelector('[role="group"]').append(button);
+        }
+        return fragment;
+      }) : [cloneTemplate(all.length?'favorites-filter-empty-template':'favorites-empty-template')]));
+      saveFavoriteUndoState();
       const count = document.querySelector('[data-favorite-count]');
       if(count) count.textContent = `${ids.length} ${ids.length===1?'producto':'productos'}`;
       const shown = document.querySelector('[data-favorites-shown]');
@@ -3281,6 +3377,10 @@
       isFavorite,
       updateFavoriteUI,
       toggleFavorite,
+      readFavoriteUndoState,
+      saveFavoriteUndoState,
+      reloadFavoritesFromStorage,
+      undoFavoriteChange,
       handleCardImageClick,
       handleDetailImageClick,
       triggerFavoriteDblClick,
@@ -3435,12 +3535,21 @@
     });
 
     // Restaurar el estado real al volver con Atras o recibir cambios de otra pestana.
+    // El fragmento solo actualiza la selección del menú; la navegación sigue siendo nativa.
+    window.addEventListener('hashchange', () => updateActiveNav());
     window.addEventListener('pageshow', event => {
-      if (event.persisted) reloadCartFromStorage();
+      updateActiveNav();
+      if (event.persisted) {
+        reloadCartFromStorage();
+        reloadFavoritesFromStorage();
+      }
     });
     window.addEventListener('storage', event => {
       if (event.storageArea === localStorage && (event.key === CART_STORAGE_KEY || event.key === null)) {
         reloadCartFromStorage();
+      }
+      if (event.storageArea === localStorage && (event.key === FAVORITES_STORAGE_KEY || event.key === null)) {
+        reloadFavoritesFromStorage();
       }
     });
 
