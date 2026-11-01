@@ -81,6 +81,16 @@ let browser, socket;
   async function audit(name) {
     const report = await evaluate(`axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice']}}).then(result=>({violations:result.violations.map(rule=>({id:rule.id,impact:rule.impact,help:rule.help,tags:rule.tags,nodes:rule.nodes.map(node=>({target:node.target,html:node.html,summary:node.failureSummary}))})),incomplete:result.incomplete.map(rule=>({id:rule.id,nodes:rule.nodes.map(node=>node.target)}))}))`);
     const extra = await evaluate(`({missingAlt:[...document.querySelectorAll('img:not([alt])')].map(el=>el.outerHTML),duplicateIds:[...document.querySelectorAll('[id]')].map(el=>el.id).filter((id,index,ids)=>id&&ids.indexOf(id)!==index),overflow:document.documentElement.scrollWidth>innerWidth,headings:[...document.querySelectorAll('main h1,main h2,main h3')].filter(el=>el.getClientRects().length).map(el=>({tag:el.tagName,text:el.textContent.trim().slice(0,80),hidden:el.getAttribute('aria-hidden')}))})`);
+    extra.unnamedControls = await evaluate(`(()=>{
+      const text=element=>{
+        if(element.nodeType===Node.TEXT_NODE)return element.textContent;
+        if(element.nodeType!==Node.ELEMENT_NODE||element.getAttribute('aria-hidden')==='true')return '';
+        return (element.getAttribute('alt')||'')+' '+[...element.childNodes].map(text).join(' ');
+      };
+      return [...document.querySelectorAll('button,a[href]')].filter(element=>!(element.getAttribute('aria-label')||
+        (element.getAttribute('aria-labelledby')||'').split(/\\s+/).map(id=>document.getElementById(id)?.textContent||'').join(' ').trim()||
+        text(element).trim()||element.getAttribute('title'))).map(element=>element.outerHTML.slice(0,300));
+    })()`);
     results.push({ name, ...report, ...extra });
     console.log(JSON.stringify({ name, violations: report.violations.map(rule => ({ id: rule.id, count: rule.nodes.length, targets: rule.nodes.slice(0, 3).map(node => node.target) })), missingAlt: extra.missingAlt.length, duplicateIds: extra.duplicateIds, overflow: extra.overflow }));
   }
@@ -96,7 +106,10 @@ let browser, socket;
   await evaluate('switchAuthTab("register")'); await audit('register');
   await evaluate('closeAuthModal()');
   await go('producto.html?id=maca');
-  await evaluate('openReviewModal("maca")'); await audit('review');
+  await evaluate('openReviewModal("maca");setModalRating(2)');
+  assert.equal(await evaluate('document.querySelectorAll("#modal-star-picker .sr-only").length'), 5, 'Rating text must survive changes');
+  assert.equal(await evaluate('document.getElementById("modal-review-rating").value'), '2');
+  await audit('review');
   await evaluate('closeReviewModal();openConfirmRemoveModal(cart[0])'); await audit('remove-confirm');
   await evaluate('closeConfirmRemoveModal();openImageLightbox("maca")'); await audit('lightbox');
   await go('index.html');
@@ -143,6 +156,12 @@ let browser, socket;
   await key('Escape');
   assert.equal(await evaluate('document.getElementById("app").inert'), false);
   assert.equal(await evaluate('document.activeElement.id'), 'nav-auth-btn');
+  await evaluate('openReviewModal("maca");window.uploadActivations=0;document.getElementById("modal-review-file").click=()=>{uploadActivations++};document.getElementById("modal-review-upload-prompt").focus()');
+  await key('Enter');
+  assert.equal(await evaluate('uploadActivations'), 1, 'Upload must be operable with Enter');
+  await evaluate('document.getElementById("modal-review-upload-prompt").parentElement.click()');
+  assert.equal(await evaluate('uploadActivations'), 2, 'Existing click area must still work');
+  await key('Escape');
   await evaluate('document.getElementById("nav-category-btn").focus();openNavCategoryMenu()'); await key('Escape');
   assert.equal(await evaluate('document.activeElement.id'), 'nav-category-btn');
   assert.equal(await evaluate('document.getElementById("nav-category-btn").getAttribute("aria-expanded")'), 'false');
@@ -191,5 +210,5 @@ let browser, socket;
   fs.writeFileSync(path.join(scratch, name), JSON.stringify({ results, errors }, null, 2));
   const violations = results.reduce((count, result) => count + result.violations.length, 0);
   console.log(`RESULT: ${results.length} states, ${violations} rule failures; ${errors.length} runtime errors. Report: scratch/${name}`);
-  if (!process.argv.includes('--baseline') && (violations || errors.length || results.some(result => result.overflow || result.missingAlt.length || result.duplicateIds.length))) process.exitCode = 1;
+  if (!process.argv.includes('--baseline') && (violations || errors.length || results.some(result => result.overflow || result.missingAlt.length || result.duplicateIds.length || result.unnamedControls.length))) process.exitCode = 1;
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => { socket?.close(); browser?.kill(); server.close(); });

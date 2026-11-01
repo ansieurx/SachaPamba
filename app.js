@@ -1605,11 +1605,11 @@
       buttons.forEach((btn, idx) => {
         btn.setAttribute('aria-label', `${idx + 1} de 5 estrellas`);
         btn.setAttribute('aria-pressed', String(idx + 1 === stars));
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = `${idx < stars ? 'ph-fill' : 'ph'} ph-star`;
         if (idx < stars) {
-          btn.replaceChildren(cloneTemplate('rating-star-template', {icon:'ph-fill ph-star'}));
           btn.className = 'star-btn text-amber-500 transition-transform active:scale-90';
         } else {
-          btn.replaceChildren(cloneTemplate('rating-star-template', {icon:'ph ph-star'}));
           btn.className = 'star-btn text-brand-leaf/30 hover:text-amber-500 transition-transform active:scale-90';
         }
       });

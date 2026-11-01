@@ -22,6 +22,18 @@ const assert = require('node:assert/strict');
       if (attr.id) { assert(!ids.has(attr.id), `${file}: duplicate ${attr.id}`); ids.set(attr.id, node); }
       if (node.tagName === 'label' && attr.for) labels.add(attr.for);
     }
+    function alternativeText(node) {
+      if (node.nodeName === '#text') return node.value;
+      const attr = attributes(node);
+      if (attr['aria-hidden'] === 'true' || ['script','style','template'].includes(node.tagName)) return '';
+      return [attr.alt || '', ...(node.childNodes || []).map(alternativeText)].join(' ');
+    }
+    function accessibleName(node) {
+      const attr = attributes(node);
+      return (attr['aria-label'] || (attr['aria-labelledby'] || '').split(/\s+/)
+        .map(id => ids.has(id) ? alternativeText(ids.get(id)) : '').join(' ').trim()
+        || alternativeText(node) || attr.title || '').trim();
+    }
     const title = source.match(/<title>([^<]+)<\/title>/)?.[1];
     assert(title && !titles.has(title), `${file}: page needs a unique title`);
     titles.add(title);
@@ -29,6 +41,17 @@ const assert = require('node:assert/strict');
     assert(nodes.some(node => node.tagName === 'a' && attributes(node).href === '#app'), `${file}: missing skip link`);
     for (const node of nodes) {
       const attr = attributes(node);
+      // Include controls in closed dialogs and inactive panels: they must already be named.
+      if (node.tagName === 'button' || node.tagName === 'a' && Object.hasOwn(attr, 'href')) {
+        assert(accessibleName(node), `${file}: unnamed ${node.tagName} ${attr.id || attr.onclick || ''}`);
+      }
+      if (/^h[1-6]$/.test(node.tagName)) assert(accessibleName(node), `${file}: empty ${node.tagName}`);
+      if (node.tagName === 'label') {
+        assert(alternativeText(node).trim(), `${file}: empty label`);
+        const controls = ['input','select','textarea','button','meter','output','progress'];
+        const wrapsControl = child => (child.childNodes || []).some(item => controls.includes(item.tagName) || wrapsControl(item));
+        assert(attr.for ? ids.has(attr.for) && controls.includes(ids.get(attr.for).tagName) : wrapsControl(node), `${file}: orphaned label`);
+      }
       if (node.tagName === 'img') assert(Object.hasOwn(attr, 'alt'), `${file}: image without alt`);
       if (['input','select','textarea'].includes(node.tagName) && !['hidden','submit','button'].includes(attr.type)) {
         assert(labels.has(attr.id) || attr['aria-label'] || attr['aria-labelledby'], `${file}: unlabeled ${attr.id || node.tagName}`);
@@ -38,5 +61,5 @@ const assert = require('node:assert/strict');
       }
     }
   }
-  console.log(`OK: ${pages.length} HTML pages, unique titles, image alternatives, field labels and ARIA references.`);
+  console.log(`OK: ${pages.length} HTML pages, names for visible/hidden controls, headings, field labels, unique titles and ARIA references.`);
 })().catch(error => { console.error(error); process.exitCode = 1; });
