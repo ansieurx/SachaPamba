@@ -2007,6 +2007,36 @@
       window.location.assign(destination.href);
     }
 
+    function setupNavigationPrefetch() {
+      if (!/^https?:$/.test(window.location.protocol)) return;
+      const connection = navigator.connection;
+      if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '')) return;
+      const prefetched = new Set();
+      const supported = document.createElement('link').relList.supports('prefetch');
+      if (!supported) return;
+
+      function prepareNavigation(event) {
+        const anchor = event.target.closest('a[href]');
+        if (!anchor || anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self')) return;
+        const url = new URL(anchor.href, window.location.href);
+        if (url.origin !== window.location.origin || !url.pathname.endsWith('.html') ||
+            (url.pathname === window.location.pathname && url.search === window.location.search)) return;
+        url.hash = '';
+        if (prefetched.has(url.href) || prefetched.size >= 8) return;
+        prefetched.add(url.href);
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'document';
+        link.href = url.href;
+        document.head.append(link);
+      }
+
+      // Warm the destination on intent; links, history and checkout keep native navigation.
+      document.addEventListener('pointerover', prepareNavigation, { passive: true });
+      document.addEventListener('focusin', prepareNavigation);
+      document.addEventListener('touchstart', prepareNavigation, { passive: true });
+    }
+
     let heroAutoplayTimer = null;
     let currentHeroSlide = 0;
 
@@ -2969,6 +2999,7 @@
     // Cada archivo conserva su HTML; actualizar los datos del flujo de compra al cargar.
 
     function initApp() {
+      setupNavigationPrefetch();
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }

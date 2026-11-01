@@ -12,3 +12,6 @@
 /OpenJDK27U-jdk_x64_windows_hotspot_27_35.msi
 /Practicas Plataformas
 /prefactura_periodo02_2026.pdf
+/node_modules/
+/.npm-cache/
+/scratch/
