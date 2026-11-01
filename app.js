@@ -639,6 +639,11 @@
         // Una nueva eliminación confirma la anterior y sustituye su opción de deshacer.
         favoriteUndoActions = Object.create(null);
         pendingUndoFavorites = {};
+        favoritesDisplayOrder = favoritesDisplayOrder.filter(id => favs.includes(id) || id === productId);
+        if (favoriteUndoTimeout !== null) {
+          clearTimeout(favoriteUndoTimeout);
+          favoriteUndoTimeout = null;
+        }
       }
       if (canUndoRemoval) {
         favoriteUndoActions[productId] = {
