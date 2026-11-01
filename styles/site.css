@@ -344,7 +344,6 @@ html {
       overflow: visible;
       border-left: 1px solid #5A6B4E !important;
       box-shadow: -4px 0 16px -2px rgba(40, 54, 24, 0.15) !important;
-      zoom: calc(1 / var(--cart-zoom, 1));
       transform: translateX(100%) !important;
       transition: none !important;
       z-index: 70 !important;
@@ -655,7 +654,7 @@ html {
     #cart-side-drawer #cart-drawer-footer .cart-footer-title {
       font-size: 15.5px !important;
       line-height: 1.15 !important;
-      color: #E9C46A !important;
+      color: #FEFAE0 !important;
       font-weight: 900 !important;
       letter-spacing: 0.12em !important;
       text-transform: uppercase !important;
@@ -907,7 +906,7 @@ html {
     #tab-btn-orders,
     #tab-btn-favorites {
       transform: none !important;
-      transition-property: background-color, border-color, color, fill, stroke !important;
+      transition-property: box-shadow !important;
       transition-duration: 0.15s !important;
     }
 
@@ -985,18 +984,14 @@ html {
        ========================================================================== */
     .lector_texto_accesible {
       position: absolute;
-      left: 0;
-      top: 0;
-      width: auto;
-      max-width: 100%;
-      height: auto;
-      font-size: 14px;
-      line-height: 1.2;
-      color: transparent;
-      opacity: 0.001;
-      pointer-events: none;
-      user-select: none;
-      z-index: -1;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
     }
 
     /* Ajuste de desplazamiento para que los elementos enfocados con tab queden visibles bajo el header fijo */
@@ -1145,3 +1140,68 @@ html {
       box-shadow: 0 0 0 2px #283618 inset, 0 0 10px 2px rgba(250, 204, 21, 0.75) !important;
       border-radius: 12px !important;
     }
+
+/* Keyboard access, stable contrast and readable controls at narrow widths. */
+.skip-link {
+  position: fixed;
+  top: .75rem;
+  left: .75rem;
+  z-index: 1000;
+  padding: .75rem 1rem;
+  color: #FEFAE0;
+  background: #283618;
+  border: 2px solid #FEFAE0;
+  border-radius: .75rem;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: translateY(0); }
+body :focus-visible {
+  outline: 3px solid #283618 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px #FEFAE0, 0 0 0 6px #283618 !important;
+}
+html { scroll-padding-top: calc(var(--focus-header-height, 0px) + 1rem); }
+body :focus { scroll-margin-top: calc(var(--focus-header-height, 0px) + 1rem); }
+.smart-header > div:first-child a[href="index.html"] { min-width: 0; flex-shrink: 1; }
+.smart-header > div:first-child a[href="index.html"] > div { min-width: 0; }
+.nav-section-link[aria-current] {
+  color: #283618 !important;
+  background-color: #CCD5AE !important;
+  transition: none;
+}
+[role="tab"], button[data-product-tab] { transition-property: transform, box-shadow; }
+.cart-footer-title { color: #FEFAE0 !important; }
+#cart-counter-badge { background-color: #b91c1c !important; color: #fff !important; }
+main .opacity-50 { opacity: 1; }
+main .opacity-50 [class*="text-brand-forest/"] { color: #283618; }
+main .text-brand-forest\/70 { color: #3e4a2f; }
+[role="radio"] { opacity: 1 !important; }
+[data-order-level] { opacity: 1 !important; }
+.star-btn { color: #775414; min-width: 2rem; min-height: 2rem; }
+button[type="submit"][aria-label="Buscar productos"] { min-width: 24px; min-height: 24px; }
+#cart-side-drawer .cart-qty-btn { width: 24px !important; min-width: 24px !important; max-width: 24px !important; }
+#cart-drawer-toggle-btn { min-width: 24px !important; min-height: 24px !important; }
+.hero-dot {
+  min-width: 24px;
+  min-height: 24px;
+  border: 6px solid transparent;
+  background-clip: padding-box;
+  background-color: #FEFAE0 !important;
+}
+.hero-playback {
+  padding: .25rem .6rem;
+  min-height: 32px;
+  border: 1px solid #FEFAE0;
+  border-radius: 9999px;
+  background: #283618;
+  color: #FEFAE0;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+}
+#hero-carousel .hero-slide > div[class*="bg-black/"] { background-color: rgb(0 0 0 / .65); }
+#cart-side-drawer[inert] { visibility: hidden; }
+@media (max-width: 639px) {
+  body.cart-drawer-open { padding-right: 0 !important; }
+  .smart-header > div:first-child a[href="index.html"] { flex: 1 1 0; }
+}
