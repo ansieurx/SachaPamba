@@ -5396,10 +5396,13 @@
       // En el proceso de confirmación no se permite volver a ningún paso
       if (currentStep === 4) {
         return `
-          <nav aria-label="Progreso del pedido" class="flex items-center justify-center mb-8 sm:mb-10">
+          <nav aria-label="Progreso del pedido: Paso 4 de 4, Confirmación" class="flex items-center justify-center mb-8 sm:mb-10">
+            <div class="lector_texto_accesible" role="region" aria-label="Paso actual del proceso de compra" lang="es">
+              <p lang="es">Paso actual: Paso 4 de 4, Confirmación.</p>
+            </div>
             <ol class="flex items-center gap-1.5 sm:gap-3 text-xs sm:text-sm font-bold flex-wrap justify-center bg-brand-cream/80 p-2.5 sm:p-3 rounded-2xl border border-brand-forest/15 shadow-2xs select-none pointer-events-none cursor-default" title="Pedido finalizado. No se permite volver a pasos anteriores.">
               ${steps.map((st, idx) => `
-                <li class="inline-flex items-center gap-1.5 sm:gap-2 ${st.id === 4 ? '' : 'opacity-75'}" ${st.id === 4 ? 'aria-current="step"' : ''}>
+                <li class="inline-flex items-center gap-1.5 sm:gap-2 ${st.id === 4 ? '' : 'opacity-75'}" ${st.id === 4 ? 'aria-current="step" aria-label="Paso actual: Paso 4 de 4, Confirmación"' : `aria-label="Paso ${st.id} de 4: ${st.name} completado"`}>
                   <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full ${st.id === 4 ? 'bg-brand-sunflower text-brand-leaf shadow-xs' : 'bg-brand-olive text-brand-forest'} flex items-center justify-center text-xs sm:text-sm flex-shrink-0">
                     ${st.id === 4 ? '4' : '<i aria-hidden="true" class="ph ph-check font-bold"></i>'}
                   </span>
@@ -5452,7 +5455,7 @@
                 `;
               } else {
                 stepHtml = `
-                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar">
+                  <li class="inline-flex items-center gap-1.5 sm:gap-2 opacity-50 cursor-not-allowed select-none" title="Completa los pasos anteriores para habilitar" aria-label="Paso ${st.id} de 4: ${st.name} pendiente">
                     <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-forest/10 text-brand-forest/60 flex items-center justify-center text-xs sm:text-sm flex-shrink-0">${st.id}</span>
                     <span class="text-brand-forest/60">${st.name}</span>
                   </li>
@@ -5488,6 +5491,9 @@
 
       return `
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <div class="lector_texto_accesible" role="status" aria-live="polite" aria-atomic="true" lang="es">
+            <p lang="es">Paso 1 de 4: Carrito de compras.</p>
+          </div>
           
           <!-- Botón Seguir comprando en la parte superior izquierda en color verde oscuro (#283618) -->
           <div class="mb-6 text-left">
@@ -5507,7 +5513,7 @@
 
           <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-brand-forest/20">
             <div>
-              <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Paso 1 de 4</span>
+              <span class="text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1" aria-hidden="true">Paso 1 de 4</span>
               <div class="flex items-center flex-wrap gap-3 sm:gap-4">
                 <h1 class="font-botanic text-3xl sm:text-4xl font-bold text-brand-forest">Carrito de Compras</h1>
                 ${(lastRemovedCartItem || lastClearedCart) ? `
@@ -5666,7 +5672,7 @@
                 </div>
 
                 <div class="pt-4 border-t border-brand-forest/20 space-y-2">
-                  <div class="lector_texto_accesible" role="region" aria-label="Total a pagar y botón continuar a retiro" lang="es">
+                  <div class="lector_texto_accesible" role="region" aria-label="Paso actual, total a pagar y botón continuar a retiro" lang="es">
                     <p lang="es">Total a pagar: $${total.toFixed(2)}. El IVA ya se encuentra incluido en el total. Botón de continuar a retiro.</p>
                   </div>
                   <div class="flex justify-between items-baseline gap-2" role="text" aria-label="Total a Pagar: $${total.toFixed(2)}">
@@ -5704,6 +5710,9 @@
 
       return `
         <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8 w-full box-border">
+          <div class="lector_texto_accesible" role="status" aria-live="polite" aria-atomic="true" lang="es">
+            <p lang="es">Paso 2 de 4: Retiro en tienda.</p>
+          </div>
           
           <div class="mb-5 text-left">
             <button 
@@ -5724,7 +5733,7 @@
             
             <section role="region" aria-label="Punto de retiro en tienda" class="lg:col-span-7 bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-6 lg:p-7 shadow-sm space-y-6 sm:space-y-7 text-left w-full box-border">
               <div>
-                <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Paso 2 de 4</span>
+                <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1" aria-hidden="true">Paso 2 de 4</span>
                 <h1 class="font-botanic text-2xl sm:text-3xl font-bold text-brand-forest">Punto de Retiro en Tienda</h1>
                 <p class="text-xs sm:text-sm text-brand-leaf/70 mt-1 font-medium">Tu pedido estará empacado con amor en materiales compostables.</p>
               </div>
@@ -5771,6 +5780,9 @@
 
               <!-- Datos de la persona autorizada con etiquetas visibles y ordenadas -->
               <div class="space-y-4 pt-1">
+                <div class="lector_texto_accesible" role="region" aria-label="Datos necesarios para el retiro" lang="es">
+                  <p lang="es">Para completar el retiro, se necesita el nombre y apellido de la persona autorizada y su número de cédula.</p>
+                </div>
                 <div class="space-y-1.5">
                   <label for="pickup-name" class="block text-xs sm:text-sm font-bold text-brand-forest">
                     Nombre y Apellido de la persona autorizada para retirar:
@@ -5780,6 +5792,7 @@
                     id="pickup-name" 
                     placeholder="Nombre y Apellido completo" 
                     value="${escapeHtml(user.name || '')}" 
+                    aria-label="Campo de nombre y apellido de la persona a retirar para completar"
                     class="w-full text-sm p-3 sm:p-3.5 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium shadow-2xs box-border"
                   >
                 </div>
@@ -5792,6 +5805,7 @@
                     id="pickup-id" 
                     placeholder="Número de Cédula o Pasaporte" 
                     value="${escapeHtml(user.idNumber || '')}" 
+                    aria-label="Campo de número de cédula para completar"
                     class="w-full text-sm p-3 sm:p-3.5 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-2xs box-border"
                   >
                 </div>
@@ -5834,6 +5848,12 @@
       `;
     }
 
+    function getCheckoutPaymentAccessibilityText() {
+      return selectedPaymentMethod === 'tarjeta'
+        ? 'Opción seleccionada: Tarjeta de débito o crédito. Campos a completar para tarjeta: número de tarjeta, fecha de expiración y código CVV. Campos a completar para factura: razón social o nombre completo, cédula o RUC, y correo electrónico.'
+        : 'Opción seleccionada: Pagar al retirar en tienda física. Campos a completar para factura: razón social o nombre completo, cédula o RUC, y correo electrónico.';
+    }
+
     // --- Vista 6: Checkout Paso 3 - Pago (checkout-pago.html) ---
     function renderCheckoutPagoView() {
       if (cart.length === 0) return renderCartView();
@@ -5847,6 +5867,9 @@
 
       return `
         <div class="max-w-4xl mx-auto px-3 sm:px-6 py-6 sm:py-8 w-full box-border">
+          <div class="lector_texto_accesible" role="status" aria-live="polite" aria-atomic="true" lang="es">
+            <p lang="es">Paso 3 de 4: Método de pago y facturación.</p>
+          </div>
           
           <div class="mb-5 text-left">
             <button 
@@ -5867,9 +5890,13 @@
             
             <section role="region" aria-label="Método de pago y facturación" class="lg:col-span-7 bg-brand-cream rounded-3xl border-2 border-brand-forest p-4 sm:p-6 lg:p-7 shadow-sm space-y-6 sm:space-y-7 text-left w-full box-border">
               <div>
-                <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1">Paso 3 de 4</span>
+                <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-wider block mb-1" aria-hidden="true">Paso 3 de 4</span>
                 <h1 class="font-botanic text-2xl sm:text-3xl font-bold text-brand-forest">Método de Pago <span class="amp-normal">&amp;</span> Facturación</h1>
                 <p class="text-xs sm:text-sm text-brand-leaf/70 mt-1 font-medium">Transacción protegida con cifrado de 256 bits y SRI Ecuador.</p>
+              </div>
+
+              <div class="lector_texto_accesible" role="region" aria-label="Opciones de pago y campos a completar" lang="es">
+                <p id="checkout-pago-a11y-texto" aria-live="polite" aria-atomic="true" lang="es">${getCheckoutPaymentAccessibilityText()}</p>
               </div>
 
               <!-- Selector de Método -->
@@ -5910,7 +5937,7 @@
                 <div>
                   <label for="checkout-card-num" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Número de Tarjeta</label>
                   <div class="relative w-full">
-                    <input type="text" id="checkout-card-num" placeholder="4500 •••• •••• 1289" value="4500 8920 1142 1289" class="w-full text-sm py-3 px-4 pl-11 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-inner box-border">
+                    <input type="text" id="checkout-card-num" placeholder="4500 •••• •••• 1289" value="4500 8920 1142 1289" aria-label="Número de tarjeta para completar" class="w-full text-sm py-3 px-4 pl-11 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-inner box-border">
                     <i aria-hidden="true" class="ph ph-credit-card absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-forest text-lg pointer-events-none"></i>
                   </div>
                 </div>
@@ -5918,11 +5945,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-1">
                   <div>
                     <label for="checkout-card-exp" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Expiración (MM/AA)</label>
-                    <input type="text" id="checkout-card-exp" placeholder="08/28" value="11/27" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border">
+                    <input type="text" id="checkout-card-exp" placeholder="08/28" value="11/27" aria-label="Fecha de expiración mes y año para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border">
                   </div>
                   <div>
                     <label for="checkout-card-cvv" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Código CVV</label>
-                    <input type="password" id="checkout-card-cvv" placeholder="•••" value="842" maxlength="4" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border">
+                    <input type="password" id="checkout-card-cvv" placeholder="•••" value="842" maxlength="4" aria-label="Código CVV para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border">
                   </div>
                 </div>
               </div>
@@ -5951,16 +5978,16 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div class="space-y-1">
                     <label for="checkout-inv-name" class="block text-xs sm:text-sm font-bold text-brand-forest">Razón Social / Nombre Completo</label>
-                    <input type="text" id="checkout-inv-name" placeholder="Razón Social / Nombre Completo" value="${escapeHtml(user.name || '')}" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium shadow-2xs box-border">
+                    <input type="text" id="checkout-inv-name" placeholder="Razón Social / Nombre Completo" value="${escapeHtml(user.name || '')}" aria-label="Razón social o nombre completo para completar factura" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium shadow-2xs box-border">
                   </div>
                   <div class="space-y-1">
                     <label for="checkout-inv-id" class="block text-xs sm:text-sm font-bold text-brand-forest">C.I. o RUC</label>
-                    <input type="text" id="checkout-inv-id" placeholder="C.I. o RUC" value="${escapeHtml(user.idNumber || '')}" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-2xs box-border">
+                    <input type="text" id="checkout-inv-id" placeholder="C.I. o RUC" value="${escapeHtml(user.idNumber || '')}" aria-label="Cédula o RUC para completar factura" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-2xs box-border">
                   </div>
                 </div>
                 <div class="space-y-1">
                   <label for="checkout-inv-email" class="block text-xs sm:text-sm font-bold text-brand-forest">Correo electrónico para factura</label>
-                  <input type="email" id="checkout-inv-email" placeholder="Correo electrónico para factura" value="${escapeHtml(user.email || '')}" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium shadow-2xs box-border">
+                  <input type="email" id="checkout-inv-email" placeholder="Correo electrónico para factura" value="${escapeHtml(user.email || '')}" aria-label="Correo electrónico para completar factura" class="w-full text-sm p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium shadow-2xs box-border">
                 </div>
               </div>
 
@@ -6048,6 +6075,8 @@
         }
         if (btnText) btnText.textContent = `Confirmar Pedido y Pagar al Retirar ($${subtotal.toFixed(2)})`;
       }
+      const paymentAccessibilityText = document.getElementById('checkout-pago-a11y-texto');
+      if (paymentAccessibilityText) paymentAccessibilityText.textContent = getCheckoutPaymentAccessibilityText();
     }
 
     function processPayment() {
@@ -6107,7 +6136,7 @@
             </div>
 
             <div>
-              <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-widest block mb-1">¡Pedido Confirmado con Éxito!</span>
+              <span class="text-xs sm:text-sm font-bold text-brand-moss uppercase tracking-widest block mb-1" role="text" aria-label="Paso 4 de 4: ¡Pedido Confirmado con Éxito!">¡Pedido Confirmado con Éxito!</span>
               <h1 class="font-botanic text-2xl sm:text-3xl md:text-4xl font-bold text-brand-forest mt-1">Gracias por tu compra natural</h1>
               <p class="text-xs sm:text-base text-brand-leaf/70 mt-2 font-medium">Hemos registrado tu pedido para retiro en nuestra tienda.</p>
             </div>
