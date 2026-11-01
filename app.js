@@ -276,7 +276,7 @@
     sanitizeCart();
 
     let pendingCheckoutRedirect = null;
-    let selectedPaymentMethod = 'tarjeta';
+    let selectedPaymentMethod = sessionStorage.getItem('sacha_checkout_payment_method') === 'tienda' ? 'tienda' : 'tarjeta';
 
     function saveCart() {
       sanitizeCart();
@@ -3514,6 +3514,7 @@
 
     function selectPaymentOption(option) {
       selectedPaymentMethod = option;
+      sessionStorage.setItem('sacha_checkout_payment_method', option);
       const totalCents = cart.reduce((sum, item) => {
         const pCents = Math.round(Number(item.price) * 100);
         const q = Math.max(1, parseInt(item.quantity, 10) || 1);
@@ -3591,6 +3592,7 @@
         cart = [];
         saveCart();
         resetCheckoutProgress();
+        sessionStorage.removeItem('sacha_checkout_payment_method');
         navigateTo('checkout-confirmacion.html');
       }, 700);
     }
@@ -5731,6 +5733,31 @@
       }
     }
 
+    // Cada archivo conserva su HTML; actualizar los datos del flujo de compra al cargar.
+    function initializePurchasePage() {
+      const { path } = parsePageUrl();
+      const main = document.getElementById('app');
+      if (!main) return;
+      if (path === 'carrito.html') {
+        main.innerHTML = renderCartView();
+      } else if (path === 'checkout-retiro.html' || path === 'checkout-pago.html') {
+        main.innerHTML = path === 'checkout-retiro.html'
+          ? renderCheckoutRetiroView()
+          : renderCheckoutPagoView();
+        if (!getCurrentUser()) {
+          pendingCheckoutRedirect = getCurrentPageUrl();
+          openAuthModal('register', 'Inicia sesion o registrate para proceder con tu compra.');
+        }
+      } else if (path === 'checkout-confirmacion.html') {
+        main.innerHTML = renderCheckoutConfirmacionView();
+      } else {
+        return;
+      }
+      closeCartDrawer();
+      const toggleButton = document.getElementById('cart-drawer-toggle-btn');
+      if (toggleButton) toggleButton.classList.add('hidden');
+    }
+
     function initApp() {
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -5751,6 +5778,7 @@
       updateAuthUI();
       updateActiveNav(parsePageUrl().path);
       initializeCatalogPage();
+      initializePurchasePage();
       setupDynamicListeners();
       // Las tarjetas ya existen en el HTML; sincronizar solo los favoritos guardados.
       PRODUCTS.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
@@ -5954,6 +5982,7 @@
       validatePasswordMatch,
       updateAccountDetails,
       initializeCatalogPage,
+      initializePurchasePage,
       initApp,
     });
 
