@@ -2399,6 +2399,8 @@
       const totalEl = document.getElementById('cart-drawer-total');
       if (!itemsContainer) return;
 
+      const prevScrollTop = itemsContainer.scrollTop;
+
       const totalCount = cart.reduce((sum, item) => sum + (Math.max(1, parseInt(item.quantity, 10) || 1)), 0);
       const totalCents = cart.reduce((sum, item) => {
         const pCents = Math.round(Number(item.price) * 100);
@@ -2487,6 +2489,9 @@
           </div>
         </div>
       `).join('');
+      if (prevScrollTop > 0) {
+        itemsContainer.scrollTop = prevScrollTop;
+      }
     }
 
     // Control del desplegable de carrito: Inmune a zoom del navegador (tamaño físico fijo y bordes uniformes de 1px)
@@ -3293,7 +3298,12 @@
 
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
+        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
         renderCurrentRoute(currentHash);
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        });
       }
 
       showToast(`"${removedItem.name}" retirado del carrito`, 'ph-trash');
@@ -3307,7 +3317,12 @@
         lastClearedCart = null;
         lastRemovedCartItem = null;
         saveCart();
+        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
         renderCurrentRoute(window.location.hash || '#carrito.html');
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        });
         showToast('Productos restaurados en el carrito', 'ph-arrow-u-up-left');
         return;
       }
@@ -3343,7 +3358,12 @@
 
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
+        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
         renderCurrentRoute(currentHash);
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        });
       }
 
       showToast(`"${restoredName}" restaurado al carrito`, 'ph-arrow-u-up-left');
@@ -3418,7 +3438,12 @@
       saveCart();
       const currentHash = window.location.hash || '#index.html';
       if (currentHash.includes('carrito.html')) {
+        const prevScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
         renderCurrentRoute(currentHash);
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        });
       }
     }
 
@@ -7155,7 +7180,9 @@
         sessionStorage.removeItem('sacha_catalog_scroll_pos');
         sessionStorage.removeItem('sacha_card_viewport_offset');
         sessionStorage.removeItem('sacha_prev_route');
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (previousRoutePath !== path) {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
       } else if (isCatalogRoute) {
         // Al regresar de un producto a catálogo, favoritos o inicio, volver al espacio donde se encontraba la tarjeta de producto donde se hizo clic en ver
         const returningProductId = sessionStorage.getItem('sacha_last_inspected_product_id');
