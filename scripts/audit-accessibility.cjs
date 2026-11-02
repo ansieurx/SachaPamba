@@ -337,6 +337,30 @@ let browser, socket;
     await evaluate(`sessionStorage.removeItem('a11y-status-error')`);
   }
   console.log('ORDER STATUS: all four options clickable, latest/history synchronization, saved state on reload and error recovery passed at 320, 768 and 1440px.');
+  for(const width of [320,768,1440]) {
+    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<768});
+    for(const panel of ['[data-latest-order]','[data-order-history]']) {
+      await evaluate('clearCart();closeCartDrawer()');await go('cuenta.html?tab=orders');
+      const container=panel==='[data-latest-order]'?'latest-order-items':'order-items-0';
+      const expand = `[...document.querySelectorAll('button[onclick]')].find(button=>button.getAttribute('onclick').includes('toggleOrderItemsView')&&button.getAttribute('onclick').includes('${container}')).click()`;
+      await evaluate(expand);
+      const card=`document.querySelector('${panel} [data-order-items] .product-linked-card')`;
+      const expected = await evaluate(`new URL(${card}.querySelector('a').href).searchParams.get('id')`);
+      assert.equal(await evaluate(`${card}.querySelectorAll('a').length`),1);
+      await pointerClick(`${card}.querySelector('img')`);
+      await waitFor(`location.pathname.endsWith('/producto.html')&&new URLSearchParams(location.search).get('id')===${JSON.stringify(expected)}&&typeof window.navigateTo==='function'`);
+      await go('cuenta.html?tab=orders');await evaluate(expand);
+      await pointerClick(`${card}.querySelector('[aria-hidden="true"]')`);
+      await waitFor(`location.pathname.endsWith('/producto.html')&&typeof window.navigateTo==='function'`);
+      await go('cuenta.html?tab=orders');await evaluate(expand);
+      await pointerClick(`${card}.querySelector('button')`);
+      await waitFor(`location.pathname.endsWith('/carrito.html')&&typeof window.navigateTo==='function'`);
+      const saved=await evaluate(`JSON.parse(localStorage.getItem('sacha_pamba_cart'))`);
+      assert.equal(saved.length,1);assert.equal(saved[0].id,expected);assert.equal(saved[0].quantity,1);
+      assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
+    }
+  }
+  console.log('REORDER: full card and Ver open details; Comprar de nuevo adds one item and opens cart for latest/history at 320/768/1440px.');
   await evaluate(`sessionStorage.setItem('a11y-orders','[]');clearCart();addToCart('maca')`);
   for (const width of [320,1440]) {
     await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<768});
