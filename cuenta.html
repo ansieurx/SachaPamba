@@ -2712,7 +2712,7 @@
                         <button type="button" data-bind-attr-onclick="event.stopPropagation(); addToCart('{{id}}', 1, true)" onclick="event.stopPropagation(); addToCart('', 1, true)" data-bind-attr-aria-label="Comprar de nuevo: {{name}}" aria-label="Comprar de nuevo" class="relative rounded-lg bg-brand-forest text-brand-cream px-3 py-2 text-xs font-bold">Comprar de nuevo</button>
                       </div>
                     </div></template>
-  <template id="history-order-item-template"><div class="product-linked-card flex flex-wrap items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-brand-cream border border-brand-forest/20 text-sm shadow-2xs">
+  <template id="history-order-item-template"><div class="product-linked-card flex flex-wrap items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-brand-cream border-2 border-brand-forest/20 text-sm shadow-2xs">
                             <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="product-detail-link"><span class="sr-only" data-bind-text="Ver detalles de {{name}}">Ver detalles del producto</span></a>
                             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                               <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-brand-forest/20 flex-shrink-0" onerror="this.src='https://placehold.co/80x80/CCD5AE/283618?text=Item'">
