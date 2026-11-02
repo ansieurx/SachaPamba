@@ -4,6 +4,10 @@ const path = require('node:path');
 const { PGlite } = require('@electric-sql/pglite');
 process.chdir(path.resolve(__dirname, '..'));
 (async () => {
+  if (!fs.existsSync('supabase/registro-y-compras.sql')) {
+    console.log('SKIP: la migración inicial ya no se distribuye. Las comprobaciones nuevas se ejecutan en check-validations.cjs.');
+    return;
+  }
   const db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create schema auth;
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
@@ -13,11 +17,12 @@ process.chdir(path.resolve(__dirname, '..'));
       pro_stock_disponible integer,pro_graba_iva boolean,pro_presentacion_tamano text,pro_imagen_principal_url text);
     insert into public.producto values('p1','Producto',true,50,10,true,'100 g','foto.jpg');`);
   await db.exec(fs.readFileSync('supabase/registro-y-compras.sql', 'utf8'));
+  if (fs.existsSync('supabase/validaciones.sql')) await db.exec(fs.readFileSync('supabase/validaciones.sql', 'utf8'));
   const users = ['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222','33333333-3333-4333-8333-333333333333'];
-  for (let i = 0; i < 3; i++) await db.query(`insert into auth.users values($1,$2,$3,$4::jsonb)`, [users[i],`test${i}@example.test`, i === 2 ? null : new Date().toISOString(),JSON.stringify({name:'Cliente Prueba',phone:'0999999999',docType:'Cédula',idNumber:'1723456789',welcome_offer:i !== 1})]);
+  for (let i = 0; i < 3; i++) await db.query(`insert into auth.users values($1,$2,$3,$4::jsonb)`, [users[i],`test${i}@example.test`, i === 2 ? null : new Date().toISOString(),JSON.stringify({name:'Cliente Prueba',phone:'0999999999',docType:'Cédula',idNumber:'1710034065',welcome_offer:i !== 1})]);
   async function asUser(id, role = 'authenticated') { await db.exec(`reset role; set role ${role};`); await db.query(`select set_config('request.jwt.claim.sub',$1,false)`,[id || '']); }
   const items = JSON.stringify([{ id:'p1', quantity:2, price:0, discount:100 }]);
-  const pickup = JSON.stringify({name:'Cliente Prueba',idNumber:'1723456789'});
+  const pickup = JSON.stringify({name:'Cliente Prueba',idNumber:'1710034065'});
   await asUser(users[0]);
   let q=(await db.query('select public.web_cotizar_carrito($1::jsonb) as value',[items])).rows[0].value;
   assert.equal(q.total,85);assert.equal(q.discount,15);assert.equal(q.items[0].price,50);
@@ -36,7 +41,7 @@ process.chdir(path.resolve(__dirname, '..'));
   assert.deepEqual((await db.query('select public.web_mis_pedidos() as value')).rows[0].value,[]);
   q=(await db.query('select public.web_cotizar_carrito($1::jsonb) as value',[items])).rows[0].value;assert.equal(q.total,100);
   await assert.rejects(()=>db.exec("update public.producto set pro_precio_unitario=0"),/permission denied/);
-  const saved=(await db.query('select public.web_guardar_perfil($1::jsonb) as value',[JSON.stringify({name:'Nombre Actualizado',username:'cliente',phone:'0999999999',docType:'Cédula',idNumber:'1723456789',solicita_bienvenida:true,welcome_offer:true})])).rows[0].value;
+  const saved=(await db.query('select public.web_guardar_perfil($1::jsonb) as value',[JSON.stringify({name:'Nombre Actualizado',username:'cliente',phone:'0999999999',docType:'Cédula',idNumber:'1710034065',solicita_bienvenida:true,welcome_offer:true})])).rows[0].value;
   assert.equal(saved.name,'Nombre Actualizado');
   assert.equal((await db.query('select public.web_cotizar_carrito($1::jsonb) as value',[items])).rows[0].value.discount,0);
   await asUser(users[2]);await assert.rejects(()=>db.query('select public.web_mi_perfil()'),/Confirma/);

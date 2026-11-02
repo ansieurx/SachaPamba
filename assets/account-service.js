@@ -1,3 +1,5 @@
+import { assertValidProfile } from './validators.js';
+
 // La sesión se valida con Supabase Auth; precios, promociones y pedidos se resuelven por RPC.
 export function createAccountService(supabase) {
   let user = null;
@@ -61,6 +63,7 @@ export function createAccountService(supabase) {
       return loadUser(data.user);
     },
     async register(profile, password, welcomeOffer, emailRedirectTo) {
+      assertValidProfile(profile);
       // Evitar crear cuentas sin su perfil y promoción si la migración aún no se aplicó.
       await rpc('web_registro_disponible');
       const { data, error } = await supabase.auth.signUp({
@@ -118,6 +121,7 @@ export function createAccountService(supabase) {
     },
     async saveProfile(profile, password) {
       if (!user) throw new Error('Inicia sesión para actualizar tu cuenta.');
+      assertValidProfile(profile);
       const saved = await rpc('web_guardar_perfil', { p_perfil: profile });
       const emailChanged = profile.email !== user.email;
       user = { ...saved, email: user.email };

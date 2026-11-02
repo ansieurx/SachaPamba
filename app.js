@@ -1,6 +1,8 @@
 import { createClient } from './assets/vendor/supabase/supabase-js.bundle.mjs';
 import productImageVariants from './assets/product-images.js';
 import { createAccountService } from './assets/account-service.js';
+import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, billingDocumentError,
+  checkoutDocumentType, isValidCardNumber, isValidCardExpiry, isValidCvv } from './assets/validators.js';
 
     // Reemplazar por la URL y la clave p?blica del proyecto Supabase.
     const SUPABASE_URL = 'https://uucegdaytxxoedwnoenv.supabase.co';
@@ -47,6 +49,89 @@ import { createAccountService } from './assets/account-service.js';
           updateCartUI();
         } catch (error) { console.warn('No se pudo actualizar la cotización:', error.message); }
       }, 120);
+    }
+
+    function fieldValidationError(id) {
+      const value = document.getElementById(id)?.value || '';
+      if (['reg-id', 'acc-id'].includes(id)) {
+        return documentError(document.getElementById(id === 'reg-id' ? 'reg-doc-type' : 'acc-doc-type')?.value, value);
+      }
+      if (id === 'pickup-id') return documentError(checkoutDocumentType(value, getCurrentUser()), value);
+      if (id === 'checkout-inv-id') return billingDocumentError(value, getCurrentUser());
+      if (['reg-name', 'acc-name', 'pickup-name', 'checkout-inv-name'].includes(id)) return nameError(value);
+      if (['reg-email', 'acc-email', 'login-email', 'checkout-inv-email'].includes(id)) return isValidEmail(value) ? '' : 'Ingresa un correo electrónico válido.';
+      if (['reg-phone', 'acc-phone'].includes(id)) return isValidPhone(value) ? '' : 'Ingresa un teléfono válido, con entre 9 y 15 dígitos y sin letras.';
+      if (id === 'checkout-card-num') return isValidCardNumber(value) ? '' : 'El número de tarjeta no supera la comprobación Luhn. Revisa los dígitos.';
+      if (id === 'checkout-card-exp') return isValidCardExpiry(value) ? '' : 'Ingresa una fecha MM/AA válida y no vencida.';
+      if (id === 'checkout-card-cvv') return isValidCvv(value, document.getElementById('checkout-card-num')?.value) ? '' : 'El CVV debe tener 3 dígitos, o 4 para American Express.';
+      return '';
+    }
+
+    function validateFields(ids) {
+      let firstInvalid = null;
+      ids.forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const error = fieldValidationError(id);
+        input.setCustomValidity(error);
+        if (error) { input.setAttribute('aria-invalid', 'true'); firstInvalid ||= input; }
+        else input.removeAttribute('aria-invalid');
+      });
+      if (firstInvalid) {
+        firstInvalid.reportValidity();
+        showToast(firstInvalid.validationMessage, 'ph-warning');
+      }
+      return !firstInvalid;
+    }
+
+    function showProfileValidation(profile, prefix) {
+      const errors = profileErrors(profile);
+      Object.entries(errors).forEach(([key, message]) => {
+        const id = `${prefix}-${key === 'idNumber' ? 'id' : key}`;
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.setCustomValidity(message);
+        input.setAttribute('aria-invalid', 'true');
+        if (document.getElementById(`${id}-err`)) showFieldError(id, `${id}-err`, message);
+      });
+      if (Object.keys(errors).length) {
+        const key = Object.keys(errors)[0];
+        const input = document.getElementById(`${prefix}-${key === 'idNumber' ? 'id' : key}`);
+        input?.reportValidity();
+        showToast(Object.values(errors)[0], 'ph-warning');
+        return false;
+      }
+      return true;
+    }
+
+    function setupFieldValidation() {
+      const ids = ['reg-id', 'acc-id', 'pickup-id', 'checkout-inv-id', 'reg-name', 'acc-name',
+        'pickup-name', 'checkout-inv-name', 'reg-email', 'acc-email', 'login-email', 'checkout-inv-email',
+        'reg-phone', 'acc-phone', 'checkout-card-num', 'checkout-card-exp', 'checkout-card-cvv'];
+      ids.forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.addEventListener('input', () => { input.setCustomValidity(''); input.removeAttribute('aria-invalid'); });
+        input.addEventListener('blur', () => {
+          const error = fieldValidationError(id);
+          input.setCustomValidity(error);
+          if (error) input.setAttribute('aria-invalid', 'true');
+          else input.removeAttribute('aria-invalid');
+        });
+      });
+      ['reg', 'acc'].forEach(prefix => {
+        const select = document.getElementById(`${prefix}-doc-type`);
+        const updateMode = () => {
+          const input = document.getElementById(`${prefix}-id`);
+          if (input) {
+            input.setCustomValidity('');
+            input.removeAttribute('aria-invalid');
+            input.inputMode = select.value === 'Pasaporte' ? 'text' : 'numeric';
+            input.maxLength = select.value === 'Pasaporte' ? 30 : 10;
+          }
+        };
+        if (select) { select.addEventListener('change', updateMode); updateMode(); }
+      });
     }
 
     let catalogLoadError = null;
@@ -1813,8 +1898,8 @@ import { createAccountService } from './assets/account-service.js';
       if (url.startsWith('checkout-pago') && document.getElementById('pickup-name')) {
         const name = document.getElementById('pickup-name');
         const id = document.getElementById('pickup-id');
-        if (!name.reportValidity() || !id.reportValidity()) return;
-        sessionStorage.setItem('sacha_web_pickup', JSON.stringify({ name: name.value.trim(), idNumber: id.value.trim() }));
+        if (!validateFields(['pickup-name', 'pickup-id'])) return;
+        sessionStorage.setItem('sacha_web_pickup', JSON.stringify({ name: name.value.trim(), idNumber: id.value.trim(), docType: checkoutDocumentType(id.value, getCurrentUser()) }));
       }
       navigateTo(url);
     }
@@ -1872,9 +1957,20 @@ import { createAccountService } from './assets/account-service.js';
         openAuthModal('login');
         return;
       }
+      const fields = ['checkout-inv-name', 'checkout-inv-id', 'checkout-inv-email'];
+      if (selectedPaymentMethod === 'tarjeta') fields.unshift('checkout-card-num', 'checkout-card-exp', 'checkout-card-cvv');
+      if (!validateFields(fields)) return;
       await submitAccountRequest(document.getElementById('btn-confirm-checkout')?.closest('form'), async () => {
         const pickup = JSON.parse(sessionStorage.getItem('sacha_web_pickup') || 'null') || {
           name: getCurrentUser().name, idNumber: getCurrentUser().idNumber
+        };
+        const pickupError = nameError(pickup.name) || documentError(pickup.docType || checkoutDocumentType(pickup.idNumber, getCurrentUser()), pickup.idNumber);
+        if (pickupError) throw new Error(pickupError);
+        pickup.docType ||= checkoutDocumentType(pickup.idNumber, getCurrentUser());
+        pickup.billing = {
+          name: document.getElementById('checkout-inv-name').value.trim(),
+          idNumber: document.getElementById('checkout-inv-id').value.trim(),
+          email: document.getElementById('checkout-inv-email').value.trim()
         };
         const signature = JSON.stringify([getCurrentUser().id, cart.map(item => [item.id, item.quantity]), selectedPaymentMethod, pickup]);
         let saved = JSON.parse(sessionStorage.getItem('sacha_web_checkout_request') || 'null');
@@ -2630,6 +2726,7 @@ import { createAccountService } from './assets/account-service.js';
       const input = document.getElementById(inputId);
       const err = document.getElementById(inputId + '-err');
       if (input) {
+        input.setCustomValidity('');
         input.classList.remove('border-red-500');
         input.classList.add('border-brand-olive');
         input.removeAttribute('aria-invalid');
@@ -2854,6 +2951,8 @@ import { createAccountService } from './assets/account-service.js';
         hasError = true;
       }
 
+      if (!showProfileValidation({ name, email, username, phone, docType, idNumber }, 'reg')) hasError = true;
+
       if (hasError) {
         showToast('Por favor, completa todos los campos obligatorios correctamente.', 'ph-warning-circle');
         return;
@@ -3016,12 +3115,13 @@ import { createAccountService } from './assets/account-service.js';
 
       const user = { ...getCurrentUser() };
       if (!getCurrentUser()) return;
-      if (name) user.name = name;
+      user.name = name;
       if (usernameInput) user.username = username;
-      if (email) user.email = email;
-      if (phone) user.phone = phone;
+      user.email = email;
+      user.phone = phone;
       if (docTypeSelect) user.docType = docTypeSelect.value;
-      if (idInput && idInput.value.trim()) user.idNumber = idInput.value.trim();
+      if (idInput) user.idNumber = idInput.value.trim();
+      if (!showProfileValidation(user, 'acc')) return;
 
       let passwordUpdated = false;
       if (newPasswordInput && newPasswordInput.value.trim().length > 0) {
@@ -3174,6 +3274,7 @@ import { createAccountService } from './assets/account-service.js';
     }
 
     function initApp() {
+      setupFieldValidation();
       setupAccessibleInteractions();
       setupNavigationPrefetch();
       if ('scrollRestoration' in history) {
@@ -3410,6 +3511,9 @@ import { createAccountService } from './assets/account-service.js';
         }
         const fields = { 'pickup-name': 'name', 'pickup-id': 'idNumber', 'checkout-inv-name': 'name', 'checkout-inv-id': 'idNumber', 'checkout-inv-email': 'email' };
         Object.entries(fields).forEach(([id, key]) => { const input = document.getElementById(id); if (input) input.value = user?.[key] || ''; });
+        if (user?.docType === 'Pasaporte') {
+          ['pickup-id', 'checkout-inv-id'].forEach(id => { const input = document.getElementById(id); if (input) input.inputMode = 'text'; });
+        }
         const userLabel = document.querySelector('.tarjeta_usuario_retiro [title]');
         if (userLabel) { userLabel.textContent = user?.name || user?.email || 'Cliente'; userLabel.title = userLabel.textContent; }
         updateCheckoutSteps(pickup ? 2 : 3);
@@ -3637,6 +3741,7 @@ import { createAccountService } from './assets/account-service.js';
       bindValues(panel,{name:user.name||'',username:user.username||'',email:user.email||'',phone:user.phone||'',idNumber:user.idNumber||'',docType:user.docType||'Cédula'});
       const fields={'acc-name':'name','acc-username':'username','acc-email':'email','acc-phone':'phone','acc-doc-type':'docType','acc-id':'idNumber'};
       Object.entries(fields).forEach(([id,key])=>{const input=document.getElementById(id);if(input)input.value=user[key]||(key==='docType'?'Cédula':'');});
+      document.getElementById('acc-doc-type')?.dispatchEvent(new Event('change'));
       const history=document.querySelector('[data-order-history]');
       const latest=document.querySelector('[data-latest-order]');
       const orders=getAllOrders();
