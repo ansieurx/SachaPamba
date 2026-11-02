@@ -18,6 +18,24 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
         if (!data || data.length === 0) return [];
 
+        const { data: fotos, error: fotosError } = await supabase
+          .from('imagen_producto')
+          .select('img_pro_id, img_url_imagen, img_orden')
+          .order('img_orden', { ascending: true });
+
+        const fotosPorProducto = new Map();
+        if (fotosError) {
+          console.warn('No se pudieron cargar las fotos adicionales del catálogo:', fotosError);
+        } else {
+          (fotos ?? []).forEach(foto => {
+            const id = String(foto.img_pro_id);
+            const url = foto.img_url_imagen?.trim();
+            if (!url) return;
+            if (!fotosPorProducto.has(id)) fotosPorProducto.set(id, []);
+            fotosPorProducto.get(id).push(url);
+          });
+        }
+
         const categoriasBD = {
           1: { slug: 'suplementos', name: 'Suplementos' },
           2: { slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
@@ -28,14 +46,18 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
         return data.map(item => {
           // Usamos minúsculas porque PostgreSQL devuelve las columnas así
           const cat = categoriasBD[item.pro_cat_id] || categoriasBD[1];
-          const image = item.pro_imagen_principal_url || '';
+          const image = item.pro_imagen_principal_url?.trim() || '';
+          const images = [...new Set([
+            image,
+            ...(fotosPorProducto.get(String(item.pro_id)) ?? [])
+          ].filter(Boolean))];
 
           return {
             id: String(item.pro_id),
             name: item.pro_nombre || '',
             price: Number(item.pro_precio_unitario || 0),
-            image: image,
-            images: image ? [image] : [],
+            image: image || images[0] || '',
+            images,
             size: item.pro_presentacion_tamano || '',
             shortDesc: item.pro_descripcion_corta || '',
             isFeatured: item.pro_es_destacado || false,
