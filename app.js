@@ -7,8 +7,33 @@ import productImageVariants from './assets/product-images.js';
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let catalogLoadError = null;
-    const CATALOG_CACHE_KEY = `sacha_catalog_v1:${SUPABASE_URL}`;
+    const CATALOG_CACHE_KEY = `sacha_catalog_v2:${SUPABASE_URL}`;
     const CATALOG_CACHE_TTL = 60000;
+    // Respaldo para conservar la navegación si categoria aún no tiene permisos de lectura.
+    const DEFAULT_CATEGORIES = [
+      { id: '1', parentId: null, slug: 'suplementos', name: 'Suplementos' },
+      { id: '2', parentId: '1', slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
+      { id: '3', parentId: '1', slug: 'remedios', name: 'Remedios' },
+      { id: '4', parentId: '1', slug: 'suplementos-polvo', name: 'Suplementos en Polvo' },
+      { id: '8', parentId: null, slug: 'alimentacion-natural', name: 'Alimentación Natural' },
+      { id: '9', parentId: '8', slug: 'despensa-vegetariana-vegana', name: 'Despensa Vegetariana & Vegana' },
+      { id: '10', parentId: '8', slug: 'snacks-frutos-secos', name: 'Snacks & Frutos Secos' },
+      { id: '11', parentId: '8', slug: 'superalimentos', name: 'Superalimentos' }
+    ];
+    let catalogCategories = DEFAULT_CATEGORIES;
+
+    function getCategoryPath(id) {
+      const category = catalogCategories.find(category => category.id === String(id));
+      let root = category;
+      const visited = new Set();
+      while (root?.parentId && !visited.has(root.id)) {
+        visited.add(root.id);
+        const parent = catalogCategories.find(category => category.id === root.parentId);
+        if (!parent) break;
+        root = parent;
+      }
+      return { category, root };
+    }
 
     async function cargarCatalogo() {
       catalogLoadError = null;
@@ -16,25 +41,37 @@ import productImageVariants from './assets/product-images.js';
         try {
           const cached = JSON.parse(sessionStorage.getItem(CATALOG_CACHE_KEY) || 'null');
           const age = Date.now() - cached?.timestamp;
-          if (cached && age >= 0 && age < CATALOG_CACHE_TTL && Array.isArray(cached.products)) {
+          if (cached && age >= 0 && age < CATALOG_CACHE_TTL && Array.isArray(cached.products) && Array.isArray(cached.categories)) {
+            catalogCategories = cached.categories;
             return cached.products;
           }
         } catch { /* El catálogo también funciona si el almacenamiento está bloqueado. */ }
 
-        const [{ data, error }, { data: fotos, error: fotosError }] = await Promise.all([
+        const [{ data, error }, { data: fotos, error: fotosError }, { data: categories, error: categoriesError }] = await Promise.all([
           supabase.from('producto').select('*'),
           supabase.from('imagen_producto')
             .select('img_pro_id, img_url_imagen, img_orden')
-            .order('img_orden', { ascending: true })
+            .order('img_orden', { ascending: true }),
+          supabase.from('categoria').select('cat_id, cat_categoria_padre_id, cat_codigo_slug, cat_nombre').order('cat_id', { ascending: true })
         ]);
+
+        if (categoriesError) {
+          console.warn('No se pudieron leer las categorías; se usará el respaldo local:', categoriesError);
+          catalogCategories = DEFAULT_CATEGORIES;
+        } else {
+          catalogCategories = (categories ?? []).map(category => ({
+            id: String(category.cat_id),
+            parentId: category.cat_categoria_padre_id == null ? null : String(category.cat_categoria_padre_id),
+            slug: category.cat_codigo_slug,
+            name: category.cat_nombre
+          }));
+        }
 
         if (error) {
           catalogLoadError = error;
           console.error("Error devuelto por Supabase:", error.message);
           return []; 
         }
-
-        if (!data || data.length === 0) return [];
 
         const fotosPorProducto = new Map();
         if (fotosError) {
@@ -49,16 +86,9 @@ import productImageVariants from './assets/product-images.js';
           });
         }
 
-        const categoriasBD = {
-          1: { slug: 'suplementos', name: 'Suplementos' },
-          2: { slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
-          3: { slug: 'remedios', name: 'Remedios' },
-          4: { slug: 'suplementos-polvo', name: 'Suplementos en Polvo' }
-        };
-
-        const products = data.map(item => {
+        const products = (data ?? []).map(item => {
           // Usamos minúsculas porque PostgreSQL devuelve las columnas así
-          const cat = categoriasBD[item.pro_cat_id] || categoriasBD[1];
+          const { category, root } = getCategoryPath(item.pro_cat_id);
           const image = item.pro_imagen_principal_url?.trim() || '';
           const images = [...new Set([
             image,
@@ -79,19 +109,19 @@ import productImageVariants from './assets/product-images.js';
             rating: Number(item.pro_calificacion_promedio || 0),
             reviewsCount: Number(item.pro_total_resenas || 0),
 
-            category: 'suplementos', 
-            categoryName: 'Suplementos',
-            subcategory: cat.slug !== 'suplementos' ? cat.slug : '',
-            subcategoryName: cat.slug !== 'suplementos' ? cat.name : '',
+            category: root?.slug || '',
+            categoryName: root?.name || '',
+            subcategory: category && category !== root ? category.slug : '',
+            subcategoryName: category && category !== root ? category.name : '',
 
             ingredients: item.pro_ingredientes_origen || '',
             usage: item.pro_modo_uso_sugerido || ''
           };
         });
 
-        if (!fotosError) {
+        if (!fotosError && !categoriesError) {
           try {
-            sessionStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), products }));
+            sessionStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), products, categories: catalogCategories }));
           } catch { /* No bloquear la carga si no hay espacio para la caché. */ }
         }
         return products;
@@ -106,6 +136,7 @@ import productImageVariants from './assets/product-images.js';
     // Esperar los datos antes de restaurar estados y renderizar la interfaz.
     window.PRODUCTS = await cargarCatalogo();
     const PRODUCTS = window.PRODUCTS;
+    renderCatalogCategories();
 
     /* Estado del carrito y checkout */
     const CART_STORAGE_KEY = 'sacha_pamba_cart';
@@ -685,6 +716,12 @@ import productImageVariants from './assets/product-images.js';
 
     function getCatalogCategoriesAndSubcategories() {
       const map = {};
+      catalogCategories.forEach(category => {
+        const { root } = getCategoryPath(category.id);
+        if (!root) return;
+        if (!map[root.slug]) map[root.slug] = { id: root.slug, name: root.name, subcategories: {} };
+        if (category !== root) map[root.slug].subcategories[category.slug] = category.name;
+      });
       PRODUCTS.forEach(p => {
         if (!map[p.category]) {
           map[p.category] = {
@@ -698,6 +735,100 @@ import productImageVariants from './assets/product-images.js';
         }
       });
       return map;
+    }
+
+    function renderCatalogCategories() {
+      const categories = Object.values(getCatalogCategoriesAndSubcategories());
+      function categoryUrl(category, subcategory) {
+        const query = new URLSearchParams({ cat: category.id });
+        if (subcategory) query.set('subcat', subcategory);
+        return `categoria.html?${query}`;
+      }
+      function setLink(link, href, name) {
+        link.setAttribute('href', href);
+        let label = link.firstElementChild;
+        while (label?.lastElementChild?.tagName === 'SPAN') label = label.lastElementChild;
+        if (label) {
+          label.textContent = name;
+          label.style.whiteSpace = 'normal';
+          label.style.overflowWrap = 'anywhere';
+          link.firstElementChild.style.minWidth = '0';
+        }
+        link.lastElementChild.textContent = '0';
+      }
+      function fillDrawer(drawer, category) {
+        const all = drawer.querySelector('a').cloneNode(true);
+        const sample = drawer.querySelector('a:last-child').cloneNode(true);
+        setLink(all, categoryUrl(category), `Todos: ${category.name}`);
+        drawer.replaceChildren(all, ...Object.entries(category.subcategories).map(([slug, name]) => {
+          const link = sample.cloneNode(true);
+          setLink(link, categoryUrl(category, slug), name);
+          return link;
+        }));
+      }
+
+      // Clonar los elementos existentes conserva clases, estructura y tamaños adaptables.
+      const accordion = document.getElementById('nav-category-accordion');
+      const navSample = accordion?.querySelector('a[href*="cat=suplementos"]')?.closest('.nav-cat-card');
+      if (navSample) {
+        const template = navSample.cloneNode(true);
+        accordion.querySelectorAll('.nav-cat-card').forEach(card => {
+          if (!card.querySelector('a[href*="special="]')) card.remove();
+        });
+        categories.forEach(category => {
+          const card = template.cloneNode(true);
+          const header = card.querySelector('.nav-cat-header');
+          header.setAttribute('aria-label', `Categoría: ${category.name}`);
+          header.querySelector('span span').textContent = category.name;
+          if (category.id !== 'suplementos') {
+            const icon = header.querySelector('i');
+            icon.classList.remove('ph-lightning');
+            icon.classList.add('ph-plant');
+          }
+          fillDrawer(card.querySelector('.nav-subcat-drawer'), category);
+          accordion.append(card);
+        });
+      }
+
+      const sidebar = document.querySelector('aside[aria-label="Filtros del catálogo"]');
+      const sidebarSample = sidebar?.querySelector('.sidebar-cat-header[data-cat="suplementos"]')?.parentElement;
+      if (sidebarSample) {
+        const template = sidebarSample.cloneNode(true);
+        sidebar.querySelectorAll('.sidebar-cat-header').forEach(header => {
+          if (header.dataset.cat !== 'especiales') header.parentElement.remove();
+        });
+        categories.forEach(category => {
+          const card = template.cloneNode(true);
+          const header = card.querySelector('.sidebar-cat-header');
+          const drawer = card.querySelector('.sidebar-cat-drawer');
+          header.dataset.cat = category.id;
+          header.setAttribute('aria-controls', `sidebar-drawer-${category.id}`);
+          header.querySelector('div > span').textContent = category.name;
+          header.querySelector('div > span').style.whiteSpace = 'normal';
+          if (category.id !== 'suplementos') {
+            const icon = header.querySelector('i');
+            icon.classList.remove('ph-lightning');
+            icon.classList.add('ph-plant');
+          }
+          drawer.id = `sidebar-drawer-${category.id}`;
+          drawer.setAttribute('aria-label', `Subcategorías de ${category.name}`);
+          fillDrawer(drawer, category);
+          sidebar.append(card);
+        });
+      }
+
+      const categorySelect = document.getElementById('sel_cat_fav');
+      if (categorySelect) categorySelect.replaceChildren(new Option('Todas las categorías', 'all'), ...categories.map(category => new Option(category.name, category.id)));
+      const subcategorySelect = document.getElementById('sel_subcat_fav');
+      if (subcategorySelect) {
+        subcategorySelect.replaceChildren(new Option('Todas las subcategorías', 'all'), ...categories.flatMap(category =>
+          Object.entries(category.subcategories).map(([slug, name]) => {
+            const option = new Option(name, slug);
+            option.dataset.category = category.id;
+            return option;
+          })
+        ));
+      }
     }
 
     function setFavFilterCategory(cat) {
@@ -2274,7 +2405,6 @@ import productImageVariants from './assets/product-images.js';
           const isCaretClick = !!e.target.closest('.ph-caret-down');
           const cat = header.getAttribute('data-cat');
           const isSpecial = (cat === 'especiales');
-          const isSupplements = (cat === 'suplementos');
           const currentSpecial = new URLSearchParams(window.location.search).get('special');
           const currentCat = new URLSearchParams(window.location.search).get('cat');
 
@@ -2284,8 +2414,8 @@ import productImageVariants from './assets/product-images.js';
               navigateTo('categoria.html?special=all');
               return;
             }
-            if (isSupplements && currentCat !== 'suplementos') {
-              navigateTo('categoria.html?cat=suplementos');
+            if (!isSpecial && (currentCat !== cat || currentSpecial)) {
+              navigateTo(`categoria.html?${new URLSearchParams({ cat })}`);
               return;
             }
           }
@@ -3397,7 +3527,9 @@ import productImageVariants from './assets/product-images.js';
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('cat'), subcat = params.get('subcat'), special = params.get('special');
       const products = getCatalogProducts(params);
-      const title = special ? ({destacados:'Productos Destacados','mas-vendidos':'Los Más Vendidos',nuevos:'Productos Nuevos'}[special] || 'Toda la Selección Especial') : (PRODUCTS.find(p => p.subcategory === subcat)?.subcategoryName || (cat === 'suplementos' ? 'Suplementos' : 'Todos los Productos'));
+      const categories = getCatalogCategoriesAndSubcategories();
+      const categoryName = categories[cat]?.name || 'Todos los Productos';
+      const title = special ? ({destacados:'Productos Destacados','mas-vendidos':'Los Más Vendidos',nuevos:'Productos Nuevos'}[special] || 'Toda la Selección Especial') : (categories[cat]?.subcategories[subcat] || categoryName);
       document.querySelector('[data-catalog-title]').textContent = title;
       document.querySelector('[data-catalog-count]').textContent = products.length;
       document.querySelector('[data-catalog-results]').setAttribute('aria-label', `Listado de productos: ${title}`);
@@ -3416,14 +3548,14 @@ import productImageVariants from './assets/product-images.js';
           if (!query.size) active = !active;
         } else {
           const header = node.closest('.sidebar-cat-header') || node.querySelector('.sidebar-cat-header') || node.parentElement?.querySelector('.sidebar-cat-header');
-          active = header?.getAttribute('data-cat') === 'especiales' ? !!special : cat === 'suplementos';
+          active = header?.getAttribute('data-cat') === 'especiales' ? !!special : !!cat && header?.getAttribute('data-cat') === cat && !special;
           if (node.matches('.sidebar-cat-header')) node.setAttribute('aria-expanded', String(active));
         }
         node.className = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
       });
       const crumbs = document.querySelector('[data-catalog-breadcrumbs]');
       const segments = [{label:'Inicio',href:'index.html'}, {label:'Productos',href:cat||special?'categoria.html':null}];
-      if (cat || special) segments.push({label:special?'Selección Especial':'Suplementos',href:subcat||special?(special?'categoria.html?special=all':`categoria.html?cat=${cat}`):null});
+      if (cat || special) segments.push({label:special?'Selección Especial':categoryName,href:subcat||special?(special?'categoria.html?special=all':`categoria.html?${new URLSearchParams({ cat })}`):null});
       if (subcat || special) segments.push({label:title});
       const last = getLastVisitedProduct();
       if (last) segments.push({label:last.name,href:`producto.html?id=${encodeURIComponent(last.id)}`});
@@ -3522,7 +3654,7 @@ import productImageVariants from './assets/product-images.js';
       const subSelect = document.getElementById('sel_subcat_fav');
       if(catSelect) catSelect.value=filtro_cat;
       if(subSelect) {
-        subSelect.querySelectorAll('option').forEach(option => { const p=PRODUCTS.find(p=>p.subcategory===option.value); option.hidden=!!p&&filtro_cat!=='all'&&p.category!==filtro_cat; });
+        subSelect.querySelectorAll('option').forEach(option => { option.hidden = option.value !== 'all' && filtro_cat !== 'all' && option.dataset.category !== filtro_cat; });
         subSelect.value=filtro_subcat;
       }
       filtered.forEach(p=>updateFavoriteUI(p.id,isFavorite(p.id)));
