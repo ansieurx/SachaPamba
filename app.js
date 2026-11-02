@@ -3417,7 +3417,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
         cartDrawerEl.addEventListener('focusout', () => {
           setTimeout(() => {
-            if (!cartDrawerEl.contains(document.activeElement)) {
+            if (!cartDrawerEl.contains(document.activeElement) && !accessibleDialogs.length) {
               if (document.body.classList.contains('user-is-tabbing')) {
                 collapseCartDrawer(false, false);
               }
