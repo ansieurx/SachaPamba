@@ -891,6 +891,10 @@
               <span class="text-xs text-brand-forest/70 uppercase tracking-wider block font-bold mb-1">Número de Pedido:</span>
               <span data-bind-text="{{number}}" class="font-mono text-xl sm:text-2xl md:text-3xl font-black text-brand-forest tracking-wider">NAT-2026-0481</span>
               <p class="text-xs sm:text-sm text-brand-forest/90 mt-2 font-medium">Modalidad: <strong data-bind-text="{{method}}">Tarjeta</strong></p>
+              <div data-welcome-discount class="hidden flex justify-between items-center gap-2 text-xs sm:text-sm font-bold text-brand-forest">
+                <span data-bind-text="{{discountLabel}}" class="min-w-0">Descuento de bienvenida</span>
+                <span data-bind-text="-${{discount}}" class="whitespace-nowrap">-$0.00</span>
+              </div>
               <span data-bind-text="Monto Total: ${{total}} USD" class="block text-xs sm:text-sm font-black text-brand-forest mt-3 bg-[#FEFAE0] py-1.5 px-4 rounded-full border border-brand-forest/20 inline-block">Monto Total: $23.50 USD</span>
             </div>
 

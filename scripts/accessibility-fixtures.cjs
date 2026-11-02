@@ -28,6 +28,7 @@ const profile=${JSON.stringify(profile)}, products=${JSON.stringify(products)}, 
 const savedOrders=sessionStorage.getItem('a11y-orders');if(savedOrders)orders.splice(0,orders.length,...JSON.parse(savedOrders));
 const ok=data=>({data,error:null});
 const signed=()=>localStorage.getItem('a11y-authenticated')==='true';
+const quoteFor=items=>{const subtotal=items.reduce((sum,item)=>sum+(products.find(p=>p.pro_id===item.id)?.pro_precio_unitario||0)*item.quantity,0),discountPercent=orders.length===0?15:0,discount=Math.round(subtotal*discountPercent)/100,total=Math.round((subtotal-discount)*100)/100,tax=Math.round(total*.15/1.15*100)/100;return {subtotal,discount,discountPercent,total,tax,net:Math.round((total-tax)*100)/100,count:items.reduce((s,i)=>s+i.quantity,0)}};
 const user=()=>({...profile,email_confirmed_at:'2026-01-01T00:00:00Z',user_metadata:profile});
 export function createClient(){return {
   from(table){return {select(){const result=ok(table==='producto'?products:table==='imagen_producto'?photos:categories);return {then(resolve,reject){return Promise.resolve(result).then(resolve,reject)},order(){return Promise.resolve(result)}}}}},
@@ -50,10 +51,10 @@ export function createClient(){return {
       sessionStorage.setItem('a11y-order-request',JSON.stringify(args));
       const existing=orders.find(order=>order.id===args.p_solicitud_id);if(existing)return ok(existing);
       const items=args.p_items.map(item=>{const p=products.find(p=>p.pro_id===item.id);return {id:item.id,name:p.pro_nombre,price:p.pro_precio_unitario,size:p.pro_presentacion_tamano,image:p.pro_imagen_principal_url,quantity:item.quantity}});
-      const order={id:args.p_solicitud_id,number:'NAT-2026-TEST',date:'02/11/2026',total:items.reduce((s,i)=>s+i.price*i.quantity,0),status:'Recibido',method:args.p_metodo==='tarjeta'?'Tarjeta (pago pendiente)':'Pagar al Retirar en Tienda',items};
+      const order={...quoteFor(args.p_items),id:args.p_solicitud_id,number:'NAT-2026-TEST',date:'02/11/2026',status:'Recibido',method:args.p_metodo==='tarjeta'?'Tarjeta (pago pendiente)':'Pagar al Retirar en Tienda',items};
       orders.unshift(order);sessionStorage.setItem('a11y-orders',JSON.stringify(orders));return ok(order);
     }
-    if(name==='web_cotizar_carrito'){const items=args.p_items||[],total=items.reduce((sum,item)=>sum+(products.find(p=>p.pro_id===item.id)?.pro_precio_unitario||0)*item.quantity,0),tax=Math.round(total*.15/1.15*100)/100;return ok({total,tax,net:total-tax,count:items.reduce((s,i)=>s+i.quantity,0)})}
+    if(name==='web_cotizar_carrito')return ok(quoteFor(args.p_items||[]));
     return {data:null,error:{message:'Operación no disponible en la auditoría'}};
   }
 }};

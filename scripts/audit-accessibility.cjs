@@ -304,6 +304,32 @@ let browser, socket;
     await evaluate(`sessionStorage.removeItem('a11y-status-error')`);
   }
   console.log('ORDER STATUS: all four options clickable, latest/history synchronization, saved state on reload and error recovery passed at 320, 768 and 1440px.');
+  await evaluate(`sessionStorage.setItem('a11y-orders','[]');clearCart();addToCart('maca')`);
+  for (const width of [320,1440]) {
+    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<768});
+    for (const route of ['carrito.html','checkout-retiro.html','checkout-pago.html']) {
+      await go(route);
+      await waitFor(`!!document.querySelector('[data-welcome-discount]:not(.hidden)')`);
+      assert.equal(await evaluate(`document.querySelector('[data-welcome-discount] [data-bind-text="{{discountLabel}}"]')?.textContent`),'Descuento de bienvenida (15%)');
+      assert.equal(await evaluate(`document.querySelector('[data-welcome-discount] [data-bind-text="-\u0024{{discount}}"]')?.textContent`),'-$1.28');
+      assert.equal(await evaluate(`cartValues().total`),'7.22');
+      assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
+    }
+  }
+  await go('carrito.html');await evaluate(`updateCartQuantity('maca',1)`);
+  await waitFor(`cartValues().discount==='2.55'`);
+  assert.equal(await evaluate(`cartValues().subtotal`),'17.00');assert.equal(await evaluate(`cartValues().total`),'14.45');
+  await evaluate(`updateCartQuantity('maca',-1)`);await waitFor(`cartValues().discount==='1.28'`);
+  await go('checkout-pago.html');
+  await evaluate(`selectPaymentOption('tienda');for(const [id,value] of Object.entries({'checkout-inv-name':'Cliente Prueba','checkout-inv-id':'1710034065','checkout-inv-email':'cliente@example.test'}))document.getElementById(id).value=value;processPayment()`);
+  await waitFor(`location.pathname.endsWith('/checkout-confirmacion.html')&&typeof window.navigateTo==='function'`);
+  assert.equal(await evaluate(`document.querySelector('[data-welcome-discount]:not(.hidden)')?.textContent.includes('-$1.28')`),true);
+  await audit('welcome-discount-confirmation');
+  await evaluate(`addToCart('maca')`);await go('carrito.html');await waitFor(`cartValues().total==='8.50'`);
+  assert.equal(await evaluate(`document.querySelector('[data-welcome-discount]').classList.contains('hidden')`),true,'No second welcome discount');
+  await evaluate(`localStorage.removeItem('a11y-authenticated')`);await go('carrito.html');
+  assert.equal(await evaluate(`document.querySelector('[data-welcome-discount]').classList.contains('hidden')`),true,'No guest discount');
+  console.log('WELCOME: visible 15% in cart/pickup/payment, correct totals and quantity updates, saved order discount, no repeat or guest offer, mobile/desktop passed.');
   staticPage = true;
   for (const route of fs.readdirSync(root).filter(file => file.endsWith('.html'))) { await go(route); await audit('static/' + route); }
   const name = process.argv.includes('--baseline') ? 'a11y-before.json' : 'a11y-after.json';

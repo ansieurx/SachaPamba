@@ -6,6 +6,10 @@ const { PGlite } = require('@electric-sql/pglite');
 process.chdir(path.resolve(__dirname,'..'));
 
 (async () => {
+  if (!fs.existsSync('supabase/estados-pedido.sql')) {
+    console.log('SKIP: la actualización de estados ya no se distribuye.');
+    return;
+  }
   const db = new PGlite();
   const owner = '11111111-1111-4111-8111-111111111111';
   const other = '22222222-2222-4222-8222-222222222222';

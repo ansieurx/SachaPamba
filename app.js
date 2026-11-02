@@ -3472,10 +3472,17 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
     function cartValues() {
       const quote = accountService.quoteFor(cart);
-      if (quote) return { total: Number(quote.total).toFixed(2), tax: Number(quote.tax).toFixed(2), net: Number(quote.net).toFixed(2), count: quote.count };
+      if (quote) return { subtotal: Number(quote.subtotal ?? (Number(quote.total) + Number(quote.discount || 0))).toFixed(2), discount: Number(quote.discount || 0).toFixed(2), discountLabel: `Descuento de bienvenida (${Number(quote.discountPercent || 0)}%)`, total: Number(quote.total).toFixed(2), tax: Number(quote.tax).toFixed(2), net: Number(quote.net).toFixed(2), count: quote.count };
       const cents = cart.reduce((sum, item) => sum + Math.round(Number(item.price) * 100) * Math.max(1, parseInt(item.quantity, 10) || 1), 0);
       const tax = Math.round(cents * .15 / 1.15);
-      return { total: (cents / 100).toFixed(2), tax: (tax / 100).toFixed(2), net: ((cents - tax) / 100).toFixed(2), count: cart.reduce((sum, item) => sum + Math.max(1, parseInt(item.quantity, 10) || 1), 0) };
+      return { subtotal: (cents / 100).toFixed(2), discount: '0.00', discountLabel: 'Descuento de bienvenida', total: (cents / 100).toFixed(2), tax: (tax / 100).toFixed(2), net: ((cents - tax) / 100).toFixed(2), count: cart.reduce((sum, item) => sum + Math.max(1, parseInt(item.quantity, 10) || 1), 0) };
+    }
+
+    function updateWelcomeDiscount(root, values) {
+      root?.querySelectorAll('[data-welcome-discount]').forEach(row => {
+        bindValues(row, values);
+        row.classList.toggle('hidden', Number(values.discount) <= 0);
+      });
     }
 
     function updateCartUI() {
@@ -3496,6 +3503,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         const filled = document.querySelector('[data-cart-filled]');
         filled.classList.toggle('hidden', cart.length === 0);
         bindValues(filled, cartValues());
+        updateWelcomeDiscount(filled, cartValues());
         const undo = document.querySelector('[data-cart-undo]');
         if (undo) undo.classList.toggle('hidden', !lastRemovedCartItem && !lastClearedCart);
         updateCheckoutSteps(1);
@@ -3536,7 +3544,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         container.replaceChildren(...cart.map(item => cloneTemplate('checkout-summary-item-template', itemValues(item))));
       });
       const checkout = document.getElementById('pickup-name') || document.getElementById('btn-confirm-checkout');
-      if (checkout) bindValues(document.getElementById('app'), cartValues());
+      if (checkout) {
+        bindValues(document.getElementById('app'), cartValues());
+        updateWelcomeDiscount(document.getElementById('app'), cartValues());
+      }
       const button = document.getElementById('btn-confirm-checkout');
       if (button) button.disabled = cart.length === 0;
       if (document.getElementById('pay-opt-tarjeta')) selectPaymentOption(selectedPaymentMethod);
@@ -3571,6 +3582,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         const order = getAllOrders()[0];
         if (!getCurrentUser() || !order) { window.location.replace('carrito.html'); return; }
         bindValues(confirmation, { ...order, total: Number(order.total).toFixed(2) });
+        updateWelcomeDiscount(confirmation, { discount: Number(order.discount || 0).toFixed(2), discountLabel: 'Descuento de bienvenida' });
       }
       closeCartDrawer();
       document.getElementById('cart-drawer-toggle-btn')?.classList.add('hidden');

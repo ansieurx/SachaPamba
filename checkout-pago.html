@@ -990,6 +990,10 @@
 
               </div>
               <div class="pt-4 border-t border-brand-forest/20 space-y-1.5">
+                <div data-welcome-discount class="hidden flex justify-between items-center gap-2 text-xs sm:text-sm font-bold text-brand-forest">
+                  <span data-bind-text="{{discountLabel}}" class="min-w-0">Descuento de bienvenida</span>
+                  <span data-bind-text="-${{discount}}" class="whitespace-nowrap">-$0.00</span>
+                </div>
                 <div class="flex justify-between font-bold text-base text-brand-forest items-center">
                   <span>Total a pagar:</span>
                   <span class="font-botanic text-xl sm:text-2xl text-brand-forest"><span data-bind-text="${{total}}">$0.00</span></span>

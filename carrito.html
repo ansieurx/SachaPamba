@@ -913,7 +913,11 @@
                 <div class="space-y-3.5 text-xs sm:text-sm text-brand-leaf/80 font-medium">
                   <div class="flex justify-between items-center gap-2">
                     <span class="min-w-0">Subtotal artículos (<strong class="text-brand-forest"><span data-bind-text="{{count}}">0</span></strong>)</span>
-                    <span class="font-bold text-brand-forest whitespace-nowrap"><span data-bind-text="${{total}}">$0.00</span></span>
+                    <span class="font-bold text-brand-forest whitespace-nowrap"><span data-bind-text="${{subtotal}}">$0.00</span></span>
+                  </div>
+                  <div data-welcome-discount class="hidden flex justify-between items-center gap-2 text-xs sm:text-sm font-bold text-brand-forest">
+                    <span data-bind-text="{{discountLabel}}" class="min-w-0">Descuento de bienvenida</span>
+                    <span data-bind-text="-${{discount}}" class="whitespace-nowrap">-$0.00</span>
                   </div>
                   <div class="flex justify-between items-center gap-2 text-[11px] sm:text-xs text-brand-leaf/70 pl-2.5 border-l-2 border-brand-forest/20">
                     <span class="min-w-0">Subtotal sin IVA</span>
