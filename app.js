@@ -1,246 +1,43 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const PRODUCTS = [
-      {
-        id: 'vitamina-c',
-        name: 'Vitamina C + Camu Camu Amazónico',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'vitaminas-minerales',
-        subcategoryName: 'Vitaminas y Minerales',
-        price: 13.50,
-        rating: 4.9,
-        reviewsCount: 45,
-        isFeatured: false,
-        isBestSeller: true,
-        isNew: true,
-        size: '60 cápsulas vegetales',
-        image: 'https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas',
-        images: [
-          'https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas',
-          'https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas%0A(Vista+2)',
-          'https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas%0A(Detalle)'
-        ],
-        shortDesc: 'Vitamina C natural biodisponible con pulpa de camu camu silvestre.',
-        ingredients: 'Ácido ascórbico vegetal, extracto de Myrciaria dubia (camu camu).',
-        usage: '1 cápsula diaria con el desayuno.'
-      },
-      {
-        id: 'omega-3',
-        name: 'Perlas de Omega 3, 6 y 9 de Sacha Inchi',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'vitaminas-minerales',
-        subcategoryName: 'Vitaminas y Minerales',
-        price: 15.00,
-        rating: 5.0,
-        reviewsCount: 39,
-        isFeatured: true,
-        isBestSeller: true,
-        isNew: false,
-        size: '90 perlas softgel',
-        image: 'https://vivaelmusculo.com/img/cms/omega%203-6-9.png',
-        images: [
-          'https://vivaelmusculo.com/img/cms/omega%203-6-9.png',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK4Q7dwDygCvayBaBjpKjnrcDbUfmOjCtn9fWMPMeTwQ5wuFpAY3d91NWG&s=10',
-          'https://bodegaportilla.com/cdn/shop/files/SACHA_INCHI.png?v=1781381737&width=1946'
-        ],
-        shortDesc: 'Aceite vegetal prensado en frío virgen. Salud cardiovascular y cerebral.',
-        ingredients: '100% aceite virgen de semilla de Sacha Inchi (Plukenetia volubilis).',
-        usage: 'Tomar 2 cápsulas al día con almuerzo.'
-      },
-      {
-        id: 'cloruro-magnesio',
-        name: 'Cloruro de Magnesio',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'vitaminas-minerales',
-        subcategoryName: 'Vitaminas y Minerales',
-        price: 4.50,
-        rating: 4.8,
-        reviewsCount: 52,
-        isFeatured: false,
-        isBestSeller: false,
-        isNew: false,
-        size: 'Fundita 100g cristales',
-        image: 'https://cdn.clinicabaviera.com/blog/wp-content/uploads/2020/08/cloruro-de-magnesio-propiedades.jpg',
-        images: [
-          'https://cdn.clinicabaviera.com/blog/wp-content/uploads/2020/08/cloruro-de-magnesio-propiedades.jpg',
-          'https://chilebefree.com/cdn/shop/products/ClorurodeMagnesioenpolvo270mg_120porciones_marcaDulzuraNatural_1200x1200.png?v=1632427386',
-          'https://cdnx.jumpseller.com/guadalupe-tienda-natural/image/31166805/Captura_de_Pantalla_2023-01-25_a_la_s__11.32.11.png?1674660214'
-        ],
-        shortDesc: 'Equilibrio muscular, combate calambres y mejora la energía celular.',
-        ingredients: 'Cloruro de magnesio cristalizado puro.',
-        usage: 'Disolver 33g en 1 litro de agua hervida fría. Tomar un vasito tequilero al día.'
-      },
-      {
-        id: 'jarabe-sabila',
-        name: 'Jarabe de Sábila con Miel y Propóleo',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'remedios',
-        subcategoryName: 'Remedios',
-        price: 8.50,
-        rating: 4.9,
-        reviewsCount: 27,
-        isFeatured: false,
-        isBestSeller: true,
-        isNew: false,
-        size: 'Botella 250ml',
-        image: 'https://lavendita.es/wp-content/uploads/image-39.png',
-        images: [
-          'https://lavendita.es/wp-content/uploads/image-39.png',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTAeUKnMDdmcX9YyfZ25HumC5y0GHS48y9QxDC3x1OO8dhD_k7qu-NY4M&s=10',
-          'https://images.cookforyourlife.org/wp-content/uploads/2018/08/Lemon-and-Honey.jpg'
-        ],
-        shortDesc: 'Fórmula tradicional para gastritis, reflujo y regeneración de mucosa gástrica.',
-        ingredients: 'Cristales de Aloe barbadensis, miel de abeja pura, propóleo.',
-        usage: '1 cucharada antes de cada comida principal.'
-      },
-      {
-        id: 'capsulas-propoleo',
-        name: 'Cápsulas de Propóleo y Polen Andino',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'remedios',
-        subcategoryName: 'Remedios',
-        price: 11.00,
-        rating: 4.8,
-        reviewsCount: 23,
-        isFeatured: false,
-        isBestSeller: false,
-        isNew: true,
-        size: '60 cápsulas',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PqkarzXXhxZydKUJr4HPhdgzwkxsACWWAAGsbNI7fu5R6NNYQ3hups0v&s=10',
-        images: [
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8PqkarzXXhxZydKUJr4HPhdgzwkxsACWWAAGsbNI7fu5R6NNYQ3hups0v&s=10',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX1aZZPSUC7SA1ZJ6X7D6Snd_IAIC7fqCkkRlK7y181OD0_sZ-uOYVXH2x&s=10',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4tn_n4RQfxtfPA-eQjFShq708QX5SCLCYE8ivTT2RAg&s'
-        ],
-        shortDesc: 'Defensas activas, vigorizante físico y protección invernal.',
-        ingredients: 'Propóleo micronizado, polen multifloral de altura.',
-        usage: '2 cápsulas en las mañanas.'
-      },
-      {
-        id: 'maca',
-        name: 'Maca Andina Negra Gelatinizada',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'suplementos-polvo',
-        subcategoryName: 'Suplementos en Polvo',
-        price: 8.50,
-        rating: 5.0,
-        reviewsCount: 58,
-        isFeatured: true,
-        isBestSeller: true,
-        isNew: false,
-        size: '250g polvo soluble',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOlBnDDUtiKOEEfB3vuVdLrztZySFMmJs29vRBK3j5-Yirc4KdygNS8m&s=10',
-        images: [
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOlBnDDUtiKOEEfB3vuVdLrztZySFMmJs29vRBK3j5-Yirc4KdygNS8m&s=10',
-          'https://salmacapanela.com/wp-content/uploads/2024/03/macamini.jpg',
-          'https://images.unsplash.com/photo-1509358271058-acd22cc93898?auto=format&fit=crop&w=700&q=80'
-        ],
-        shortDesc: 'Raíz andina adaptógena. Vigor, equilibrio hormonal y resistencia física sin irritar el estómago.',
-        ingredients: '100% Lepidium meyenii andina gelatinizada sin almidones pesados.',
-        usage: '1 cucharadita (5g) disuelta en batidos, avena o yogur matutino.'
-      },
-      {
-        id: 'cacao',
-        name: 'Cacao Fino de Aroma Puro 100%',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'suplementos-polvo',
-        subcategoryName: 'Suplementos en Polvo',
-        price: 6.00,
-        rating: 4.9,
-        reviewsCount: 47,
-        isFeatured: true,
-        isBestSeller: true,
-        isNew: false,
-        size: '200g polvo puro',
-        image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=700&q=80',
-        images: [
-          'https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=700&q=80',
-          'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=700&q=80',
-          'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=700&q=80'
-        ],
-        shortDesc: 'Cacao criollo de Los Ríos sin azúcares añadidos ni alcalinización. Teobromina y magnesio puro.',
-        ingredients: '100% semilla de Theobroma cacao fermentada y molida.',
-        usage: '1 a 2 cucharadas en leche tibia vegetal o postres saludables.'
-      },
-      {
-        id: 'sacha-inchi-polvo',
-        name: 'Harina Proteica de Sacha Inchi',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'suplementos-polvo',
-        subcategoryName: 'Suplementos en Polvo',
-        price: 7.20,
-        rating: 4.8,
-        reviewsCount: 31,
-        isFeatured: false,
-        isBestSeller: false,
-        isNew: true,
-        size: '300g polvo proteico',
-        image: 'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=700&q=80',
-        images: [
-          'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?auto=format&fit=crop&w=700&q=80',
-          'https://bodegaportilla.com/cdn/shop/files/ff90086d-d6d9-49c6-91e3-e8c87dc8ed87.png?v=1756159417&width=500',
-          'https://adex-b2peru.s3.amazonaws.com/userfiles/product/photos/805_5f5dce2c58d9f.jpg'
-        ],
-        shortDesc: '60% proteína vegetal completa y digestible con aminoácidos esenciales.',
-        ingredients: 'Torta desgrasada micropulverizada de Sacha Inchi.',
-        usage: 'Agregar 1 scoop (20g) a licuados post-entrenamiento.'
-      },
-      {
-        id: 'moringa',
-        name: 'Moringa Orgánica en Polvo',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'suplementos-polvo',
-        subcategoryName: 'Suplementos en Polvo',
-        price: 5.50,
-        rating: 4.7,
-        reviewsCount: 26,
-        isFeatured: false,
-        isBestSeller: false,
-        isNew: false,
-        size: '150g polvo verde',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTip0lfEhomXU0Api86FkKXEX0de3shdA_Wa-zpGdJcRg&s',
-        images: [
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTip0lfEhomXU0Api86FkKXEX0de3shdA_Wa-zpGdJcRg&s',
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKmDcBO9rp9pE9owHa-Hhd7qdZGplQ4-GdxrbTNsp4Zf4LmAgFvJ4itmJX&s=10',
-          'https://blog.oncosalud.pe/hubfs/moringa-para-que-sirve-beneficios.jpg'
-        ],
-        shortDesc: 'El árbol de la vida. Multivitamínico verde rico en clorofila y hierro vegetal.',
-        ingredients: '100% hojas tiernas de Moringa oleifera deshidratadas.',
-        usage: 'Media cucharadita en jugos verdes o espolvoreado en ensaladas.'
-      },
-      {
-        id: 'colageno',
-        name: 'Colágeno Hidrolizado + Biotina y Camu Camu',
-        category: 'suplementos',
-        categoryName: 'Suplementos',
-        subcategory: 'suplementos-polvo',
-        subcategoryName: 'Suplementos en Polvo',
-        price: 18.00,
-        rating: 4.9,
-        reviewsCount: 68,
-        isFeatured: true,
-        isBestSeller: true,
-        isNew: true,
-        size: '350g con dosificador',
-        image: 'https://www.nutrimea.com/cdn/shop/articles/Capture_d_ecran_2026-05-19_a_11.06.21_420c22a4-7e46-4463-82fd-1a52e0692427.png?v=1779871726&width=2048',
-        images: [
-          'https://www.nutrimea.com/cdn/shop/articles/Capture_d_ecran_2026-05-19_a_11.06.21_420c22a4-7e46-4463-82fd-1a52e0692427.png?v=1779871726&width=2048',
-          'https://http2.mlstatic.com/D_NQ_NP_699383-MEC94872518843_102025-O.webp',
-          'https://http2.mlstatic.com/D_NQ_NP_979733-MEC104018417519_012026-O.webp'
-        ],
-        shortDesc: 'Péptidos bioactivos para articulaciones flexibles, uñas firmes y piel tersa.',
-        ingredients: 'Péptidos de colágeno hidrolizado bovino, vitamina C natural de camu camu, biotina pura.',
-        usage: 'Disolver 1 cucharada dosificadora en 200ml de agua o jugo en ayunas.'
+    // Reemplazar por la URL y la clave p?blica del proyecto Supabase.
+    const SUPABASE_URL = 'https://uucegdaytxxoedwnoenv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Ne56n5VP9ftiP4xQBJAM2g_Em9E2WXI';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function cargarCatalogo() {
+      try {
+        const { data, error } = await supabase.from('producto').select('*');
+        if (error) throw error;
+        return (data ?? []).map(producto => ({
+          id: String(producto.PRO_ID),
+          name: producto.PRO_NOMBRE ?? '',
+          size: producto.PRO_PRESENTACION_TAMANO ?? '',
+          price: Number(producto.PRO_PRECIO_UNITARIO ?? 0),
+          image: producto.PRO_IMAGEN_PRINCIPAL_URL ?? '',
+          isFeatured: producto.PRO_ES_DESTACADO ?? false,
+          isBestSeller: producto.PRO_ES_MAS_VENDIDO ?? false,
+          isNew: producto.PRO_ES_NUEVO ?? false,
+          rating: Number(producto.PRO_CALIFICACION_PROMEDIO ?? 0),
+          reviewsCount: Number(producto.PRO_TOTAL_RESENAS ?? 0),
+          shortDesc: producto.PRO_DESCRIPCION_CORTA ?? '',
+          images: producto.PRO_IMAGEN_PRINCIPAL_URL ? [producto.PRO_IMAGEN_PRINCIPAL_URL] : [],
+          // Estas columnas no se proporcionaron; conservar las propiedades de la UI.
+          category: '',
+          categoryName: '',
+          subcategory: '',
+          subcategoryName: '',
+          ingredients: '',
+          usage: ''
+        }));
+      } catch (error) {
+        console.error('No se pudo cargar el cat?logo desde Supabase:', error);
+        return [];
       }
-    ];
+    }
+
+    // Esperar los datos antes de restaurar estados y renderizar la interfaz.
+    const PRODUCTS = await cargarCatalogo();
 
     /* Estado del carrito y checkout */
     const CART_STORAGE_KEY = 'sacha_pamba_cart';
@@ -3888,12 +3685,18 @@
     saveFavoriteUndoState();
     scheduleFavoriteUndoExpiration();
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        updateCartUI();
-        initApp();
-      });
-    } else {
+    function iniciarConCatalogo() {
+      const grid = document.getElementById('home-products-grid');
+      if (grid) {
+        grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured).slice(0, 4)
+          .map(product => cloneTemplate('product-card-template', productValues(product))));
+      }
       updateCartUI();
       initApp();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', iniciarConCatalogo, { once: true });
+    } else {
+      iniciarConCatalogo();
     }
