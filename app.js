@@ -356,12 +356,18 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     function updateCartDrawerToggle() {
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!toggleBtn) return;
-      const hidden = !cart.length || document.body.classList.contains('cart-drawer-open')
-        || /^(carrito|checkout)/.test(getPageName());
+      const drawerOpen = document.body.classList.contains('cart-drawer-open');
+      const hidden = !cart.length || /^(carrito|checkout)/.test(getPageName());
       toggleBtn.hidden = hidden;
       toggleBtn.classList.toggle('hidden', hidden);
       if (hidden) toggleBtn.style.setProperty('display', 'none', 'important');
       else toggleBtn.style.removeProperty('display');
+      toggleBtn.setAttribute('aria-expanded', String(drawerOpen));
+      toggleBtn.setAttribute('aria-label', drawerOpen ? 'Ocultar carrito lateral' : 'Abrir carrito lateral');
+      toggleBtn.title = drawerOpen ? 'Ocultar carrito' : 'Desplegar carrito';
+      const caret = document.getElementById('cart-drawer-caret');
+      caret?.classList.toggle('ph-caret-left', !drawerOpen);
+      caret?.classList.toggle('ph-caret-right', drawerOpen);
     }
 
     let drawerSlideTimeout = null;
@@ -397,7 +403,6 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       document.body.classList.add('cart-drawer-open');
       sessionStorage.setItem('sacha_cart_drawer_open', 'true');
 
-      // Quitar el botón de la flecha del lado cuando el carrito esté desplegado
       updateCartDrawerToggle();
 
       // Si se abre mediante navegación por teclado, enfocar la flecha para ocultar

@@ -375,10 +375,6 @@ html {
       transition: none !important;
     }
 
-    body.cart-drawer-open #cart-drawer-toggle-btn {
-      display: none !important;
-    }
-
     /* Evitar que el desplazamiento por teclado herede scroll-margin-top dentro del desplegable */
     #cart-side-drawer,
     #cart-side-drawer *,
@@ -677,7 +673,7 @@ html {
     #cart-side-drawer #cart-drawer-footer #cart-drawer-total {
       font-size: 20px !important;
       line-height: 1.15 !important;
-      color: #E9C46A !important;
+      color: #FEFAE0 !important;
       font-weight: 900 !important;
       white-space: nowrap !important;
       margin-top: 3px !important;
