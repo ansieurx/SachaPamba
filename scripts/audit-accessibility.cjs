@@ -273,6 +273,37 @@ let browser, socket;
   assert.equal(await evaluate(`JSON.parse(sessionStorage.getItem('a11y-order-request')).p_metodo`),'tienda');
   await audit('store-order-confirmation');
   console.log('CHECKOUT: invalid Luhn blocked, valid card continues without provider, card data excluded, and store payment preserved.');
+  for (const width of [320,768,1440]) {
+    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<768});
+    await go('cuenta.html?tab=orders');
+    const last = await evaluate(`document.querySelectorAll('[data-order-history] [data-order-card]').length-1`);
+    for (const menuKey of ['latest',String(last)]) {
+      await pointerClick(`document.getElementById('status-btn-${menuKey}')`);
+      const visible = await evaluate(`(()=>[...document.querySelectorAll('#status-menu-${menuKey} [role="option"]')].map(option=>{const r=option.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.closest('[role="option"]')===option}))()`);
+      assert.deepEqual(visible,[true,true,true,true],`All four status options must be visible and clickable at ${width}px (${menuKey})`);
+      await key('Escape');
+    }
+    await evaluate(`document.querySelector('[data-order-card] button[onclick*="toggleOrderItemsView"]').click()`);
+    for (const state of ['En Tienda','Listo para Retiro','Entregado','Recibido']) {
+      await pointerClick(`document.getElementById('status-btn-0')`);
+      await pointerClick(`document.querySelector('#status-menu-0 [data-order-status="${state}"]')`);
+      await waitFor(`document.querySelector('#status-btn-latest span').textContent===${JSON.stringify(state)}`);
+      assert.equal(await evaluate(`document.querySelector('#status-btn-0 span').textContent`),state);
+      assert.equal(await evaluate(`document.querySelector('#status-menu-0 [aria-selected="true"]').dataset.orderStatus`),state);
+      assert.equal(await evaluate(`document.activeElement.id`),'status-btn-0');
+      assert.equal(await evaluate(`document.getElementById('status-btn-0').getAttribute('aria-expanded')`),'false');
+      assert.equal(await evaluate(`document.getElementById('order-items-0').classList.contains('hidden')`),false,'Status changes must preserve expanded products');
+    }
+    await go('cuenta.html?tab=orders');
+    assert.equal(await evaluate(`document.querySelector('#status-btn-latest span').textContent`),'Recibido','State must survive reload');
+    await evaluate(`sessionStorage.setItem('a11y-status-error','true')`);
+    await pointerClick(`document.getElementById('status-btn-latest')`);
+    await pointerClick(`document.querySelector('#status-menu-latest [data-order-status="Entregado"]')`);
+    await waitFor(`document.getElementById('toast-message').textContent.includes('No se pudo guardar')`);
+    assert.equal(await evaluate(`document.querySelector('#status-btn-latest span').textContent`),'Recibido');
+    await evaluate(`sessionStorage.removeItem('a11y-status-error')`);
+  }
+  console.log('ORDER STATUS: all four options clickable, latest/history synchronization, saved state on reload and error recovery passed at 320, 768 and 1440px.');
   staticPage = true;
   for (const route of fs.readdirSync(root).filter(file => file.endsWith('.html'))) { await go(route); await audit('static/' + route); }
   const name = process.argv.includes('--baseline') ? 'a11y-before.json' : 'a11y-after.json';

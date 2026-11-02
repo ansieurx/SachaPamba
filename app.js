@@ -2074,9 +2074,25 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       return getAllOrders();
     }
 
-    function changeOrderStatus() {
-      showToast('El estado del pedido lo actualiza la tienda.', 'ph-info');
-      syncCurrentPage();
+    const pendingOrderStatuses = new Set();
+
+    async function changeOrderStatus(orderNumber, newStatus) {
+      const order = getAllOrders().find(item => item.number === orderNumber);
+      if (!order || pendingOrderStatuses.has(order.id) || order.status === newStatus) return;
+      pendingOrderStatuses.add(order.id);
+      try {
+        const saved = await accountService.changeOrderStatus(order.id, newStatus);
+        const index = getAllOrders().findIndex(item => item.id === saved.id);
+        const latest = document.querySelector('[data-latest-order]');
+        if (index === 0 && latest) updateOrderElements(latest, saved, 'latest');
+        const history = document.querySelectorAll('[data-order-history] [data-order-card]')[index];
+        if (history) updateOrderElements(history, saved, index);
+        showToast('Estado del pedido actualizado: ' + newStatus, 'ph-check-circle');
+      } catch (error) {
+        showToast(authErrorMessage(error), 'ph-warning');
+      } finally {
+        pendingOrderStatuses.delete(order.id);
+      }
     }
 
     function toggleStatusDropdown(key, event) {
@@ -2111,11 +2127,15 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
     }
 
-    function selectCustomOrderStatus(orderNumber, newStatus) {
+    async function selectCustomOrderStatus(orderNumber, newStatus) {
       const triggerId = document.activeElement.closest('[role="listbox"]')?.getAttribute('aria-labelledby');
       document.querySelectorAll('[id^="status-menu-"]').forEach(m => m.classList.add('hidden'));
-      changeOrderStatus(orderNumber, newStatus);
-      if (triggerId) document.getElementById(triggerId)?.focus();
+      document.querySelectorAll('[id^="status-btn-"]').forEach(button => {
+        button.setAttribute('aria-expanded', 'false');
+        button.querySelector('.ph-caret-down')?.classList.remove('rotate-180');
+      });
+      await changeOrderStatus(orderNumber, newStatus);
+      if (triggerId) document.getElementById(triggerId)?.focus({ preventScroll: true });
     }
 
     function toggleOrderItemsView(containerId, buttonEl) {
@@ -3743,7 +3763,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     function updateOrderElements(fragment, order, index) {
       const values = {...order,total:Number(order.total).toFixed(2),index,itemCount:(order.items||[]).length,itemLabel:(order.items||[]).length===1?'producto':'productos'};
       bindValues(fragment,values);
-      const latest = !!fragment.querySelector('[data-latest-order]');
+      const latest = !!(fragment.matches?.('[data-latest-order]') || fragment.querySelector('[data-latest-order]'));
       const items = fragment.querySelector('[data-order-items]');
       items.replaceChildren(...(order.items||[]).map(item=>cloneTemplate(latest?'latest-order-item-template':'history-order-item-template',itemValues(item))));
       fragment.querySelectorAll('[data-order-status]').forEach(option=>{

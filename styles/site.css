@@ -730,6 +730,9 @@ html {
       overflow-x: clip;
     }
 
+    /* Los menús de estado deben poder salir del borde inferior del historial. */
+    #account-tab-orders { overflow: visible; }
+
     /* ==========================================================================
        TARJETA DE PRODUCTOS FAVORITOS ADAPTABLE (ZOOM & MULTI-DISPOSITIVO)
        ========================================================================== */

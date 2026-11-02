@@ -119,6 +119,14 @@ export function createAccountService(supabase) {
       quoteKey = '';
       return order;
     },
+    async changeOrderStatus(orderId, status) {
+      if (!user) throw new Error('Inicia sesión para actualizar tu pedido.');
+      const requestedUser = user.id;
+      const saved = await rpc('web_cambiar_estado_pedido', { p_pedido_id: orderId, p_estado: status });
+      if (user?.id !== requestedUser) throw new Error('La sesión cambió. Vuelve a consultar tus pedidos.');
+      orders = orders.map(order => order.id === saved.id ? saved : order);
+      return saved;
+    },
     async saveProfile(profile, password) {
       if (!user) throw new Error('Inicia sesión para actualizar tu cuenta.');
       assertValidProfile(profile);

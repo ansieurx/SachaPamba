@@ -5,6 +5,10 @@ const { PGlite } = require('@electric-sql/pglite');
 process.chdir(path.resolve(__dirname, '..'));
 
 (async () => {
+  if (!fs.existsSync('supabase/pedidos-con-tarjeta.sql')) {
+    console.log('SKIP: la actualización de tarjeta ya no se distribuye. Los cambios de estado se comprueban por separado.');
+    return;
+  }
   const db = new PGlite();
   const user = '11111111-1111-4111-8111-111111111111';
   try {

@@ -40,6 +40,12 @@ export function createClient(){return {
     if(name==='web_mis_pedidos')return ok(orders);
     if(name==='web_registro_disponible')return ok(true);
     if(name==='web_guardar_perfil')return ok({...profile,...args.p_perfil});
+    if(name==='web_cambiar_estado_pedido'){
+      if(sessionStorage.getItem('a11y-status-error'))return {data:null,error:{message:'No se pudo guardar el estado'}};
+      const order=orders.find(order=>order.id===args.p_pedido_id);
+      if(!order||!['Recibido','En Tienda','Listo para Retiro','Entregado'].includes(args.p_estado))return {data:null,error:{message:'Pedido o estado no válido'}};
+      order.status=args.p_estado;sessionStorage.setItem('a11y-orders',JSON.stringify(orders));return ok({...order});
+    }
     if(name==='web_crear_pedido'){
       sessionStorage.setItem('a11y-order-request',JSON.stringify(args));
       const existing=orders.find(order=>order.id===args.p_solicitud_id);if(existing)return ok(existing);
