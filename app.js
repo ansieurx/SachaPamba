@@ -8,19 +8,16 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     let catalogLoadError = null;
 
     async function cargarCatalogo() {
-      catalogLoadError = null;
       try {
-        // 1. Consulta simple y directa a la tabla producto (sin JOIN)
         const { data, error } = await supabase.from('producto').select('*');
 
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          console.warn("Supabase respondió correctamente, pero la tabla está vacía o bloqueada por RLS.");
-          return [];
+        if (error) {
+          console.error("Error devuelto por Supabase:", error.message);
+          return []; 
         }
 
-        // 2. Mapeo duro de tus categorías (según los IDs de tu script SQL)
+        if (!data || data.length === 0) return [];
+
         const categoriasBD = {
           1: { slug: 'suplementos', name: 'Suplementos' },
           2: { slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
@@ -28,40 +25,37 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
           4: { slug: 'suplementos-polvo', name: 'Suplementos en Polvo' }
         };
 
-        // 3. Traducción de columnas
         return data.map(item => {
-          // Obtenemos la categoría según el PRO_CAT_ID (1, 2, 3 o 4)
-          const cat = categoriasBD[item.PRO_CAT_ID] || categoriasBD[1];
-          const image = item.PRO_IMAGEN_PRINCIPAL_URL || '';
+          // Usamos minúsculas porque PostgreSQL devuelve las columnas así
+          const cat = categoriasBD[item.pro_cat_id] || categoriasBD[1];
+          const image = item.pro_imagen_principal_url || '';
 
           return {
-            id: String(item.PRO_ID),
-            name: item.PRO_NOMBRE || '',
-            price: Number(item.PRO_PRECIO_UNITARIO || 0),
+            id: String(item.pro_id),
+            name: item.pro_nombre || '',
+            price: Number(item.pro_precio_unitario || 0),
             image: image,
             images: image ? [image] : [],
-            size: item.PRO_PRESENTACION_TAMANO || '',
-            shortDesc: item.PRO_DESCRIPCION_CORTA || '',
-            isFeatured: item.PRO_ES_DESTACADO || false,
-            isBestSeller: item.PRO_ES_MAS_VENDIDO || false,
-            isNew: item.PRO_ES_NUEVO || false,
-            rating: Number(item.PRO_CALIFICACION_PROMEDIO || 0),
-            reviewsCount: Number(item.PRO_TOTAL_RESENAS || 0),
+            size: item.pro_presentacion_tamano || '',
+            shortDesc: item.pro_descripcion_corta || '',
+            isFeatured: item.pro_es_destacado || false,
+            isBestSeller: item.pro_es_mas_vendido || false,
+            isNew: item.pro_es_nuevo || false,
+            rating: Number(item.pro_calificacion_promedio || 0),
+            reviewsCount: Number(item.pro_total_resenas || 0),
 
-            // Lógica para que tus filtros de HTML funcionen igual
-            category: 'suplementos', // Categoría padre general
+            category: 'suplementos', 
             categoryName: 'Suplementos',
             subcategory: cat.slug !== 'suplementos' ? cat.slug : '',
             subcategoryName: cat.slug !== 'suplementos' ? cat.name : '',
 
-            ingredients: item.PRO_INGREDIENTES_ORIGEN || '',
-            usage: item.PRO_MODO_USO_SUGERIDO || ''
+            ingredients: item.pro_ingredientes_origen || '',
+            usage: item.pro_modo_uso_sugerido || ''
           };
         });
 
       } catch (err) {
-        catalogLoadError = err;
-        console.error('No se pudo cargar el cat?logo desde Supabase:', err);
+        console.error('Error ejecutando la consulta:', err);
         return [];
       }
     }
