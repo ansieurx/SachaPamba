@@ -1305,7 +1305,9 @@ body:not([data-cart-has-items="true"]) :is(#cart-side-drawer, #cart-drawer-toggl
 }
 
 #home-products-grid .product-card-image-box {
-  max-height: clamp(6rem, 26svh, 16rem);
+  width: 100%;
+  height: clamp(6rem, 26svh, 16rem);
+  aspect-ratio: auto;
 }
 
 #home-products-grid .product-card h3,
