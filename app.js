@@ -2579,6 +2579,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
     function updateAuthUI() {
       const user = getCurrentUser();
+      document.body.setAttribute('data-authenticated', user ? 'true' : 'false');
       const authLabel = document.getElementById('nav-auth-label');
       const authBtn = document.getElementById('nav-auth-btn');
       if (!authLabel || !authBtn) return;
