@@ -5,39 +5,70 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     const SUPABASE_KEY = 'sb_publishable_Ne56n5VP9ftiP4xQBJAM2g_Em9E2WXI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let catalogLoadError = null;
+
     async function cargarCatalogo() {
+      catalogLoadError = null;
       try {
+        // 1. Consulta simple y directa a la tabla producto (sin JOIN)
         const { data, error } = await supabase.from('producto').select('*');
+
         if (error) throw error;
-        return (data ?? []).map(producto => ({
-          id: String(producto.PRO_ID),
-          name: producto.PRO_NOMBRE ?? '',
-          size: producto.PRO_PRESENTACION_TAMANO ?? '',
-          price: Number(producto.PRO_PRECIO_UNITARIO ?? 0),
-          image: producto.PRO_IMAGEN_PRINCIPAL_URL ?? '',
-          isFeatured: producto.PRO_ES_DESTACADO ?? false,
-          isBestSeller: producto.PRO_ES_MAS_VENDIDO ?? false,
-          isNew: producto.PRO_ES_NUEVO ?? false,
-          rating: Number(producto.PRO_CALIFICACION_PROMEDIO ?? 0),
-          reviewsCount: Number(producto.PRO_TOTAL_RESENAS ?? 0),
-          shortDesc: producto.PRO_DESCRIPCION_CORTA ?? '',
-          images: producto.PRO_IMAGEN_PRINCIPAL_URL ? [producto.PRO_IMAGEN_PRINCIPAL_URL] : [],
-          // Estas columnas no se proporcionaron; conservar las propiedades de la UI.
-          category: '',
-          categoryName: '',
-          subcategory: '',
-          subcategoryName: '',
-          ingredients: '',
-          usage: ''
-        }));
-      } catch (error) {
-        console.error('No se pudo cargar el cat?logo desde Supabase:', error);
+
+        if (!data || data.length === 0) {
+          console.warn("Supabase respondió correctamente, pero la tabla está vacía o bloqueada por RLS.");
+          return [];
+        }
+
+        // 2. Mapeo duro de tus categorías (según los IDs de tu script SQL)
+        const categoriasBD = {
+          1: { slug: 'suplementos', name: 'Suplementos' },
+          2: { slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
+          3: { slug: 'remedios', name: 'Remedios' },
+          4: { slug: 'suplementos-polvo', name: 'Suplementos en Polvo' }
+        };
+
+        // 3. Traducción de columnas
+        return data.map(item => {
+          // Obtenemos la categoría según el PRO_CAT_ID (1, 2, 3 o 4)
+          const cat = categoriasBD[item.PRO_CAT_ID] || categoriasBD[1];
+          const image = item.PRO_IMAGEN_PRINCIPAL_URL || '';
+
+          return {
+            id: String(item.PRO_ID),
+            name: item.PRO_NOMBRE || '',
+            price: Number(item.PRO_PRECIO_UNITARIO || 0),
+            image: image,
+            images: image ? [image] : [],
+            size: item.PRO_PRESENTACION_TAMANO || '',
+            shortDesc: item.PRO_DESCRIPCION_CORTA || '',
+            isFeatured: item.PRO_ES_DESTACADO || false,
+            isBestSeller: item.PRO_ES_MAS_VENDIDO || false,
+            isNew: item.PRO_ES_NUEVO || false,
+            rating: Number(item.PRO_CALIFICACION_PROMEDIO || 0),
+            reviewsCount: Number(item.PRO_TOTAL_RESENAS || 0),
+
+            // Lógica para que tus filtros de HTML funcionen igual
+            category: 'suplementos', // Categoría padre general
+            categoryName: 'Suplementos',
+            subcategory: cat.slug !== 'suplementos' ? cat.slug : '',
+            subcategoryName: cat.slug !== 'suplementos' ? cat.name : '',
+
+            ingredients: item.PRO_INGREDIENTES_ORIGEN || '',
+            usage: item.PRO_MODO_USO_SUGERIDO || ''
+          };
+        });
+
+      } catch (err) {
+        catalogLoadError = err;
+        console.error('No se pudo cargar el cat?logo desde Supabase:', err);
         return [];
       }
     }
 
     // Esperar los datos antes de restaurar estados y renderizar la interfaz.
-    const PRODUCTS = await cargarCatalogo();
+    window.PRODUCTS = await cargarCatalogo();
+    const PRODUCTS = window.PRODUCTS;
 
     /* Estado del carrito y checkout */
     const CART_STORAGE_KEY = 'sacha_pamba_cart';
@@ -3308,6 +3339,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       if (!root) return;
       const id = new URLSearchParams(window.location.search).get('id') || 'maca';
       const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+      if (!product) return;
       document.title = `${product.name} — Sacha & Pamba`;
       bindValues(root, productValues(product));
       const gallery = product.images?.length ? product.images : [product.image];
@@ -3625,7 +3657,6 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
     // Los accesores conservan la misma referencia y el estado actual del m?dulo.
     Object.defineProperties(window, {
-      PRODUCTS: { configurable: true, enumerable: true, get: () => PRODUCTS },
       cart: { configurable: true, enumerable: true, get: () => cart, set: value => { cart = value; } },
       pendingCheckoutRedirect: { configurable: true, enumerable: true, get: () => pendingCheckoutRedirect, set: value => { pendingCheckoutRedirect = value; } },
       selectedPaymentMethod: { configurable: true, enumerable: true, get: () => selectedPaymentMethod, set: value => { selectedPaymentMethod = value; } },
@@ -3693,6 +3724,12 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       }
       updateCartUI();
       initApp();
+      if (catalogLoadError) {
+        const message = catalogLoadError.code === '42501'
+          ? 'No se pudo cargar el cat?logo: faltan permisos de lectura en Supabase.'
+          : 'No se pudo cargar el cat?logo. Vuelve a intentarlo recargando la p?gina.';
+        showToast(message, 'ph-warning');
+      }
     }
 
     if (document.readyState === 'loading') {
