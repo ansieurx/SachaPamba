@@ -350,9 +350,7 @@ html {
       transition: none !important;
     }
 
-    body.cart-drawer-open #cart-drawer-toggle-btn,
-    #cart-side-drawer.is-open #cart-drawer-toggle-btn,
-    #cart-side-drawer.translate-x-0 #cart-drawer-toggle-btn {
+    body.cart-drawer-open #cart-drawer-toggle-btn {
       display: none !important;
     }
 

@@ -28,11 +28,14 @@ const profile=${JSON.stringify(profile)}, products=${JSON.stringify(products)}, 
 const savedOrders=sessionStorage.getItem('a11y-orders');if(savedOrders)orders.splice(0,orders.length,...JSON.parse(savedOrders));
 const ok=data=>({data,error:null});
 const signed=()=>localStorage.getItem('a11y-authenticated')==='true';
+let catalogGate,authGate;
+const catalogReady=()=>!sessionStorage.getItem('a11y-delay-catalog')?Promise.resolve():(catalogGate||=new Promise(resolve=>{window.a11yReleaseCatalog=resolve}));
+const authReady=()=>!sessionStorage.getItem('a11y-delay-auth')?Promise.resolve():(authGate||=new Promise(resolve=>{window.a11yReleaseAuth=resolve}));
 const quoteFor=items=>{const subtotal=items.reduce((sum,item)=>sum+(products.find(p=>p.pro_id===item.id)?.pro_precio_unitario||0)*item.quantity,0),discountPercent=orders.length===0?15:0,discount=Math.round(subtotal*discountPercent)/100,total=Math.round((subtotal-discount)*100)/100,tax=Math.round(total*.15/1.15*100)/100;return {subtotal,discount,discountPercent,total,tax,net:Math.round((total-tax)*100)/100,count:items.reduce((s,i)=>s+i.quantity,0)}};
 const user=()=>({...profile,email_confirmed_at:'2026-01-01T00:00:00Z',user_metadata:profile});
 export function createClient(){return {
-  from(table){return {select(){const result=ok(table==='producto'?products:table==='imagen_producto'?photos:categories);return {then(resolve,reject){return Promise.resolve(result).then(resolve,reject)},order(){return Promise.resolve(result)}}}}},
-  auth:{getSession:async()=>ok({session:signed()?{user:user()}:null}),getUser:async()=>ok({user:signed()?user():null}),
+  from(table){return {select(){const result=ok(table==='producto'?products:table==='imagen_producto'?photos:categories);return {then(resolve,reject){return catalogReady().then(()=>result).then(resolve,reject)},order(){return catalogReady().then(()=>result)}}}}},
+  auth:{getSession:async()=>{await authReady();return ok({session:signed()?{user:user()}:null})},getUser:async()=>ok({user:signed()?user():null}),
     onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),
     signInWithPassword:async()=>{localStorage.setItem('a11y-authenticated','true');return ok({user:user()})},
     signOut:async()=>{localStorage.removeItem('a11y-authenticated');return ok(null)},signUp:async()=>ok({user:user(),session:null}),updateUser:async()=>ok({user:user()})},

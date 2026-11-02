@@ -79,6 +79,7 @@ let browser, socket;
   async function go(route) {
     await send('Page.navigate', { url: `${base}/${route}` });
     await waitFor(`location.href===${JSON.stringify(base + '/' + route)}&&document.readyState==='complete'${staticPage ? '' : "&&typeof window.navigateTo==='function'"}`);
+    if (!staticPage) await evaluate('window.appReady');
     await evaluate('document.fonts.ready.then(()=>true)');
     await evaluate(fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8'));
   }
@@ -105,6 +106,38 @@ let browser, socket;
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await go('index.html');
   await audit('guest-home');
+  await evaluate(`addToCart('maca');sessionStorage.setItem('sacha_cart_drawer_open','true');for(const key of Object.keys(sessionStorage))if(key.startsWith('sacha_catalog_'))sessionStorage.removeItem(key);sessionStorage.setItem('a11y-delay-catalog','true');sessionStorage.setItem('a11y-delay-auth','true')`);
+  await send('Page.navigate',{url:base+'/index.html'});
+  await waitFor(`document.readyState==='complete'&&typeof window.a11yReleaseCatalog==='function'&&typeof window.openCartDrawer==='function'`);
+  assert.equal(await evaluate(`document.getElementById('cart-side-drawer').getAttribute('aria-hidden')`),'false','Stored cart must render while both remote requests are still pending');
+  assert.equal(await evaluate(`document.querySelectorAll('#cart-drawer-items img').length>0`),true);
+  await pointerClick(`document.querySelector('.cart-drawer-header')`);
+  assert.equal(await evaluate(`document.getElementById('cart-side-drawer').inert`),true);
+  assert.equal(await evaluate(`document.getElementById('cart-drawer-toggle-btn').closest('[inert]')`),null);
+  await pointerClick(`document.getElementById('cart-drawer-toggle-btn')`);
+  assert.equal(await evaluate(`document.getElementById('cart-side-drawer').inert`),false,'Arrow must reopen before catalog/auth finish');
+  await evaluate(`collapseCartDrawer();document.getElementById('cart-drawer-toggle-btn').focus()`);await key('Enter');
+  assert.equal(await evaluate(`document.activeElement.classList.contains('cart-drawer-header')`),true,'Early keyboard open must focus the visible panel');
+  await evaluate(`window.drawerImage=document.querySelector('#cart-drawer-items img');openCartDrawer()`);
+  assert.equal(await evaluate(`drawerImage===document.querySelector('#cart-drawer-items img')`),true,'Opening must reuse already loaded images');
+  await evaluate(`window.a11yReleaseCatalog()`);
+  await waitFor(`window.PRODUCTS.length>0&&document.querySelector('#home-products-grid [data-product-detail-link]')`);
+  assert.equal(await evaluate(`typeof window.a11yReleaseAuth`),'function','Catalog rendering must not wait for session restoration');
+  await evaluate(`window.a11yReleaseAuth();sessionStorage.removeItem('a11y-delay-catalog');sessionStorage.removeItem('a11y-delay-auth')`);
+  await evaluate('window.appReady');
+  for(const width of [320,768,1440]) {
+    await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<768});
+    await evaluate('closeCartDrawer(true)');
+    await pointerClick(`document.getElementById('cart-drawer-toggle-btn')`);
+    assert.equal(await evaluate(`document.getElementById('cart-side-drawer').getAttribute('aria-hidden')`),'false');
+    await pointerClick(`document.querySelector('.cart-drawer-header')`);
+    await evaluate(`document.getElementById('cart-drawer-toggle-btn').focus()`);await key('Enter');
+    assert.equal(await evaluate(`document.getElementById('cart-side-drawer').getAttribute('aria-hidden')`),'false');
+    await key('Escape');
+  }
+  console.log('DRAWER: saved summary before catalog/auth, products before auth, reusable image nodes, and arrow mouse/keyboard reopen passed at 320/768/1440px.');
+  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+  await evaluate('clearCart();closeCartDrawer()');
   await evaluate(`localStorage.setItem('a11y-authenticated','true');localStorage.setItem('sacha_pamba_favorites','["maca"]');addToCart('maca')`);
   for (const route of ['index.html','categoria.html','producto.html?id=maca','carrito.html','cuenta.html?tab=personal','cuenta.html?tab=favorites','checkout-retiro.html','checkout-pago.html','checkout-confirmacion.html','ayuda.html','politicas-retiro.html']) {
     await go(route);

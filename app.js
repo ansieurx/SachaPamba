@@ -263,9 +263,9 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     // Esperar los datos antes de restaurar estados y renderizar la interfaz.
-    window.PRODUCTS = await cargarCatalogo();
-    const PRODUCTS = window.PRODUCTS;
-    renderCatalogCategories();
+    const catalogReady = cargarCatalogo();
+    let PRODUCTS = [];
+    window.PRODUCTS = PRODUCTS;
 
     /* Estado del carrito y checkout */
     const CART_STORAGE_KEY = 'sacha_pamba_cart';
@@ -381,6 +381,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       drawer.classList.add('translate-x-0', 'is-open');
       drawer.inert = false;
       drawer.setAttribute('aria-hidden', 'false');
+      toggleBtn?.setAttribute('aria-expanded', 'true');
       document.body.classList.add('cart-drawer-open');
       sessionStorage.setItem('sacha_cart_drawer_open', 'true');
 
@@ -390,7 +391,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
 
       // Si se abre mediante navegación por teclado, enfocar la flecha para ocultar
-      if (document.body.classList.contains('user-is-tabbing')) {
+      if (document.activeElement === toggleBtn || document.body.classList.contains('user-is-tabbing')) {
         const closeBtn = drawer.querySelector('.cart-drawer-header');
         if (closeBtn) closeBtn.focus();
       }
@@ -406,55 +407,23 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       drawer.classList.add('translate-x-full');
       drawer.inert = true;
       drawer.setAttribute('aria-hidden', 'true');
+      toggleBtn?.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('cart-drawer-open');
       sessionStorage.removeItem('sacha_cart_drawer_open');
       sessionStorage.removeItem('sacha_cart_drawer_dismissed');
       sessionStorage.setItem('sacha_cart_drawer_collapsed', 'true');
 
       // Al colapsar con la flecha, sí se muestra la pestaña con la flecha en el lateral
-      const currentPageUrl = getCurrentPageUrl() || 'index.html';
-      if (toggleBtn && !currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
-        toggleBtn.classList.remove('hidden');
-      }
+      toggleBtn?.classList.toggle('hidden', /^(carrito|checkout)/.test(getPageName()));
 
       // Si se cierra explícitamente pulsando Enter en la flecha de ocultar, devolver el foco a la flecha de despliegue
-      if (returnFocus && toggleBtn) {
+      if ((returnFocus || drawer.contains(document.activeElement)) && toggleBtn) {
         toggleBtn.focus();
       }
     }
 
-    function closeCartDrawer(dismissArrow = false) {
-      const drawer = document.getElementById('cart-side-drawer');
-      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
-      if (!drawer) return;
-
-      triggerDrawerSlide(drawer);
-      drawer.classList.remove('translate-x-0', 'is-open');
-      drawer.classList.add('translate-x-full');
-      drawer.inert = true;
-      drawer.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('cart-drawer-open');
-      sessionStorage.removeItem('sacha_cart_drawer_open');
-
-      if (dismissArrow) {
-        // Al hacer clic sobre la X, se cierra y NO se muestra la flecha en el desplegable
-        sessionStorage.setItem('sacha_cart_drawer_dismissed', 'true');
-        sessionStorage.removeItem('sacha_cart_drawer_collapsed');
-        if (toggleBtn) {
-          toggleBtn.classList.add('hidden');
-        }
-      } else {
-        const isDismissed = sessionStorage.getItem('sacha_cart_drawer_dismissed') === 'true';
-        const isCollapsed = sessionStorage.getItem('sacha_cart_drawer_collapsed') === 'true';
-        const currentPageUrl = getCurrentPageUrl() || 'index.html';
-        if (toggleBtn) {
-          if (!isDismissed && isCollapsed && !currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {
-            toggleBtn.classList.remove('hidden');
-          } else {
-            toggleBtn.classList.add('hidden');
-          }
-        }
-      }
+    function closeCartDrawer() {
+      collapseCartDrawer();
     }
 
     let toastTimeout = null;
@@ -3341,8 +3310,6 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
       updateAuthUI();
       updateActiveNav(getPageName());
-      updateCatalogCounters();
-      initializeCatalogPage();
       initializePurchasePage();
       initializeAccountPage();
       setupDynamicListeners();
@@ -3526,6 +3493,9 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (count) count.textContent = totals.count;
       if (total) total.textContent = `$${totals.total}`;
       if (!items) return;
+      const signature = JSON.stringify(cart);
+      if (items.dataset.cartSignature === signature) return;
+      items.dataset.cartSignature = signature;
       const scrollTop = items.scrollTop;
       items.replaceChildren(...(cart.length ? cart.map(item => cloneTemplate('cart-drawer-item-template', itemValues(item))) : [cloneTemplate('cart-drawer-empty-template')]));
       items.scrollTop = scrollTop;
@@ -4060,6 +4030,25 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     scheduleFavoriteUndoExpiration();
 
     async function iniciarConCatalogo() {
+      // El carrito guardado no necesita esperar a las consultas de catálogo o sesión.
+      updateCartBadge();
+      updateCartDrawerUI();
+      if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart.length
+        && !/^(carrito|checkout)/.test(getPageName())) openCartDrawer();
+      else closeCartDrawer();
+
+      window.PRODUCTS = await catalogReady;
+      PRODUCTS = window.PRODUCTS;
+      sanitizeCart();
+      renderCatalogCategories();
+      updateCatalogCounters();
+      initializeCatalogPage();
+      const grid = document.getElementById('home-products-grid');
+      if (grid) {
+        grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured).slice(0, 4)
+          .map(product => cloneTemplate('product-card-template', productValues(product))));
+      }
+      updateCartDrawerUI();
       await initialAuthReady;
       const pageUrl = new URL(window.location.href);
       if (pageUrl.searchParams.get('registro') === 'confirmado') {
@@ -4069,11 +4058,6 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         pageUrl.hash = '';
         history.replaceState(null, '', pageUrl.pathname + pageUrl.search);
         showToast('Correo confirmado. Ya puedes iniciar sesión.', 'ph-envelope');
-      }
-      const grid = document.getElementById('home-products-grid');
-      if (grid) {
-        grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured).slice(0, 4)
-          .map(product => cloneTemplate('product-card-template', productValues(product))));
       }
       updateCartUI();
       initApp();
@@ -4111,7 +4095,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     });
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', iniciarConCatalogo, { once: true });
+      document.addEventListener('DOMContentLoaded', () => { window.appReady = iniciarConCatalogo(); }, { once: true });
     } else {
-      iniciarConCatalogo();
+      window.appReady = iniciarConCatalogo();
     }

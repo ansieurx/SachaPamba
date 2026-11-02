@@ -1864,13 +1864,13 @@
   </footer>
 
   <!-- Desplegable Lateral Delgado del Carrito (Ultra Delgado, solo imagen del producto) -->
-  <aside id="cart-side-drawer"   aria-label="Carrito de compras lateral" aria-hidden="true" class="fixed top-0 right-0 h-full w-[140px] z-[70] bg-[#FEFAE0] flex flex-col transform translate-x-full box-border" inert="">
+
     <!-- Pestaña con Flecha para desplegar y ocultar el carrito en cualquier momento -->
     <button 
       type="button" 
       id="cart-drawer-toggle-btn"
       onclick="toggleCartDrawer()" 
-      class="absolute right-full top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-8 h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-50 select-none group"
+      class="fixed right-0 top-1/2 -translate-y-1/2 bg-[#5A6B4E] hover:bg-[#4d5c42] text-brand-cream rounded-l-xl shadow-xl w-8 h-16 flex items-center justify-center cursor-pointer transition-colors active:scale-95 z-[70] select-none group"
       aria-expanded="false"
       aria-controls="cart-side-drawer"
       aria-label="Abrir carrito lateral"
@@ -1878,6 +1878,7 @@
     >
       <i aria-hidden="true" id="cart-drawer-caret" class="ph ph-caret-left text-xl font-bold text-brand-cream transition-transform"></i>
     </button>
+  <aside id="cart-side-drawer"   aria-label="Carrito de compras lateral" aria-hidden="true" class="fixed top-0 right-0 h-full w-[140px] z-[70] bg-[#FEFAE0] flex flex-col transform translate-x-full box-border" inert="">
 
     <!-- Barra verde superior (#5A6B4E) completamente clickeable para ocultar/colapsar el carrito -->
     <button 

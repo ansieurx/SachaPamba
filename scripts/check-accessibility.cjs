@@ -22,6 +22,11 @@ const assert = require('node:assert/strict');
       if (attr.id) { assert(!ids.has(attr.id), `${file}: duplicate ${attr.id}`); ids.set(attr.id, node); }
       if (node.tagName === 'label' && attr.for) labels.add(attr.for);
     }
+    const drawerToggle = ids.get('cart-drawer-toggle-btn');
+    assert(drawerToggle, `${file}: missing cart opener`);
+    for (let parent = drawerToggle.parentNode; parent?.tagName; parent = parent.parentNode) {
+      assert(parent !== ids.get('cart-side-drawer'), `${file}: the cart opener must remain outside the inert panel`);
+    }
     function alternativeText(node) {
       if (node.nodeName === '#text') return node.value;
       const attr = attributes(node);
