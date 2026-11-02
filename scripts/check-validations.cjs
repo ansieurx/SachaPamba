@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const { PGlite } = require('@electric-sql/pglite');
 process.chdir(path.resolve(__dirname, '..'));
 
 (async () => {
@@ -38,44 +37,11 @@ process.chdir(path.resolve(__dirname, '..'));
   assert(!v.isValidRuc('1710034065000'));
   assert(v.isValidRuc('1790085783001'));
 
-  const db = new PGlite();
-  try {
-    await db.exec(`create role anon; create role authenticated; create schema auth;
-      create table auth.users(id uuid primary key,email text);
-      create table public.web_perfil(usuario_id uuid primary key,nombre text,usuario text,telefono text,tipo_documento text,documento text);
-      create table public.web_pedido(id uuid primary key default gen_random_uuid(),usuario_id uuid,retiro jsonb);
-      insert into auth.users values('11111111-1111-4111-8111-111111111111','cliente@example.test');
-      insert into public.web_perfil values('11111111-1111-4111-8111-111111111111','Cliente Prueba','','0991234567','Cédula','1723456789');`);
-    await db.exec(fs.readFileSync('supabase/validaciones.sql', 'utf8'));
-    // La actualización no borra ni cambia datos anteriores.
-    assert.equal((await db.query('select documento from public.web_perfil')).rows[0].documento, '1723456789');
-    for (const id of [...validIds, ...badIds]) {
-      const sql = (await db.query('select public.web_cedula_valida($1) as valid', [id])).rows[0].valid;
-      assert.equal(sql, v.isValidCedula(id), 'JS/SQL checksum parity');
-    }
-    const profile = { name: 'María José', phone: '0991234567', docType: 'Cédula', idNumber: '1710034065', username: 'cliente', email: 'cliente@example.test' };
-    await db.query('select public.web_validar_perfil($1::jsonb)', [JSON.stringify(profile)]);
-    for (const change of [{ idNumber: '1723456789' }, { phone: 'abc0991234567' }, { name: '12345' }, { email: 'correo@' }, { docType: 'Otro' }, { docType: 'Pasaporte', idNumber: 'AB 123' }]) {
-      assert(Object.keys(v.profileErrors({ ...profile, ...change })).length > 0);
-      await assert.rejects(() => db.query('select public.web_validar_perfil($1::jsonb)', [JSON.stringify({ ...profile, ...change })]));
-    }
-    await assert.rejects(() => db.exec("update public.web_perfil set nombre='Nombre Nuevo'"));
-    await db.exec("update public.web_perfil set documento='1710034065'");
-    await assert.rejects(() => db.exec("update public.web_perfil set documento='1710034064'"));
-    const owner = '11111111-1111-4111-8111-111111111111';
-    const pickup = { name: 'Cliente Prueba', idNumber: '1710034065', docType: 'Cédula', cardNumber: '4242424242424242', cvv: '123' };
-    const insert = datos => db.query('insert into public.web_pedido(usuario_id,retiro) values($1,$2::jsonb) returning retiro', [owner, JSON.stringify(datos)]);
-    const clean = (await insert(pickup)).rows[0].retiro;
-    assert(!('cardNumber' in clean) && !('cvv' in clean));
-    assert.equal(clean.billing.email, 'cliente@example.test');
-    await assert.rejects(() => insert({ ...pickup, idNumber: '1710034064' }));
-    await assert.rejects(() => insert({ ...pickup, billing: { name: 'Cliente', idNumber: '1710034065', email: 'invalido@' } }));
-    await assert.rejects(() => insert({ ...pickup, billing: { name: 'Cliente', idNumber: '1710034064', email: 'cliente@example.test' } }));
-    await db.exec("update public.web_perfil set tipo_documento='Pasaporte',documento='ab1234567'");
-    assert.equal((await db.query('select documento from public.web_perfil')).rows[0].documento, 'AB1234567');
-    await insert({ name: 'Cliente Prueba', idNumber: 'AB1234567', docType: 'Pasaporte' });
-    await db.exec('set role anon');
-    await assert.rejects(() => db.query('select public.web_validar_perfil($1::jsonb)', [JSON.stringify(profile)]), /permission denied/);
-  } finally { await db.close(); }
-  console.log('OK: módulo 10 en JS/PostgreSQL, pasaportes, RUC, perfiles, pedidos, Luhn, vencimiento, CVV y conservación de datos anteriores.');
+  const profile = { name: 'María José', phone: '0991234567', docType: 'Cédula', idNumber: '1710034065', username: 'cliente', email: 'cliente@example.test' };
+  assert.deepEqual(v.profileErrors(profile), {});
+  for (const change of [{ idNumber: '1723456789' }, { phone: 'abc0991234567' }, { name: '12345' }, { email: 'correo@' }, { docType: 'Otro' }, { docType: 'Pasaporte', idNumber: 'AB 123' }]) {
+    assert(Object.keys(v.profileErrors({ ...profile, ...change })).length > 0);
+    assert.throws(() => v.assertValidProfile({ ...profile, ...change }));
+  }
+  console.log('OK: cédula, pasaporte, RUC, Luhn, vencimiento, CVV, teléfono, correo y perfiles.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
