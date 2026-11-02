@@ -1231,7 +1231,9 @@ button[type="submit"][aria-label="Buscar productos"] { min-width: 24px; min-heig
 #hero-carousel .hero-slide > div[class*="bg-black/"] { background-color: rgb(0 0 0 / .65); }
 #cart-side-drawer[inert][aria-hidden="true"] { visibility: hidden; }
 
-body:not([data-cart-has-items="true"]) :is(#cart-side-drawer, #cart-drawer-toggle-btn) {
+body:not([data-cart-has-items="true"]) #cart-side-drawer,
+body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
+#cart-drawer-toggle-btn[hidden] {
   display: none !important;
 }
 

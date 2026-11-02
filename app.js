@@ -353,6 +353,17 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
     }
 
+    function updateCartDrawerToggle() {
+      const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
+      if (!toggleBtn) return;
+      const hidden = !cart.length || document.body.classList.contains('cart-drawer-open')
+        || /^(carrito|checkout)/.test(getPageName());
+      toggleBtn.hidden = hidden;
+      toggleBtn.classList.toggle('hidden', hidden);
+      if (hidden) toggleBtn.style.setProperty('display', 'none', 'important');
+      else toggleBtn.style.removeProperty('display');
+    }
+
     let drawerSlideTimeout = null;
     function triggerDrawerSlide(drawer) {
       if (!drawer) return;
@@ -387,9 +398,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       sessionStorage.setItem('sacha_cart_drawer_open', 'true');
 
       // Quitar el botón de la flecha del lado cuando el carrito esté desplegado
-      if (toggleBtn) {
-        toggleBtn.classList.add('hidden');
-      }
+      updateCartDrawerToggle();
 
       // Si se abre mediante navegación por teclado, enfocar la flecha para ocultar
       if (document.activeElement === toggleBtn || document.body.classList.contains('user-is-tabbing')) {
@@ -415,7 +424,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       sessionStorage.setItem('sacha_cart_drawer_collapsed', 'true');
 
       // Al colapsar con la flecha, sí se muestra la pestaña con la flecha en el lateral
-      toggleBtn?.classList.toggle('hidden', /^(carrito|checkout)/.test(getPageName()));
+      updateCartDrawerToggle();
 
       // Si se cierra explícitamente pulsando Enter en la flecha de ocultar, devolver el foco a la flecha de despliegue
       if ((returnFocus || drawer.contains(document.activeElement)) && toggleBtn) {
@@ -3548,6 +3557,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (!cart.length && document.getElementById('cart-side-drawer')?.getAttribute('aria-hidden') === 'false') {
         collapseCartDrawer();
       }
+      updateCartDrawerToggle();
       const items = document.getElementById('cart-drawer-items');
       const totals = cartValues();
       const count = document.getElementById('cart-drawer-count');
