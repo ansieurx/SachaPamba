@@ -83,6 +83,10 @@ let browser, socket;
     await evaluate(fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8'));
   }
   async function audit(name) {
+    // Al finalizar una compra la navegación carga un documento sin la instancia anterior de axe.
+    if (await evaluate('typeof axe') === 'undefined') await evaluate(fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8'));
+    // Medir el estado visible final, después de las transiciones finitas de entrada o favoritos.
+    await evaluate(`Promise.all(document.getAnimations().filter(animation=>animation.playState==='running'&&animation.effect?.getComputedTiming().iterations!==Infinity).map(animation=>animation.finished.catch(()=>{})))`);
     const report = await evaluate(`axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice']}}).then(result=>({violations:result.violations.map(rule=>({id:rule.id,impact:rule.impact,help:rule.help,tags:rule.tags,nodes:rule.nodes.map(node=>({target:node.target,html:node.html,summary:node.failureSummary}))})),incomplete:result.incomplete.map(rule=>({id:rule.id,nodes:rule.nodes.map(node=>node.target)}))}))`);
     const extra = await evaluate(`({missingAlt:[...document.querySelectorAll('img:not([alt])')].map(el=>el.outerHTML),duplicateIds:[...document.querySelectorAll('[id]')].map(el=>el.id).filter((id,index,ids)=>id&&ids.indexOf(id)!==index),overflow:document.documentElement.scrollWidth>innerWidth,headings:[...document.querySelectorAll('main h1,main h2,main h3')].filter(el=>el.getClientRects().length).map(el=>({tag:el.tagName,text:el.textContent.trim().slice(0,80),hidden:el.getAttribute('aria-hidden')}))})`);
     extra.unnamedControls = await evaluate(`(()=>{
@@ -246,6 +250,29 @@ let browser, socket;
   const screenshot = await send('Page.captureScreenshot', { format: 'png' });
   fs.writeFileSync(path.join(scratch, 'a11y-mobile-spacing.png'), Buffer.from(screenshot.data, 'base64'));
   console.log('KEYBOARD: skip link, tab panels, modal focus trap and return, validation errors, menu Escape, carousel focus/pause/reduced motion passed.');
+  await evaluate('clearCart();addToCart("maca")');
+  await go('checkout-pago.html');
+  await evaluate(`selectPaymentOption('tarjeta');
+    for(const [id,value] of Object.entries({'checkout-card-num':'4242424242424243','checkout-card-exp':'12/99','checkout-card-cvv':'123','checkout-inv-name':'Cliente Prueba','checkout-inv-id':'1710034065','checkout-inv-email':'cliente@example.test'}))document.getElementById(id).value=value;
+    sessionStorage.removeItem('a11y-order-request');processPayment()`);
+  assert.equal(await evaluate(`document.getElementById('checkout-card-num').getAttribute('aria-invalid')`),'true');
+  assert.equal(await evaluate(`sessionStorage.getItem('a11y-order-request')`),null,'Invalid Luhn must not send an order');
+  await audit('invalid-card-luhn');
+  await evaluate(`document.getElementById('checkout-card-num').value='4242424242424242';processPayment()`);
+  await waitFor(`location.pathname.endsWith('/checkout-confirmacion.html')&&typeof window.navigateTo==='function'`);
+  assert.equal(await evaluate(`document.querySelector('[aria-label="Resumen del pedido confirmado"] [data-bind-text="{{method}}"]')?.textContent`),'Tarjeta (pago pendiente)');
+  const cardRequest = await evaluate(`JSON.parse(sessionStorage.getItem('a11y-order-request'))`);
+  assert.equal(cardRequest.p_metodo,'tarjeta');
+  assert(!JSON.stringify(cardRequest).includes('4242424242424242'),'Card number must not be sent to Supabase');
+  assert(!Object.hasOwn(cardRequest.p_retiro,'cvv'),'CVV must not be sent to Supabase');
+  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('sacha_pamba_cart')).length`),0);
+  await audit('card-order-confirmation');
+  await evaluate('addToCart("maca")');await go('checkout-pago.html');
+  await evaluate(`selectPaymentOption('tienda');for(const [id,value] of Object.entries({'checkout-inv-name':'Cliente Prueba','checkout-inv-id':'1710034065','checkout-inv-email':'cliente@example.test'}))document.getElementById(id).value=value;processPayment()`);
+  await waitFor(`location.pathname.endsWith('/checkout-confirmacion.html')&&typeof window.navigateTo==='function'`);
+  assert.equal(await evaluate(`JSON.parse(sessionStorage.getItem('a11y-order-request')).p_metodo`),'tienda');
+  await audit('store-order-confirmation');
+  console.log('CHECKOUT: invalid Luhn blocked, valid card continues without provider, card data excluded, and store payment preserved.');
   staticPage = true;
   for (const route of fs.readdirSync(root).filter(file => file.endsWith('.html'))) { await go(route); await audit('static/' + route); }
   const name = process.argv.includes('--baseline') ? 'a11y-before.json' : 'a11y-after.json';

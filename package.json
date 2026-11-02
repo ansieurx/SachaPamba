@@ -13,7 +13,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build-assets.cjs",
-    "check": "node --check app.js && node scripts/check-assets.cjs && node scripts/check-accessibility.cjs && node scripts/check-business.cjs && node scripts/check-validations.cjs",
+    "check": "node --check app.js && node scripts/check-assets.cjs && node scripts/check-accessibility.cjs && node scripts/check-business.cjs && node scripts/check-validations.cjs && node scripts/check-card-orders.cjs",
     "audit:accessibility": "node scripts/audit-accessibility.cjs",
     "optimize:images": "node scripts/optimize-product-images.cjs",
     "update:supabase": "node scripts/update-supabase-client.cjs",

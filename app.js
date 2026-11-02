@@ -2010,7 +2010,8 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         sessionStorage.removeItem('sacha_web_checkout_request');
         sessionStorage.removeItem('sacha_web_pickup');
         sessionStorage.removeItem('sacha_checkout_payment_method');
-        showToast('Pedido ' + order.number + ' registrado para pagar al retirar.', 'ph-check-circle');
+        showToast('Pedido ' + order.number + (selectedPaymentMethod === 'tarjeta'
+          ? ' registrado. Pago pendiente.' : ' registrado para pagar al retirar.'), 'ph-check-circle');
         navigateTo('checkout-confirmacion.html');
       });
     }
