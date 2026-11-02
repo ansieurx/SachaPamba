@@ -124,6 +124,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         const updateMode = () => {
           const input = document.getElementById(`${prefix}-id`);
           if (input) {
+            clearFieldValidation(`${prefix}-id`);
             input.setCustomValidity('');
             input.removeAttribute('aria-invalid');
             input.inputMode = select.value === 'Pasaporte' ? 'text' : 'numeric';
@@ -785,9 +786,14 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         productId = productIdOrIndex;
         targetIndex = index;
       }
-      if (event && event.target && (event.target.closest('button') || event.target.closest('a'))) return;
+      const control = event?.target?.closest('button,a');
+      if (control && !control.matches('[data-product-image-action]')) return;
       if (detailImageClickTimer) {
         clearTimeout(detailImageClickTimer);
+      }
+      if (event?.detail === 0) {
+        openImageLightbox(productId, typeof targetIndex === 'number' ? targetIndex : getCurrentImageIndex());
+        return;
       }
       detailImageClickTimer = setTimeout(() => {
         const finalIndex = typeof targetIndex === 'number' ? targetIndex : getCurrentImageIndex();
@@ -1421,6 +1427,25 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
       saveCatalogPosition(id);
       navigateTo(`producto.html?id=${id}`);
+    }
+
+    function isProductImagePointer(event, link) {
+      const image = link.closest('.product-linked-card')?.querySelector('.product-card-image-box');
+      if (!image) return false;
+      const rect = image.getBoundingClientRect();
+      return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    }
+
+    function handleProductLinkClick(event, id) {
+      saveCatalogPosition(id);
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      // Enter conserva la navegación nativa; el ratón mantiene el doble clic opcional.
+      if (event.detail > 0 && isProductImagePointer(event, event.currentTarget)) {
+        event.preventDefault();
+        clearTimeout(cardImageClickTimer);
+        const href = event.currentTarget.getAttribute('href');
+        cardImageClickTimer = setTimeout(() => navigateTo(href), 260);
+      }
     }
 
     function adjustProductQty(delta) {
@@ -2122,7 +2147,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
     function updateActiveNav(path = getPageName()) {
       const currentUrl = new URL(window.location.href);
-      const links = [...document.querySelectorAll('.nav-section-link')];
+      const links = [...document.querySelectorAll('a.nav-section-link')];
       const candidates = links.filter(link => {
         const href = link.getAttribute('href');
         if (!href) return false;
@@ -3181,6 +3206,14 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     // Cada archivo conserva su HTML; actualizar los datos del flujo de compra al cargar.
 
     function setupAccessibleInteractions() {
+      document.addEventListener('dblclick', event => {
+        const link = event.target.closest('[data-product-detail-link]');
+        if (link && isProductImagePointer(event, link)) triggerFavoriteDblClick(link.dataset.productId, event);
+        const imageAction = event.target.closest('[data-product-image-action]');
+        if (imageAction) triggerFavoriteDblClick(imageAction.dataset.productId, event);
+      });
+      document.getElementById('sel_cat_fav')?.addEventListener('change', event => setFavFilterCategory(event.target.value));
+      document.getElementById('sel_subcat_fav')?.addEventListener('change', event => setFavFilterSubcategory(event.target.value));
       const closeDialog = {
         'auth-modal': closeAuthModal,
         'review-modal': closeReviewModal,
@@ -3256,12 +3289,6 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
           navBtn?.focus();
         }
         if (event.key === 'Escape' && event.target.closest('#cart-side-drawer')) collapseCartDrawer(false, true);
-        if (event.target.id === 'main-product-img' && ['Enter',' '].includes(event.key)) {
-          event.preventDefault();
-          const id = new URLSearchParams(location.search).get('id') || 'maca';
-          const product = PRODUCTS.find(item => item.id === id) || PRODUCTS[0];
-          openImageLightbox(product.id, getCurrentImageIndex());
-        }
       }, true);
       document.addEventListener('focusin', event => {
         const dialog = accessibleDialogs.at(-1)?.dialog;
@@ -3852,6 +3879,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       saveCatalogPosition,
       handleBackToProducts,
       handleProductCardClick,
+      handleProductLinkClick,
       adjustProductQty,
       getCurrentImageIndex,
       switchProductImage,

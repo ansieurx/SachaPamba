@@ -199,7 +199,8 @@ html {
       flex-shrink: 0 !important;
     }
 
-    .product-card-actions a {
+    .product-card-actions a,
+    .product-card-actions > [aria-hidden="true"] {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -1170,6 +1171,16 @@ main .text-brand-forest\/70 { color: #3e4a2f; }
 [data-order-level] { opacity: 1 !important; }
 .star-btn { color: #775414; min-width: 2rem; min-height: 2rem; }
 [data-review-stars] { color: #775414; }
+.product-linked-card { position: relative; isolation: isolate; }
+.product-image-action { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; border: 0; background: transparent; cursor: zoom-in; }
+.product-detail-link { position: absolute; inset: 0; z-index: 1; display: block; border-radius: inherit; }
+.product-linked-card button { z-index: 2 !important; }
+.product-linked-card .product-card-actions button,
+.product-linked-card .btn_agregar_fav { position: relative; }
+body .product-detail-link:focus-visible {
+  outline-offset: -3px !important;
+  box-shadow: inset 0 0 0 3px #FACC15, inset 0 0 0 6px #283618 !important;
+}
 button[type="submit"][aria-label="Buscar productos"] { min-width: 24px; min-height: 24px; }
 #cart-side-drawer .cart-qty-btn { width: 24px !important; min-width: 24px !important; max-width: 24px !important; }
 #cart-drawer-toggle-btn { min-width: 24px !important; min-height: 24px !important; }

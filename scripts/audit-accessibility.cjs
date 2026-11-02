@@ -138,10 +138,43 @@ let browser, socket;
   await go('index.html');await evaluate('openNavCategoryMenu()');await audit('mobile/categories-open');
   // Native key events verify focus behavior, rather than synthesizing a click for Tab.
   async function key(key, modifiers = 0) {
-    const extra = key === 'Enter' ? { code: 'Enter', windowsVirtualKeyCode: 13 } : key === 'Tab' ? { code: 'Tab', windowsVirtualKeyCode: 9 } : {};
+    const extra = key === 'Enter' ? { code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' } : key === 'Tab' ? { code: 'Tab', windowsVirtualKeyCode: 9 } : {};
     await send('Input.dispatchKeyEvent', { type: 'keyDown', key, modifiers, ...extra });
     await send('Input.dispatchKeyEvent', { type: 'keyUp', key, modifiers, ...extra });
   }
+  async function pointerClick(expression, count = 1) {
+    const point = await evaluate(`(()=>{const el=${expression};el.scrollIntoView({block:'center',behavior:'instant'});const r=el.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
+    for (let clickCount = 1; clickCount <= count; clickCount++) {
+      await send('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount, ...point });
+      await send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount, ...point });
+    }
+  }
+  for (const width of [320, 768, 1440]) {
+    await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width < 768 });
+    await go('index.html');
+    await evaluate(`window.testCard=document.querySelector('.product-linked-card');window.testProductId=testCard.querySelector('[data-product-detail-link]').dataset.productId`);
+    assert.equal(await evaluate(`testCard.querySelectorAll('a[href]').length`), 1, 'Each product card needs one destination link');
+    const cartBefore = await evaluate(`localStorage.getItem('sacha_pamba_cart')`);
+    await pointerClick(`testCard.querySelector('.product-card-actions button')`);
+    assert.notEqual(await evaluate(`localStorage.getItem('sacha_pamba_cart')`), cartBefore, 'The detail link must not block Add');
+    assert.equal(await evaluate(`location.pathname.endsWith('/index.html')`), true);
+    await evaluate('collapseCartDrawer(true)'); await sleep(350);
+    const favoritesBefore = await evaluate(`localStorage.getItem('sacha_pamba_favorites')`);
+    await pointerClick(`testCard.querySelector('.card-fav-btn')`);
+    assert.notEqual(await evaluate(`localStorage.getItem('sacha_pamba_favorites')`), favoritesBefore, 'The detail link must not block favorites');
+    await pointerClick(`testCard.querySelector('.product-card-image-box')`, 2);
+    await sleep(350);
+    assert.equal(await evaluate(`JSON.parse(localStorage.getItem('sacha_pamba_favorites')).includes(testProductId)`), true);
+    assert.equal(await evaluate(`location.pathname.endsWith('/index.html')`), true, 'Double click must favorite without navigating');
+    await pointerClick(`testCard.querySelector('.product-card-actions > [aria-hidden="true"]')`);
+    await waitFor(`location.pathname.endsWith('/producto.html')&&typeof window.navigateTo==='function'`);
+  }
+  await go('index.html');
+  await evaluate(`document.querySelector('[data-product-detail-link]').focus()`); await key('Enter');
+  await waitFor(`location.pathname.endsWith('/producto.html')&&typeof window.navigateTo==='function'`);
+  console.log('CARDS: one link, native Enter, Ver, Add, favorites and image double click passed at 320, 768 and 1440 px.');
+  await send('Emulation.setDeviceMetricsOverride', { width: 320, height: 800, deviceScaleFactor: 1, mobile: true });
   await go('index.html');
   await key('Tab');
   assert.equal(await evaluate('document.activeElement.classList.contains("skip-link")'), true, 'Skip link must be first in keyboard order');
@@ -190,10 +223,10 @@ let browser, socket;
   await key('ArrowUp');await key('Escape');
   assert.equal(await evaluate('document.activeElement.id'), 'status-btn-latest');
   await go('producto.html?id=maca');
-  await evaluate('document.getElementById("main-product-img").focus()');await key('Enter');
+  await evaluate('document.getElementById("main-product-image-button").focus()');await key('Enter');
   await waitFor('!document.getElementById("image-lightbox-modal").classList.contains("hidden")');
   await key('ArrowRight');await waitFor('document.getElementById("lightbox-image-counter").textContent.startsWith("(2/")');await key('Escape');
-  assert.equal(await evaluate('document.activeElement.id'), 'main-product-img');
+  assert.equal(await evaluate('document.activeElement.id'), 'main-product-image-button');
   await go('checkout-pago.html');
   await evaluate('document.getElementById("pay-opt-tarjeta").focus()');await key('ArrowRight');
   assert.equal(await evaluate('document.getElementById("pay-opt-tienda").getAttribute("aria-checked")'), 'true');

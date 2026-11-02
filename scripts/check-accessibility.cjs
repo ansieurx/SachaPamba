@@ -42,6 +42,10 @@ const assert = require('node:assert/strict');
     for (const node of nodes) {
       const attr = attributes(node);
       // Include controls in closed dialogs and inactive panels: they must already be named.
+      if (attr.onclick) assert(['a','button','input','select','textarea','form'].includes(node.tagName) || attr.tabindex === '0', `${file}: pointer-only click on ${node.tagName} ${attr.id || ''}`);
+      assert(!attr.ondblclick, `${file}: inline double-click handler without a native primary action`);
+      if (node.tagName === 'select') assert(!attr.onchange, `${file}: keep select behavior in the shared change listener`);
+      if (attr.id === 'toast-message') assert.equal(node.tagName, 'span', `${file}: notification must not resemble a paragraph heading`);
       if (node.tagName === 'button' || node.tagName === 'a' && Object.hasOwn(attr, 'href')) {
         assert(accessibleName(node), `${file}: unnamed ${node.tagName} ${attr.id || attr.onclick || ''}`);
       }
@@ -71,6 +75,9 @@ const assert = require('node:assert/strict');
       collect(template.content);
       const templateId = attributes(template).id;
       for (const node of fragments) {
+        const attr = attributes(node);
+        assert(!attr.ondblclick && !attr['data-bind-attr-ondblclick'], `${file}/${templateId}: double click must use the optional shared listener`);
+        if (attr.onclick) assert(['a','button','input','select','textarea','form'].includes(node.tagName) || attr.tabindex === '0', `${file}/${templateId}: pointer-only click action`);
         if (node.tagName === 'a') assert(alternativeText(node).trim(), `${file}/${templateId}: link without text or image alternative`);
         if (/^h[1-6]$/.test(node.tagName)) assert(alternativeText(node).trim(), `${file}/${templateId}: empty heading`);
         if (node.tagName === 'img' && attributes(node)['data-bind-attr-alt']) {
@@ -79,6 +86,9 @@ const assert = require('node:assert/strict');
       }
       if (templateId === 'cart-item-template') {
         assert.equal(fragments.filter(node => node.tagName === 'a').length, 1, `${file}: combine product image and name into one cart link`);
+      }
+      if (['product-card-template','favorite-card-template'].includes(templateId)) {
+        assert.equal(fragments.filter(node => node.tagName === 'a').length, 1, `${file}/${templateId}: one product destination link per card`);
       }
     }
   }
