@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.14",
     "@fontsource-variable/caveat": "5.3.0",
     "@fontsource-variable/fraunces": "5.3.0",
     "@fontsource-variable/outfit": "5.3.0",
@@ -12,9 +13,10 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build-assets.cjs",
-    "check": "node --check app.js && node scripts/check-assets.cjs && node scripts/check-accessibility.cjs",
+    "check": "node --check app.js && node scripts/check-assets.cjs && node scripts/check-accessibility.cjs && node scripts/check-business.cjs",
     "audit:accessibility": "node scripts/audit-accessibility.cjs",
     "optimize:images": "node scripts/optimize-product-images.cjs",
-    "update:supabase": "node scripts/update-supabase-client.cjs"
+    "update:supabase": "node scripts/update-supabase-client.cjs",
+    "check:business": "node scripts/check-business.cjs"
   }
 }

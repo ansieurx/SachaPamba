@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://uucegdaytxxoedwnoenv.supabase.co" crossorigin>
   <link rel="modulepreload" href="assets/vendor/supabase/supabase-js.bundle.mjs">
   <link rel="modulepreload" href="assets/product-images.js">
+  <link rel="modulepreload" href="assets/account-service.js">
   <link rel="modulepreload" href="app.js">
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
@@ -357,7 +358,7 @@
                 type="email" 
                 id="login-email" 
                 placeholder="ejemplo@sachaypamba.ec" 
-                value="maria.morales@ejemplo.ec"
+                value=""
                 oninput="clearFieldValidation('login-email')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -376,7 +377,7 @@
                 type="password" 
                 id="login-password" 
                 placeholder="••••••••" 
-                value="123456"
+                value=""
                 oninput="clearFieldValidation('login-password')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -916,7 +917,7 @@
                 <div>
                   <label for="checkout-card-num" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Número de Tarjeta</label>
                   <div class="relative w-full">
-                    <input type="text" id="checkout-card-num" placeholder="4500 •••• •••• 1289" value="4500 8920 1142 1289" aria-label="Número de tarjeta para completar" class="w-full text-sm py-3 px-4 pl-11 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-inner box-border" autocomplete="cc-number" inputmode="numeric">
+                    <input type="text" id="checkout-card-num" placeholder="4500 •••• •••• 1289" value="" aria-label="Número de tarjeta para completar" class="w-full text-sm py-3 px-4 pl-11 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-mono shadow-inner box-border" autocomplete="cc-number" inputmode="numeric">
                     <i aria-hidden="true" class="ph ph-credit-card absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-forest text-lg pointer-events-none"></i>
                   </div>
                 </div>
@@ -924,11 +925,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-1">
                   <div>
                     <label for="checkout-card-exp" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Expiración (MM/AA)</label>
-                    <input type="text" id="checkout-card-exp" placeholder="08/28" value="11/27" aria-label="Fecha de expiración mes y año para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border" autocomplete="cc-exp" inputmode="numeric">
+                    <input type="text" id="checkout-card-exp" placeholder="08/28" value="" aria-label="Fecha de expiración mes y año para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border" autocomplete="cc-exp" inputmode="numeric">
                   </div>
                   <div>
                     <label for="checkout-card-cvv" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Código CVV</label>
-                    <input type="password" id="checkout-card-cvv" placeholder="•••" value="842" maxlength="4" aria-label="Código CVV para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border" autocomplete="cc-csc" inputmode="numeric">
+                    <input type="password" id="checkout-card-cvv" placeholder="•••" value="" maxlength="4" aria-label="Código CVV para completar" class="w-full text-sm py-3 px-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest text-center font-mono shadow-inner box-border" autocomplete="cc-csc" inputmode="numeric">
                   </div>
                 </div>
               </div>

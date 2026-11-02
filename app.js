@@ -1,10 +1,53 @@
 import { createClient } from './assets/vendor/supabase/supabase-js.bundle.mjs';
 import productImageVariants from './assets/product-images.js';
+import { createAccountService } from './assets/account-service.js';
 
     // Reemplazar por la URL y la clave p?blica del proyecto Supabase.
     const SUPABASE_URL = 'https://uucegdaytxxoedwnoenv.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Ne56n5VP9ftiP4xQBJAM2g_Em9E2WXI';
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const accountService = createAccountService(supabase);
+    // Eliminar los perfiles y pedidos locales del antiguo acceso de demostración.
+    try {
+      localStorage.removeItem('sacha_pamba_user');
+      localStorage.removeItem('sacha_pamba_orders');
+      localStorage.removeItem('sacha_last_order');
+    } catch { /* Supabase sigue validando el acceso aunque el almacenamiento esté restringido. */ }
+    let registrationOfferRequested = false;
+    let cartQuoteTimer = null;
+    let authOperationPending = false;
+    let appInitialized = false;
+    let initialAuthError = null;
+    const initialAuthReady = accountService.restore().catch(error => { initialAuthError = error; });
+
+    function authErrorMessage(error) {
+      if (error?.code === 'invalid_credentials') return 'Correo o contraseña incorrectos.';
+      if (error?.code === 'email_not_confirmed') return 'Confirma tu correo antes de iniciar sesión.';
+      if (error?.code === 'over_email_send_rate_limit') return 'Espera unos minutos antes de volver a solicitar el correo.';
+      if (error?.code === 'PGRST202' || error?.code === '42501') return 'Falta habilitar el registro y las compras en Supabase. Ejecuta registro-y-compras.sql.';
+      return error?.message || 'No se pudo completar la solicitud. Vuelve a intentarlo.';
+    }
+
+    async function submitAccountRequest(form, action) {
+      if (authOperationPending) return;
+      authOperationPending = true;
+      const button = form?.querySelector('button[type="submit"]');
+      if (button) button.disabled = true;
+      try { await action(); }
+      catch (error) { showToast(authErrorMessage(error), 'ph-warning'); }
+      finally { authOperationPending = false; if (button) button.disabled = false; }
+    }
+
+    function scheduleCartQuote() {
+      clearTimeout(cartQuoteTimer);
+      if (!getCurrentUser() || !cart.length || accountService.quoteFor(cart)) return;
+      cartQuoteTimer = setTimeout(async () => {
+        try {
+          await accountService.quoteCart(cart);
+          updateCartUI();
+        } catch (error) { console.warn('No se pudo actualizar la cotización:', error.message); }
+      }, 120);
+    }
 
     let catalogLoadError = null;
     const CATALOG_CACHE_KEY = `sacha_catalog_v2:${SUPABASE_URL}`;
@@ -1767,6 +1810,12 @@ import productImageVariants from './assets/product-images.js';
         openAuthModal('register', 'Inicia sesión o regístrate para proceder con tu compra.');
         return;
       }
+      if (url.startsWith('checkout-pago') && document.getElementById('pickup-name')) {
+        const name = document.getElementById('pickup-name');
+        const id = document.getElementById('pickup-id');
+        if (!name.reportValidity() || !id.reportValidity()) return;
+        sessionStorage.setItem('sacha_web_pickup', JSON.stringify({ name: name.value.trim(), idNumber: id.value.trim() }));
+      }
       navigateTo(url);
     }
 
@@ -1779,12 +1828,7 @@ import productImageVariants from './assets/product-images.js';
     function selectPaymentOption(option) {
       selectedPaymentMethod = option;
       sessionStorage.setItem('sacha_checkout_payment_method', option);
-      const totalCents = cart.reduce((sum, item) => {
-        const pCents = Math.round(Number(item.price) * 100);
-        const q = Math.max(1, parseInt(item.quantity, 10) || 1);
-        return sum + (pCents * q);
-      }, 0);
-      const subtotal = totalCents / 100;
+      const subtotal = Number(cartValues().total);
       const cardContainer = document.getElementById('card-fields-container');
       const tiendaContainer = document.getElementById('tienda-info-container');
       const btnText = document.getElementById('btn-confirm-checkout-text');
@@ -1822,45 +1866,32 @@ import productImageVariants from './assets/product-images.js';
       if (paymentAccessibilityText) paymentAccessibilityText.textContent = getCheckoutPaymentAccessibilityText();
     }
 
-    function processPayment() {
-      const user = getCurrentUser();
-      if (!user) {
+    async function processPayment() {
+      if (!getCurrentUser()) {
         pendingCheckoutRedirect = 'checkout-pago.html';
         openAuthModal('login');
-        showToast('Inicia sesión para finalizar tu pedido', 'ph-user');
         return;
       }
-
-      showToast(selectedPaymentMethod === 'tienda' ? '¡Pedido agendado para retiro!' : '¡Pago procesado con éxito!', 'ph-check-circle');
-      setTimeout(() => {
-        const orderNum = 'NAT-2026-' + Math.floor(1000 + Math.random() * 9000);
-        const newOrder = {
-          number: orderNum,
-          date: new Date().toLocaleDateString('es-EC', { day: 'numeric', month: 'long', year: 'numeric' }),
-          total: cart.reduce((s, i) => s + (Math.round(Number(i.price) * 100) * (Math.max(1, parseInt(i.quantity, 10) || 1))), 0) / 100,
-          method: selectedPaymentMethod === 'tienda' ? 'Pagar al Retirar en Tienda' : 'Tarjeta Débito / Crédito',
-          status: 'Listo para Retiro',
-          items: cart.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: Number(item.price),
-            size: item.size,
-            image: item.image,
-            quantity: Math.max(1, parseInt(item.quantity, 10) || 1)
-          }))
+      await submitAccountRequest(document.getElementById('btn-confirm-checkout')?.closest('form'), async () => {
+        const pickup = JSON.parse(sessionStorage.getItem('sacha_web_pickup') || 'null') || {
+          name: getCurrentUser().name, idNumber: getCurrentUser().idNumber
         };
-
-        const existingOrders = getAllOrders();
-        existingOrders.unshift(newOrder);
-        saveAllOrders(existingOrders);
-
-        localStorage.setItem('sacha_last_order', JSON.stringify(newOrder));
+        const signature = JSON.stringify([getCurrentUser().id, cart.map(item => [item.id, item.quantity]), selectedPaymentMethod, pickup]);
+        let saved = JSON.parse(sessionStorage.getItem('sacha_web_checkout_request') || 'null');
+        if (!saved || saved.signature !== signature) {
+          saved = { signature, id: crypto.randomUUID() };
+          sessionStorage.setItem('sacha_web_checkout_request', JSON.stringify(saved));
+        }
+        const order = await accountService.createOrder(cart, selectedPaymentMethod, saved.id, pickup);
         cart = [];
         saveCart();
         resetCheckoutProgress();
+        sessionStorage.removeItem('sacha_web_checkout_request');
+        sessionStorage.removeItem('sacha_web_pickup');
         sessionStorage.removeItem('sacha_checkout_payment_method');
+        showToast('Pedido ' + order.number + ' registrado para pagar al retirar.', 'ph-check-circle');
         navigateTo('checkout-confirmacion.html');
-      }, 700);
+      });
     }
 
     // Variable de pestaña activa en Mi Cuenta
@@ -1912,115 +1943,17 @@ import productImageVariants from './assets/product-images.js';
       btnFavorites.replaceChildren(getHeartIconSVG(tabKey === 'favorites', 'w-5 h-5 flex-shrink-0'), cloneTemplate('favorites-tab-label-template'));
     }
 
-    const DEFAULT_ORDERS_MOCK = [
-      {
-        number: 'NAT-2026-0481',
-        date: '03 de Octubre, 2026',
-        total: 28.50,
-        method: 'Pagar al Retirar en Tienda',
-        status: 'Listo para Retiro',
-        items: [
-          {
-            id: 'vitamina-c',
-            name: 'Vitamina C + Camu Camu Amazónico',
-            price: 13.50,
-            quantity: 1,
-            size: '60 cápsulas vegetales',
-            image: 'https://placehold.co/600x600/CCD5AE/283618?text=Capsulas+de+Vitamina+C%0Arodeadas+de+hojas'
-          },
-          {
-            id: 'omega-3',
-            name: 'Perlas de Omega 3, 6 y 9 de Sacha Inchi',
-            price: 15.00,
-            quantity: 1,
-            size: '90 perlas softgel',
-            image: 'https://vivaelmusculo.com/img/cms/omega%203-6-9.png'
-          }
-        ]
-      },
-      {
-        number: 'NAT-2026-0219',
-        date: '15 de Septiembre, 2026',
-        total: 17.00,
-        method: 'Tarjeta Débito / Crédito',
-        status: 'Entregado',
-        items: [
-          {
-            id: 'maca',
-            name: 'Maca Andina Negra Gelatinizada',
-            price: 8.50,
-            quantity: 2,
-            size: '250g polvo soluble',
-            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOlBnDDUtiKOEEfB3vuVdLrztZySFMmJs29vRBK3j5-Yirc4KdygNS8m&s=10'
-          }
-        ]
-      },
-      {
-        number: 'NAT-2026-0104',
-        date: '28 de Agosto, 2026',
-        total: 24.00,
-        method: 'Pagar al Retirar en Tienda',
-        status: 'Entregado',
-        items: [
-          {
-            id: 'cacao',
-            name: 'Cacao Fino de Aroma Puro 100%',
-            price: 6.00,
-            quantity: 1,
-            size: '200g polvo puro',
-            image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=700&q=80'
-          },
-          {
-            id: 'colageno',
-            name: 'Colágeno Hidrolizado + Biotina y Camu Camu',
-            price: 18.00,
-            quantity: 1,
-            size: '350g con dosificador',
-            image: 'https://www.nutrimea.com/cdn/shop/articles/Capture_d_ecran_2026-05-19_a_11.06.21_420c22a4-7e46-4463-82fd-1a52e0692427.png?v=1779871726&width=2048'
-          }
-        ]
-      }
-    ];
-
     function getAllOrders() {
-      const stored = localStorage.getItem('sacha_pamba_orders');
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-      localStorage.setItem('sacha_pamba_orders', JSON.stringify(DEFAULT_ORDERS_MOCK));
-      return DEFAULT_ORDERS_MOCK;
+      return accountService.orders;
     }
 
-    function saveAllOrders(orders) {
-      localStorage.setItem('sacha_pamba_orders', JSON.stringify(orders));
-      if (orders && orders.length > 0) {
-        localStorage.setItem('sacha_last_order', JSON.stringify(orders[0]));
-      }
+    function saveAllOrders() {
+      // El historial solo se obtiene de la base de datos.
+      return getAllOrders();
     }
 
-    function changeOrderStatus(orderNumber, newStatus) {
-      const orders = getAllOrders();
-      const order = orders.find(o => o.number === orderNumber);
-      if (!order) return;
-
-      order.status = newStatus;
-      saveAllOrders(orders);
-
-      if (newStatus === 'Entregado' && order.items) {
-        let pickedUp = getPickedUpProducts();
-        order.items.forEach(item => {
-          if (!pickedUp.includes(item.id)) {
-            pickedUp.push(item.id);
-          }
-        });
-        localStorage.setItem('sacha_pamba_picked_up_products', JSON.stringify(pickedUp));
-      }
-
-      showToast(`Pedido ${orderNumber}: Estado cambiado a "${newStatus}"`, 'ph-check-circle');
+    function changeOrderStatus() {
+      showToast('El estado del pedido lo actualiza la tienda.', 'ph-info');
       syncCurrentPage();
     }
 
@@ -2518,16 +2451,11 @@ import productImageVariants from './assets/product-images.js';
     }
 
     function getCurrentUser() {
-      const stored = localStorage.getItem('sacha_pamba_user');
-      return stored ? JSON.parse(stored) : null;
+      return accountService.user;
     }
 
-    function setCurrentUser(user) {
-      if (user) {
-        localStorage.setItem('sacha_pamba_user', JSON.stringify(user));
-      } else {
-        localStorage.removeItem('sacha_pamba_user');
-      }
+    function setCurrentUser() {
+      // Los datos de acceso solo cambian mediante Supabase Auth.
       updateAuthUI();
     }
 
@@ -2552,8 +2480,9 @@ import productImageVariants from './assets/product-images.js';
     const authCloseBtn = document.getElementById('auth-modal-close');
     const navAuthBtn = document.getElementById('nav-auth-btn');
 
-    function openAuthModal(tab = 'login', customNotice = null) {
+    function openAuthModal(tab = 'login', customNotice = null, welcomeOffer = false) {
       if (!authModal) return;
+      registrationOfferRequested = tab === 'register' && welcomeOffer === true;
       switchAuthTab(tab);
 
       if (customNotice) {
@@ -2816,12 +2745,12 @@ import productImageVariants from './assets/product-images.js';
       }
     }
 
-    function handleLoginSubmit(e) {
+    async function handleLoginSubmit(e) {
       e.preventDefault();
       const emailInput = document.getElementById('login-email');
       const passInput = document.getElementById('login-password');
       const email = emailInput ? emailInput.value.trim() : '';
-      const password = passInput ? passInput.value.trim() : '';
+      const password = passInput ? passInput.value : '';
 
       let hasError = false;
 
@@ -2843,29 +2772,19 @@ import productImageVariants from './assets/product-images.js';
         return;
       }
 
-      const existingUser = getCurrentUser();
-      const user = {
-        name: (existingUser && existingUser.email === email && existingUser.name) ? existingUser.name : email.split('@')[0].replace('.', ' ').toUpperCase(),
-        email: email,
-        username: (existingUser && existingUser.email === email && existingUser.username) ? existingUser.username : '',
-        phone: (existingUser && existingUser.email === email && existingUser.phone) ? existingUser.phone : '+593 99 876 5432',
-        docType: (existingUser && existingUser.email === email && existingUser.docType) ? existingUser.docType : 'Cédula',
-        idNumber: (existingUser && existingUser.email === email && existingUser.idNumber) ? existingUser.idNumber : '1723456789'
-      };
-      setCurrentUser(user);
-      const destination = pendingCheckoutRedirect;
-      pendingCheckoutRedirect = null;
-      closeAuthModal();
-      showToast(`¡Bienvenido de vuelta, ${user.name}!`);
-
-      if (destination) {
-        navigateTo(destination);
-      } else {
-        navigateTo('cuenta.html');
-      }
+      await submitAccountRequest(document.getElementById('form-login'), async () => {
+        const user = await accountService.signIn(email, password);
+        passInput.value = '';
+        updateAuthUI();
+        const destination = pendingCheckoutRedirect;
+        pendingCheckoutRedirect = null;
+        closeAuthModal();
+        showToast('Bienvenido, ' + user.name);
+        navigateTo(destination || 'cuenta.html');
+      });
     }
 
-    function handleRegisterSubmit(e) {
+    async function handleRegisterSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
       const email = document.getElementById('reg-email').value.trim();
@@ -2940,24 +2859,27 @@ import productImageVariants from './assets/product-images.js';
         return;
       }
 
-      const user = { name, email, username, phone, docType, idNumber };
-      setCurrentUser(user);
-      const destination = pendingCheckoutRedirect;
-      pendingCheckoutRedirect = null;
-      closeAuthModal();
-      showToast('¡Registro exitoso! Bienvenido a Sacha & Pamba');
-
-      if (destination) {
-        navigateTo(destination);
-      } else {
-        navigateTo('cuenta.html');
-      }
+      await submitAccountRequest(document.getElementById('form-register'), async () => {
+        const emailRedirectTo = new URL('index.html?registro=confirmado', window.location.href).href;
+        await accountService.register({ name, email, username, phone, docType, idNumber }, password, registrationOfferRequested, emailRedirectTo);
+        document.getElementById('form-register').reset();
+        document.getElementById('login-email').value = email;
+        document.getElementById('login-password').value = '';
+        switchAuthTab('login');
+        showToast('Revisa tu correo para confirmar el registro. Después podrás iniciar sesión.', 'ph-envelope');
+      });
     }
 
-    function logoutUser() {
-      setCurrentUser(null);
-      showToast('Sesión cerrada con éxito');
-      navigateTo('index.html');
+    async function logoutUser() {
+      await submitAccountRequest(null, async () => {
+        await accountService.signOut();
+        updateAuthUI();
+        clearTimeout(cartQuoteTimer);
+        sessionStorage.removeItem('sacha_web_checkout_request');
+        sessionStorage.removeItem('sacha_web_pickup');
+        showToast('Sesión cerrada con éxito');
+        navigateTo('index.html');
+      });
     }
 
     function togglePasswordVisibility(inputId, btn) {
@@ -3081,7 +3003,7 @@ import productImageVariants from './assets/product-images.js';
       }
     }
 
-    function updateAccountDetails() {
+    async function updateAccountDetails() {
       const name = document.getElementById('acc-name').value.trim();
       const usernameInput = document.getElementById('acc-username');
       const username = usernameInput ? usernameInput.value.trim() : '';
@@ -3092,7 +3014,8 @@ import productImageVariants from './assets/product-images.js';
       const newPasswordInput = document.getElementById('acc-new-password');
       const confirmPasswordInput = document.getElementById('acc-confirm-password');
 
-      const user = getCurrentUser() || {};
+      const user = { ...getCurrentUser() };
+      if (!getCurrentUser()) return;
       if (name) user.name = name;
       if (usernameInput) user.username = username;
       if (email) user.email = email;
@@ -3118,17 +3041,18 @@ import productImageVariants from './assets/product-images.js';
           return;
         }
 
-        user.password = newPass;
+        // La contraseña se envía solamente a Supabase Auth.
         passwordUpdated = true;
       }
 
-      setCurrentUser(user);
-      if (passwordUpdated) {
-        showToast('Información y contraseña actualizadas con éxito', 'ph-check-circle');
-      } else {
-        showToast('Información de cuenta e identificador actualizados', 'ph-check-circle');
-      }
-      syncCurrentPage();
+      await submitAccountRequest(null, async () => {
+        const result = await accountService.saveProfile(user, passwordUpdated ? newPasswordInput.value : undefined);
+        if (newPasswordInput) newPasswordInput.value = '';
+        if (confirmPasswordInput) confirmPasswordInput.value = '';
+        updateAuthUI();
+        showToast(result.emailChanged ? 'Perfil guardado. Confirma el cambio de correo desde tu email.' : 'Información de cuenta actualizada', 'ph-check-circle');
+        syncCurrentPage();
+      });
     }
 
     document.addEventListener('click', (e) => {
@@ -3398,6 +3322,8 @@ import productImageVariants from './assets/product-images.js';
     }
 
     function cartValues() {
+      const quote = accountService.quoteFor(cart);
+      if (quote) return { total: Number(quote.total).toFixed(2), tax: Number(quote.tax).toFixed(2), net: Number(quote.net).toFixed(2), count: quote.count };
       const cents = cart.reduce((sum, item) => sum + Math.round(Number(item.price) * 100) * Math.max(1, parseInt(item.quantity, 10) || 1), 0);
       const tax = Math.round(cents * .15 / 1.15);
       return { total: (cents / 100).toFixed(2), tax: (tax / 100).toFixed(2), net: ((cents - tax) / 100).toFixed(2), count: cart.reduce((sum, item) => sum + Math.max(1, parseInt(item.quantity, 10) || 1), 0) };
@@ -3432,6 +3358,7 @@ import productImageVariants from './assets/product-images.js';
         if (replacement) replacement.focus({ preventScroll: true });
         else document.getElementById('app')?.focus({ preventScroll: true });
       }
+      scheduleCartQuote();
     }
 
     function updateCartDrawerUI() {
@@ -3489,7 +3416,8 @@ import productImageVariants from './assets/product-images.js';
         updateCheckoutTotals();
       }
       if (confirmation) {
-        const order = JSON.parse(localStorage.getItem('sacha_last_order') || '{"number":"NAT-2026-0481","total":23.50,"method":"Tarjeta"}');
+        const order = getAllOrders()[0];
+        if (!getCurrentUser() || !order) { window.location.replace('carrito.html'); return; }
         bindValues(confirmation, { ...order, total: Number(order.total).toFixed(2) });
       }
       closeCartDrawer();
@@ -3931,7 +3859,6 @@ import productImageVariants from './assets/product-images.js';
       PRODUCT_REVIEWS_DB: { configurable: true, enumerable: true, get: () => PRODUCT_REVIEWS_DB },
       currentReviewUploadedImage: { configurable: true, enumerable: true, get: () => currentReviewUploadedImage, set: value => { currentReviewUploadedImage = value; } },
       currentAccountTab: { configurable: true, enumerable: true, get: () => currentAccountTab, set: value => { currentAccountTab = value; } },
-      DEFAULT_ORDERS_MOCK: { configurable: true, enumerable: true, get: () => DEFAULT_ORDERS_MOCK },
       heroAutoplayTimer: { configurable: true, enumerable: true, get: () => heroAutoplayTimer, set: value => { heroAutoplayTimer = value; } },
       currentHeroSlide: { configurable: true, enumerable: true, get: () => currentHeroSlide, set: value => { currentHeroSlide = value; } },
       authModal: { configurable: true, enumerable: true, get: () => authModal },
@@ -3963,7 +3890,17 @@ import productImageVariants from './assets/product-images.js';
     saveFavoriteUndoState();
     scheduleFavoriteUndoExpiration();
 
-    function iniciarConCatalogo() {
+    async function iniciarConCatalogo() {
+      await initialAuthReady;
+      const pageUrl = new URL(window.location.href);
+      if (pageUrl.searchParams.get('registro') === 'confirmado') {
+        try { await accountService.signOut(); }
+        catch (error) { accountService.clear(); initialAuthError = error; }
+        pageUrl.searchParams.delete('registro');
+        pageUrl.hash = '';
+        history.replaceState(null, '', pageUrl.pathname + pageUrl.search);
+        showToast('Correo confirmado. Ya puedes iniciar sesión.', 'ph-envelope');
+      }
       const grid = document.getElementById('home-products-grid');
       if (grid) {
         grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured).slice(0, 4)
@@ -3971,6 +3908,8 @@ import productImageVariants from './assets/product-images.js';
       }
       updateCartUI();
       initApp();
+      appInitialized = true;
+      if (initialAuthError) showToast(authErrorMessage(initialAuthError), 'ph-warning');
       if (catalogLoadError) {
         const message = catalogLoadError.code === '42501'
           ? 'No se pudo cargar el cat?logo: faltan permisos de lectura en Supabase.'
@@ -3978,6 +3917,29 @@ import productImageVariants from './assets/product-images.js';
         showToast(message, 'ph-warning');
       }
     }
+
+    supabase.auth.onAuthStateChange(event => {
+      if (!appInitialized || authOperationPending || event === 'INITIAL_SESSION') return;
+      if (event === 'SIGNED_OUT') {
+        accountService.clear();
+        sessionStorage.removeItem('sacha_web_checkout_request');
+        sessionStorage.removeItem('sacha_web_pickup');
+      }
+      setTimeout(async () => {
+        try {
+          if (event !== 'SIGNED_OUT') await accountService.restore();
+          updateAuthUI();
+          updateAccountDetailsUI();
+          updateCartUI();
+          if (!getCurrentUser() && document.getElementById('account-tab-personal')) initializeAccountPage();
+        } catch (error) {
+          accountService.clear();
+          updateAuthUI();
+          updateAccountDetailsUI();
+          showToast(authErrorMessage(error), 'ph-warning');
+        }
+      }, 0);
+    });
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', iniciarConCatalogo, { once: true });

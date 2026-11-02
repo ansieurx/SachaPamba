@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://uucegdaytxxoedwnoenv.supabase.co" crossorigin>
   <link rel="modulepreload" href="assets/vendor/supabase/supabase-js.bundle.mjs">
   <link rel="modulepreload" href="assets/product-images.js">
+  <link rel="modulepreload" href="assets/account-service.js">
   <link rel="modulepreload" href="app.js">
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
@@ -359,7 +360,7 @@
                 type="email" 
                 id="login-email" 
                 placeholder="ejemplo@sachaypamba.ec" 
-                value="maria.morales@ejemplo.ec"
+                value=""
                 oninput="clearFieldValidation('login-email')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -378,7 +379,7 @@
                 type="password" 
                 id="login-password" 
                 placeholder="••••••••" 
-                value="123456"
+                value=""
                 oninput="clearFieldValidation('login-password')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -929,7 +930,7 @@
                     </span>
 
                     <span role="group" aria-label="Botones de acción del segundo bloque" class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 w-full">
-                      <button type="button" onclick="openAuthModal('register')"  class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center max-w-full cursor-pointer">
+                      <button type="button" onclick="openAuthModal('register', null, true)"  class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-brand-sunflower text-brand-leaf font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-[#c49226] transition-all duration-200 active:scale-95 shadow-xl flex items-center justify-center gap-2 text-center max-w-full cursor-pointer">
                         <span>Crear Cuenta &amp; Obtener 15%</span>
                         <i aria-hidden="true" class="ph ph-arrow-right text-base"></i>
                       </button>

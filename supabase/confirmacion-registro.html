@@ -1,0 +1,9 @@
+<!-- Plantilla de correo: Authentication > Email Templates > Confirm signup. -->
+<h2>Confirma tu registro en Sacha &amp; Pamba</h2>
+<p>Hola {{ .Data.name }}, hemos recibido tu registro.</p>
+<p><a href="{{ .ConfirmationURL }}">Confirmar mi correo electrónico</a></p>
+<p>Después de confirmar tu correo podrás iniciar sesión con tu contraseña.</p>
+{{ if .Data.welcome_offer }}
+<p>Tu beneficio de bienvenida es un 15 % de descuento en tu primera compra. Se aplicará automáticamente al confirmar tu primer pedido.</p>
+{{ end }}
+<p>Si no solicitaste esta cuenta, ignora este correo.</p>

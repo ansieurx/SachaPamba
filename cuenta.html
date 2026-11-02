@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://uucegdaytxxoedwnoenv.supabase.co" crossorigin>
   <link rel="modulepreload" href="assets/vendor/supabase/supabase-js.bundle.mjs">
   <link rel="modulepreload" href="assets/product-images.js">
+  <link rel="modulepreload" href="assets/account-service.js">
   <link rel="modulepreload" href="app.js">
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
@@ -357,7 +358,7 @@
                 type="email" 
                 id="login-email" 
                 placeholder="ejemplo@sachaypamba.ec" 
-                value="maria.morales@ejemplo.ec"
+                value=""
                 oninput="clearFieldValidation('login-email')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -376,7 +377,7 @@
                 type="password" 
                 id="login-password" 
                 placeholder="••••••••" 
-                value="123456"
+                value=""
                 oninput="clearFieldValidation('login-password')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-10 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
@@ -960,12 +961,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   <div>
                     <label for="acc-name" class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Nombre Completo</label>
-                    <input data-bind-attr-value="{{name}}" type="text" id="acc-name" value="Cliente Sacha & Pamba" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="name">
+                    <input data-bind-attr-value="" type="text" id="acc-name" value="" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="name">
                   </div>
                   <div>
                     <label for="acc-username" class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Usuario</label>
                     <div class="relative">
-                      <input data-bind-attr-value="{{username}}" type="text" id="acc-username" value="cliente_sacha" placeholder="Ej. maria_morales" class="auth-input-with-icon w-full p-3 pl-11 pr-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" style="padding-left: 2.75rem !important;" autocomplete="username">
+                      <input data-bind-attr-value="" type="text" id="acc-username" value="" placeholder="Ej. maria_morales" class="auth-input-with-icon w-full p-3 pl-11 pr-4 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" style="padding-left: 2.75rem !important;" autocomplete="username">
                       <i aria-hidden="true" class="ph ph-at absolute left-3.5 top-1/2 -translate-y-1/2 text-base text-brand-forest/60 pointer-events-none"></i>
                     </div>
                   </div>
@@ -974,11 +975,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   <div>
                     <label for="acc-email" class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Correo Electrónico</label>
-                    <input data-bind-attr-value="{{email}}" type="email" id="acc-email" value="usuario@sachaypamba.ec" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="email" inputmode="email">
+                    <input data-bind-attr-value="" type="email" id="acc-email" value="" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="email" inputmode="email">
                   </div>
                   <div>
                     <label for="acc-phone" class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Teléfono</label>
-                    <input data-bind-attr-value="{{phone}}" type="tel" id="acc-phone" value="+593 99 876 5432" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="tel">
+                    <input data-bind-attr-value="" type="tel" id="acc-phone" value="" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-medium text-sm" autocomplete="tel">
                   </div>
                 </div>
 
@@ -992,7 +993,7 @@
                   </div>
                   <div class="md:col-span-2">
                     <label for="acc-id" class="block text-brand-leaf/80 mb-1.5 font-bold text-xs sm:text-sm">Número de Identificación</label>
-                    <input data-bind-attr-value="{{idNumber}}" type="text" id="acc-id" value="1723456789" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-mono text-sm">
+                    <input data-bind-attr-value="" type="text" id="acc-id" value="" class="w-full p-3 rounded-xl border border-brand-forest/30 bg-[#FEFAE0] text-brand-leaf font-mono text-sm">
                   </div>
                 </div>
 
