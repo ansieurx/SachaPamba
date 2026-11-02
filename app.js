@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from './assets/vendor/supabase/supabase-js.bundle.mjs';
 import productImageVariants from './assets/product-images.js';
 
     // Reemplazar por la URL y la clave p?blica del proyecto Supabase.
@@ -1311,11 +1311,15 @@ import productImageVariants from './assets/product-images.js';
     const productImageRequests = new WeakMap();
     const renderedLightboxGalleries = new WeakMap();
 
-    function prepareProductImage(src) {
-      if (preparedProductImages.has(src)) return preparedProductImages.get(src);
+    function prepareProductImage(src, priority = 'low') {
+      if (preparedProductImages.has(src)) {
+        const entry = preparedProductImages.get(src);
+        if (priority === 'high') entry.image.fetchPriority = 'high';
+        return entry;
+      }
       const image = new Image();
       image.decoding = 'async';
-      image.fetchPriority = 'low';
+      image.fetchPriority = priority;
       const entry = { image, ready: false };
       entry.promise = new Promise(resolve => {
         const fail = () => {
@@ -1340,18 +1344,32 @@ import productImageVariants from './assets/product-images.js';
       if (img.id !== 'lightbox-img') src = getProductImage(src, 'detail');
       const request = {};
       productImageRequests.set(img, request);
-      const commit = loaded => {
+      const commit = (loaded, displaySrc = src) => {
         if (!loaded || !img.isConnected || productImageRequests.get(img) !== request) return false;
-        if (img.getAttribute('src') !== src) img.src = src;
+        if (img.getAttribute('src') !== displaySrc) img.src = displaySrc;
         onShown();
         return true;
       };
       if (img.getAttribute('src') === src && img.complete && img.naturalWidth > 0) {
         return Promise.resolve(commit(true));
       }
-      const entry = prepareProductImage(src);
-      entry.image.fetchPriority = 'high';
-      return entry.ready ? Promise.resolve(commit(true)) : entry.promise.then(commit);
+      const showOriginal = () => {
+        const entry = prepareProductImage(src, 'high');
+        return entry.ready ? Promise.resolve(commit(true)) : entry.promise.then(commit);
+      };
+      const previewSrc = getProductImage(src, 'detail');
+      if (img.id === 'lightbox-img' && previewSrc !== src && !preparedProductImages.get(src)?.ready) {
+        const preview = prepareProductImage(previewSrc, 'high');
+        const showPreview = loaded => {
+          if (!loaded) return showOriginal();
+          if (!commit(true, previewSrc)) return false;
+          // Abrir enseguida con la vista ligera y mejorarla al llegar el original.
+          showOriginal();
+          return true;
+        };
+        return preview.ready ? Promise.resolve(showPreview(true)) : preview.promise.then(showPreview);
+      }
+      return showOriginal();
     }
 
     function getCurrentImageIndex() {
@@ -1382,7 +1400,6 @@ import productImageVariants from './assets/product-images.js';
       const gallery = (product.images && product.images.length > 0) ? product.images : [product.image];
       lightboxCurrentGallery = gallery;
       lightboxCurrentIndex = Math.max(0, Math.min(gallery.length - 1, parseInt(imageIndex, 10) || 0));
-      gallery.forEach(src => prepareProductImage(src));
       const request = ++lightboxOpenRequest;
 
       const modal = document.getElementById('image-lightbox-modal');

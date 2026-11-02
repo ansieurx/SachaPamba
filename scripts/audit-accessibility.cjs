@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const scratch = path.join(root, 'scratch');
 fs.mkdirSync(scratch, { recursive: true });
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2' };
 const server = http.createServer((req, res) => {
   if (req.url === '/favicon.ico') return res.writeHead(204).end();
   const filename = path.join(root, decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
