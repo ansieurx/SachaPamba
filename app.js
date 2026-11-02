@@ -3099,6 +3099,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       }
       updateAuthUI();
       updateActiveNav(getPageName());
+      updateCatalogCounters();
       initializeCatalogPage();
       initializePurchasePage();
       initializeAccountPage();
@@ -3312,13 +3313,54 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       document.getElementById('cart-drawer-toggle-btn')?.classList.add('hidden');
     }
 
+    function getCatalogProducts(params) {
+      const cat = params.get('cat');
+      const subcat = params.get('subcat');
+      const special = params.get('special');
+      const specialFilters = {
+        destacados: product => product.isFeatured,
+        'mas-vendidos': product => product.isBestSeller,
+        nuevos: product => product.isNew
+      };
+      return PRODUCTS.filter(product => special
+        ? (specialFilters[special] || (p => p.isFeatured || p.isBestSeller || p.isNew))(product)
+        : (!cat || product.category === cat) && (!subcat || product.subcategory === subcat));
+    }
+
+    function updateCatalogCounters() {
+      // Actualizar solo las insignias existentes, conservando sus clases y eventos.
+      const menus = '#nav-category-menu, aside[aria-label="Filtros del catálogo"]';
+      document.querySelectorAll(menus).forEach(menu => {
+        menu.querySelectorAll('a[href]').forEach(link => {
+          const url = new URL(link.href, window.location.href);
+          if (!url.pathname.endsWith('/categoria.html')) return;
+          const badge = link.lastElementChild;
+          if (badge?.matches('span.rounded-full')) {
+            badge.textContent = getCatalogProducts(url.searchParams).length;
+          }
+        });
+
+        menu.querySelectorAll('.nav-cat-header, .sidebar-cat-header').forEach(header => {
+          const link = header.matches('.nav-cat-header')
+            ? header.closest('.nav-cat-card')?.querySelector('a[href]')
+            : null;
+          const params = link
+            ? new URL(link.href, window.location.href).searchParams
+            : new URLSearchParams(header.dataset.cat === 'especiales'
+              ? { special: 'all' }
+              : { cat: header.dataset.cat });
+          const badge = header.querySelector('span.rounded-full');
+          if (badge) badge.textContent = getCatalogProducts(params).length;
+        });
+      });
+    }
+
     function updateCatalogSelection() {
       const grid = document.querySelector('[data-catalog-grid]');
       if (!grid) return;
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('cat'), subcat = params.get('subcat'), special = params.get('special');
-      const specialFilters = { destacados: p => p.isFeatured, 'mas-vendidos': p => p.isBestSeller, nuevos: p => p.isNew };
-      const products = PRODUCTS.filter(p => special ? (specialFilters[special] || (p => p.isFeatured || p.isBestSeller || p.isNew))(p) : (!cat || p.category === cat) && (!subcat || p.subcategory === subcat));
+      const products = getCatalogProducts(params);
       const title = special ? ({destacados:'Productos Destacados','mas-vendidos':'Los Más Vendidos',nuevos:'Productos Nuevos'}[special] || 'Toda la Selección Especial') : (PRODUCTS.find(p => p.subcategory === subcat)?.subcategoryName || (cat === 'suplementos' ? 'Suplementos' : 'Todos los Productos'));
       document.querySelector('[data-catalog-title]').textContent = title;
       document.querySelector('[data-catalog-count]').textContent = products.length;
