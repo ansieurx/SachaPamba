@@ -368,6 +368,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
     function openCartDrawer() {
       updateCartDrawerUI();
+      if (!cart.length) return;
       updateCartDrawerZoom();
       const drawer = document.getElementById('cart-side-drawer');
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
@@ -3543,6 +3544,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     function updateCartDrawerUI() {
+      document.body.setAttribute('data-cart-has-items', cart.length ? 'true' : 'false');
+      if (!cart.length && document.getElementById('cart-side-drawer')?.getAttribute('aria-hidden') === 'false') {
+        collapseCartDrawer();
+      }
       const items = document.getElementById('cart-drawer-items');
       const totals = cartValues();
       const count = document.getElementById('cart-drawer-count');
