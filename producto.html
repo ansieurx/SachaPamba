@@ -10,6 +10,9 @@
   <!-- Tipografías: Fraunces (Botánica/Editorial) + Outfit (Cuerpo moderno) + Caveat (Manuscrita artesanal) -->
   <link rel="preload" href="assets/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/site.css">
+  <link rel="preconnect" href="https://uucegdaytxxoedwnoenv.supabase.co" crossorigin>
+  <link rel="preconnect" href="https://esm.sh" crossorigin>
+  <link rel="modulepreload" href="assets/product-images.js">
   <link rel="modulepreload" href="app.js">
 </head>
 <body class="min-h-screen flex flex-col bg-brand-cream text-brand-leaf selection:bg-brand-olive selection:text-brand-forest" lang="es">
@@ -852,7 +855,7 @@
               <!-- Columna Galería -->
               <div class="lg:col-span-5 space-y-4">
                 <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleDetailImageClick(event, '{{id}}', getCurrentImageIndex())" class="relative rounded-2xl overflow-hidden bg-brand-cream aspect-square border-2 border-brand-forest/30 max-w-sm mx-auto shadow-sm group select-none cursor-pointer" onclick="handleDetailImageClick(event, 'maca', getCurrentImageIndex())" ondblclick="triggerFavoriteDblClick('maca', event)" ondragstart="return false;">
-                  <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" id="main-product-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbwOlBnDDUtiKOEEfB3vuVdLrztZySFMmJs29vRBK3j5-Yirc4KdygNS8m&s=10" alt="Maca Andina Negra Gelatinizada" draggable="false" ondragstart="return false;" class="w-full h-full object-cover cursor-zoom-in select-none" onerror="this.src='https://placehold.co/500x500/CCD5AE/283618?text=Sacha+Pamba'" role="button" tabindex="0" aria-label="Ampliar imagen del producto" data-bind-attr-aria-label="Ampliar imagen de {{name}}">
+                  <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" id="main-product-img"  alt="Maca Andina Negra Gelatinizada" draggable="false" ondragstart="return false;" class="w-full h-full object-cover cursor-zoom-in select-none" onerror="this.src='https://placehold.co/500x500/CCD5AE/283618?text=Sacha+Pamba'" role="button" tabindex="0" aria-label="Ampliar imagen del producto" data-bind-attr-aria-label="Ampliar imagen de {{name}}" loading="eager" fetchpriority="high">
                   <span class="absolute top-3 left-3 bg-brand-forest text-brand-cream text-xs font-bold px-3 py-1 rounded-full shadow-xs pointer-events-none select-none"><span data-bind-text="
                     {{subcategoryName}}
                   ">

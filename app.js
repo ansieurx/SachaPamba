@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import productImageVariants from './assets/product-images.js';
 
     // Reemplazar por la URL y la clave p?blica del proyecto Supabase.
     const SUPABASE_URL = 'https://uucegdaytxxoedwnoenv.supabase.co';
@@ -6,22 +7,34 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let catalogLoadError = null;
+    const CATALOG_CACHE_KEY = `sacha_catalog_v1:${SUPABASE_URL}`;
+    const CATALOG_CACHE_TTL = 60000;
 
     async function cargarCatalogo() {
+      catalogLoadError = null;
       try {
-        const { data, error } = await supabase.from('producto').select('*');
+        try {
+          const cached = JSON.parse(sessionStorage.getItem(CATALOG_CACHE_KEY) || 'null');
+          const age = Date.now() - cached?.timestamp;
+          if (cached && age >= 0 && age < CATALOG_CACHE_TTL && Array.isArray(cached.products)) {
+            return cached.products;
+          }
+        } catch { /* El catálogo también funciona si el almacenamiento está bloqueado. */ }
+
+        const [{ data, error }, { data: fotos, error: fotosError }] = await Promise.all([
+          supabase.from('producto').select('*'),
+          supabase.from('imagen_producto')
+            .select('img_pro_id, img_url_imagen, img_orden')
+            .order('img_orden', { ascending: true })
+        ]);
 
         if (error) {
+          catalogLoadError = error;
           console.error("Error devuelto por Supabase:", error.message);
           return []; 
         }
 
         if (!data || data.length === 0) return [];
-
-        const { data: fotos, error: fotosError } = await supabase
-          .from('imagen_producto')
-          .select('img_pro_id, img_url_imagen, img_orden')
-          .order('img_orden', { ascending: true });
 
         const fotosPorProducto = new Map();
         if (fotosError) {
@@ -43,7 +56,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
           4: { slug: 'suplementos-polvo', name: 'Suplementos en Polvo' }
         };
 
-        return data.map(item => {
+        const products = data.map(item => {
           // Usamos minúsculas porque PostgreSQL devuelve las columnas así
           const cat = categoriasBD[item.pro_cat_id] || categoriasBD[1];
           const image = item.pro_imagen_principal_url?.trim() || '';
@@ -76,7 +89,15 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
           };
         });
 
+        if (!fotosError) {
+          try {
+            sessionStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), products }));
+          } catch { /* No bloquear la carga si no hay espacio para la caché. */ }
+        }
+        return products;
+
       } catch (err) {
+        catalogLoadError = err;
         console.error('Error ejecutando la consulta:', err);
         return [];
       }
@@ -1185,6 +1206,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     }
 
     function showPreparedProductImage(img, src, onShown = () => {}) {
+      if (img.id !== 'lightbox-img') src = getProductImage(src, 'detail');
       const request = {};
       productImageRequests.set(img, request);
       const commit = loaded => {
@@ -3179,7 +3201,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
     }
 
     // Las estructuras viven en los HTML. Estos helpers solo enlazan datos y clonan fragmentos.
-    function bindValues(root, values) {
+    function getProductImage(src, size = 'card') {
+      return productImageVariants[src]?.[size] || src;
+    }
+
+    function bindValues(root, values, imageSize = 'card') {
       const format = text => text.replace(/\{\{(\w+)\}\}/g, (_, key) => String(values[key] ?? ''));
       const available = text => [...text.matchAll(/\{\{(\w+)\}\}/g)].every(match => Object.hasOwn(values, match[1]));
       const nodes = [...root.querySelectorAll('*')];
@@ -3187,7 +3213,17 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       nodes.forEach(node => {
         if (node.hasAttribute('data-bind-text') && available(node.getAttribute('data-bind-text'))) node.textContent = format(node.getAttribute('data-bind-text'));
         [...node.attributes].forEach(attr => {
-          if (attr.name.startsWith('data-bind-attr-') && available(attr.value)) node.setAttribute(attr.name.slice(15), format(attr.value));
+          if (attr.name.startsWith('data-bind-attr-') && available(attr.value)) {
+            const name = attr.name.slice(15);
+            const value = format(attr.value);
+            if (node.tagName === 'IMG' && name === 'src') {
+              node.decoding = 'async';
+              if (!node.hasAttribute('loading')) node.loading = node.id === 'main-product-img' ? 'eager' : 'lazy';
+              node.setAttribute(name, getProductImage(value, node.id === 'main-product-img' ? 'detail' : imageSize));
+            } else {
+              node.setAttribute(name, value);
+            }
+          }
         });
       });
     }
@@ -3196,7 +3232,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       const template = document.getElementById(id);
       if (!template || !template.content) throw new Error(`Falta la plantilla HTML: ${id}`);
       const content = template.content.cloneNode(true);
-      bindValues(content, values);
+      bindValues(content, values, id.includes('thumbnail') ? 'thumbnail' : 'card');
       return content;
     }
 
@@ -3366,6 +3402,10 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       document.querySelector('[data-catalog-count]').textContent = products.length;
       document.querySelector('[data-catalog-results]').setAttribute('aria-label', `Listado de productos: ${title}`);
       grid.replaceChildren(...(products.length ? products.map(p => cloneTemplate('product-card-template', productValues(p))) : [cloneTemplate('catalog-empty-template')]));
+      grid.querySelectorAll('img').forEach((image, index) => {
+        image.loading = index < 4 ? 'eager' : 'lazy';
+        image.fetchPriority = index < 2 ? 'high' : 'auto';
+      });
       document.querySelectorAll('[data-filter-idle-class]').forEach(node => {
         const link = node.closest('a[href]');
         let active;
@@ -3401,7 +3441,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
       document.title = `${product.name} — Sacha & Pamba`;
       bindValues(root, productValues(product));
       const gallery = product.images?.length ? product.images : [product.image];
-      gallery.forEach(src => prepareProductImage(src));
+      gallery.forEach(src => prepareProductImage(getProductImage(src, 'detail')));
       const thumbs = root.querySelector('[data-product-thumbnails]');
       thumbs.replaceChildren(...gallery.map((image,index) => cloneTemplate('product-thumbnail-template',{image,index,imageNumber:index+1})));
       const buttons = thumbs.querySelectorAll('.product-thumb-btn');
