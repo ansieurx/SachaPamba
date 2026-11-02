@@ -1244,6 +1244,12 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     if (navBtn) navBtn.addEventListener('click', toggleNavCategoryMenu);
     if (navClose) navClose.addEventListener('click', (e) => { e.stopPropagation(); closeNavCategoryMenu(); });
     if (navBackdrop) navBackdrop.addEventListener('click', closeNavCategoryMenu);
+    navMenu?.addEventListener('click', event => {
+      const link = event.target.closest('a[href]');
+      if (link && link.target !== '_blank' && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+        closeNavCategoryMenu();
+      }
+    }, true);
 
     if (navAccordion) {
       navAccordion.querySelectorAll('.nav-cat-header').forEach(header => {
@@ -2169,6 +2175,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const path = destination.pathname.split('/').pop() || 'index.html';
       if (path === 'carrito.html' || path.startsWith('checkout')) closeCartDrawer();
       if (destination.href === window.location.href) return;
+      closeNavCategoryMenu();
       window.location.assign(destination.href);
     }
 
@@ -4013,6 +4020,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     window.addEventListener('pageshow', event => {
       updateActiveNav();
       if (event.persisted) {
+        closeNavCategoryMenu();
         reloadCartFromStorage();
         reloadFavoritesFromStorage();
       }

@@ -35,6 +35,9 @@ let browser, socket;
   let serial = 0;
   const pending = new Map(), errors = [], results = [];
   let staticPage = false;
+  let holdNavigation = false;
+  const heldNavigations = [];
+  const navigationPaint = [];
   const send = (method, params = {}) => new Promise((resolve, reject) => {
     const id = ++serial;
     pending.set(id, { resolve, reject });
@@ -42,6 +45,10 @@ let browser, socket;
   });
   socket.addEventListener('message', event => {
     const message = JSON.parse(event.data);
+    if (message.method === 'Runtime.bindingCalled' && message.params.name === 'a11yNavigationPaint') {
+      navigationPaint.push(JSON.parse(message.params.payload));
+      return;
+    }
     if (message.id) {
       const call = pending.get(message.id);
       pending.delete(message.id);
@@ -50,6 +57,10 @@ let browser, socket;
     if (message.method === 'Runtime.exceptionThrown') errors.push({ text: message.params.exceptionDetails.exception?.description || message.params.exceptionDetails.text, url: message.params.exceptionDetails.url, stack: message.params.exceptionDetails.stackTrace });
     if (message.method === 'Fetch.requestPaused') {
       const { requestId, request, resourceType } = message.params;
+      if (holdNavigation && resourceType === 'Document' && request.url.startsWith(base)) {
+        heldNavigations.push(requestId);
+        return;
+      }
       const reply = (method, params) => send(method, params).catch(error => {
         // A navigation can cancel a prefetched image before its response is fulfilled.
         if (!/Invalid InterceptionId|Invalid parameters|Invalid requestId/.test(error.message)) errors.push({ text: error.message });
@@ -66,6 +77,7 @@ let browser, socket;
   });
   await send('Page.enable');
   await send('Runtime.enable');
+  await send('Runtime.addBinding',{name:'a11yNavigationPaint'});
   await send('Fetch.enable', { patterns: [{ urlPattern: '*' }] });
   const evaluate = async expression => {
     const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
@@ -105,6 +117,32 @@ let browser, socket;
   }
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await go('index.html');
+  await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'dark'}]});
+  for(const method of ['native','script']) {
+    await go('index.html');await evaluate('openNavCategoryMenu()');
+    assert.equal(await evaluate(`getComputedStyle(document.getElementById('nav-category-backdrop')).display!=='none'`),true);
+    navigationPaint.length=0;
+    await evaluate(`window.addEventListener('beforeunload',()=>a11yNavigationPaint(JSON.stringify({overlay:getComputedStyle(document.getElementById('nav-category-backdrop')).display,opacity:getComputedStyle(document.body).opacity,background:getComputedStyle(document.documentElement).backgroundColor})))`);
+    holdNavigation = true;
+    await evaluate(method==='native'
+      ? `document.querySelector('#nav-category-menu a[href="categoria.html"]').click()`
+      : `navigateTo('categoria.html')`);
+    for(let i=0;i<150&&!heldNavigations.length;i++)await sleep(40);
+    assert(heldNavigations.length,'Navigation must reach the held document request');
+    assert.equal(navigationPaint.at(-1)?.overlay,'none','Source overlay must close before requesting the destination');
+    assert.equal(navigationPaint.at(-1)?.opacity,'1');
+    assert.equal(navigationPaint.at(-1)?.background,'rgb(254, 250, 224)');
+    holdNavigation = false;
+    for(const requestId of heldNavigations.splice(0))await send('Fetch.continueRequest',{requestId});
+    await waitFor(`location.pathname.endsWith('/categoria.html')&&typeof window.appReady==='object'`);
+    await evaluate('window.appReady');
+    assert.equal(await evaluate(`getComputedStyle(document.documentElement).colorScheme`),'light');
+    assert.equal(await evaluate(`getComputedStyle(document.body).backgroundColor`),'rgb(254, 250, 224)');
+    assert.equal(await evaluate(`document.querySelectorAll('[aria-modal="true"][aria-hidden="true"]').length`),4);
+  }
+  await send('Emulation.setEmulatedMedia',{features:[]});
+  await go('index.html');
+  console.log('NAVIGATION: native/programmatic links clear the dark backdrop before delayed destination responses; light canvas remains stable with dark system preference.');
   await audit('guest-home');
   await evaluate(`addToCart('maca');sessionStorage.setItem('sacha_cart_drawer_open','true');for(const key of Object.keys(sessionStorage))if(key.startsWith('sacha_catalog_'))sessionStorage.removeItem(key);sessionStorage.setItem('a11y-delay-catalog','true');sessionStorage.setItem('a11y-delay-auth','true')`);
   await send('Page.navigate',{url:base+'/index.html'});

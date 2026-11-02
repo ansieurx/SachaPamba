@@ -13,6 +13,9 @@ for (const page of pages) {
   const html = fs.readFileSync(page, 'utf8');
   assert(html.includes('href="assets/site.css"'), `${page}: missing shared styles`);
   assert(html.includes('rel="modulepreload" href="app.js"'), `${page}: missing early script load`);
+  assert(html.includes('<meta name="color-scheme" content="light">'), `${page}: missing initial light color scheme`);
+  const initialPaint = html.indexOf('<style id="page-paint">');
+  assert(initialPaint >= 0 && initialPaint < html.indexOf('href="assets/site.css"'), `${page}: initial background must precede external styles`);
   if (page === 'producto.html') {
     assert(!/id="main-product-img"[^>]*transition-opacity/.test(html), 'Product gallery image must not fade when changed');
   }
