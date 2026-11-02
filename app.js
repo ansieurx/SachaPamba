@@ -568,7 +568,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       // 2. Actualizar botón en la vista de detalle de producto
       const detailBtn = document.getElementById(`detail-fav-btn-${productId}`);
       if (detailBtn) {
-        detailBtn.setAttribute('aria-label', isFav ? 'Quitar de favoritos' : 'Añadir a favoritos');
+        detailBtn.setAttribute('aria-label', isFav ? 'En favoritos: quitar de favoritos' : 'Añadir a favoritos');
         detailBtn.removeAttribute('title');
         if (isFav) {
           detailBtn.className = 'w-full py-3.5 px-3 sm:px-4 rounded-xl bg-[#FEFAE0] hover:bg-white text-brand-forest border-2 border-brand-forest shadow-sm font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]';
@@ -3649,7 +3649,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         fragment.querySelector('[data-review-verified]').hidden = !review.verified;
         const photo = fragment.querySelector('[data-review-photo]');
         photo.hidden = !review.image;
-        if (review.image) photo.querySelector('img').addEventListener('click',()=>window.open(review.image,'_blank'));
+        if (review.image) {
+          const link = photo.querySelector('a');
+          link.href = review.image;
+        }
         return fragment;
       }));
     }

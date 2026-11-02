@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://plus.unsplash.com">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tienda naturista en Quito ? Sacha &amp; Pamba</title>
+  <title>Tienda naturista en Quito — Sacha &amp; Pamba</title>
   
   <!-- Tipografías: Fraunces (Botánica/Editorial) + Outfit (Cuerpo moderno) + Caveat (Manuscrita artesanal) -->
   <link rel="preload" href="assets/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -1082,7 +1082,7 @@
                   aria-label="Ver todos los productos"
                   class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-[#CCD5AE] font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
                 >
-                  <span aria-hidden="true">Ver todos</span>
+                  <span>Ver todos</span>
                   <i aria-hidden="true" class="ph ph-arrow-right text-sm"></i>
                 </a>
               </div>
@@ -1643,7 +1643,7 @@
         <article data-bind-attr-onclick="handleProductCardClick(event, '{{id}}')" data-bind-attr-aria-label="Producto: {{name}}" data-bind-attr-id="product-card-{{id}}" id="product-card-" role="article" aria-label="Producto: " onclick="handleProductCardClick(event, '')" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full cursor-pointer">
           <div>
             <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleCardImageClick(event, '{{id}}')" class="product-card-image-box relative rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream aspect-square mb-3 sm:mb-4 border border-brand-forest/20 shadow-xs cursor-pointer select-none" onclick="handleCardImageClick(event, '')" ondblclick="triggerFavoriteDblClick('', event)" ondragstart="return false;">
-              <img decoding="async" loading="lazy" data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" draggable="false" ondragstart="return false;" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
+              <img decoding="async" loading="lazy" data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" draggable="false" ondragstart="return false;" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
               <span class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 bg-[#283618]/90 text-brand-cream text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md backdrop-blur-xs border border-white/20 tracking-wide max-w-[calc(100%-1.25rem)] truncate pointer-events-none select-none"><span data-bind-text="
                 {{subcategoryName}}
               ">
@@ -1664,9 +1664,7 @@
               <h3 class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 mt-1 min-h-[2.6rem]">
                 <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id="  onclick="saveCatalogPosition('')" class="hover:text-brand-moss group-hover:text-brand-moss transition-colors"><span data-bind-text="
                   {{name}}
-                ">
-
-                </span></a>
+                ">Producto</span></a>
               </h3>
 
               <span class="text-xs sm:text-sm text-brand-moss font-bold block"><span data-bind-text="{{size}}"></span></span>
@@ -1708,7 +1706,7 @@
 
             <!-- Imagen del producto siempre cuadrada, nunca estirada ni encogida -->
             <div data-bind-attr-ondblclick="triggerFavoriteDblClick('{{id}}', event)" data-bind-attr-onclick="handleCardImageClick(event, '{{id}}')" class="caja_img_fav product-card-image-box bg-brand-cream border border-brand-forest/20 shadow-xs select-none" onclick="handleCardImageClick(event, '')" ondblclick="triggerFavoriteDblClick('', event)" ondragstart="return false;">
-              <img decoding="async" data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" draggable="false" ondragstart="return false;" class="w-full h-full object-cover pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
+              <img decoding="async" data-bind-attr-onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text={{name}}'" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" draggable="false" ondragstart="return false;" class="w-full h-full object-cover pointer-events-none select-none" onerror="this.src='https://placehold.co/400x400/CCD5AE/283618?text='">
               <button data-bind-attr-onclick="event.stopPropagation(); toggleFavorite('{{id}}')" data-bind-attr-id="card-fav-btn-{{id}}" type="button" role="button" id="card-fav-btn-" onclick="event.stopPropagation(); toggleFavorite('')" ondblclick="event.stopPropagation(); event.preventDefault();" class="card-fav-btn absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#283618]/90 hover:bg-[#283618] text-brand-sunflower border border-brand-sunflower/40 shadow-md flex items-center justify-center cursor-pointer select-none focus:outline-none" aria-label="Añadir a favoritos">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
               </button>
@@ -1725,9 +1723,7 @@
                 <h3 data-bind-attr-title="{{name}}" class="font-botanic font-bold text-base sm:text-lg text-brand-forest leading-snug line-clamp-2 break-words group-hover:text-brand-moss transition-colors" title="">
                   <a data-bind-attr-onclick="saveCatalogPosition('{{id}}')" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id="  onclick="saveCatalogPosition('')"><span data-bind-text="
                     {{name}}
-                  ">
-
-                  </span></a>
+                  ">Producto</span></a>
                 </h3>
                 <span class="text-xs sm:text-sm text-brand-moss font-bold block pt-0.5"><span data-bind-text="{{size}}"></span></span>
               </div>
@@ -1756,7 +1752,7 @@
 
             <div class="flex items-center gap-3.5 min-w-0 w-full sm:w-auto flex-1">
               <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden bg-brand-cream border border-brand-forest/20 flex-shrink-0 shadow-2xs">
-                <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-full h-full object-cover opacity-60 grayscale" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
+                <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-full h-full object-cover opacity-60 grayscale" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
               </div>
               <div class="min-w-0 space-y-1 text-left flex-1">
                 <div>
@@ -1766,9 +1762,7 @@
                 </div>
                 <h3 data-bind-attr-title="{{name}}" class="font-botanic font-bold text-sm sm:text-base md:text-lg text-brand-forest leading-snug line-clamp-2 break-words" title=""><span data-bind-text="
                   {{name}}
-                ">
-
-                </span></h3>
+                ">Producto</span></h3>
                 <p class="text-[11px] sm:text-xs text-brand-leaf/70 font-medium">
                   Se quitó este producto de tu lista de favoritos.
                 </p>
@@ -1855,11 +1849,11 @@
               </button>
 
               <div class="cart-thumb-box w-16 h-16 rounded-xl overflow-hidden bg-white shadow-xs group cursor-pointer relative">
-                <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
+                <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=P'">
                 <!-- Capa con icono de lupa visible al hacer hover para ver el producto -->
                 <a data-bind-attr-aria-label="Ver detalle de {{name}}" data-bind-attr-title="Ver {{name}}" data-bind-attr-onclick="event.stopPropagation(); navigateTo('producto.html?id={{id}}');" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" onclick="event.stopPropagation(); navigateTo('producto.html?id=');" class="cart-hover-zoom absolute inset-0 bg-black/55 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer z-20" title="Ver " aria-label="Ver detalle de ">
                   <i aria-hidden="true" class="ph ph-magnifying-glass text-2xl text-brand-cream hover:text-brand-sunflower hover:scale-110 active:scale-95 transition-all"></i>
-                </a>
+                <span class="sr-only" data-bind-text="Ver detalles de {{name}}">Ver detalles del producto</span></a>
               </div>
             </div>
 
@@ -1880,18 +1874,14 @@
 
                     <!-- Bloque Superior: Imagen + Nombre + Tamaño/Precio + Botón Eliminar Móvil -->
                     <div class="cart-item-top flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                      <a data-bind-attr-aria-label="Ver detalles de {{name}}" data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id="  class="flex-shrink-0 block" aria-label="Ver detalles de ">
-                        <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0 hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
-                      </a>
-
-                      <div class="min-w-0 flex-1 text-left">
-                        <h3 class="font-botanic font-bold text-sm sm:text-base text-brand-forest leading-snug break-words">
-                          <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="hover:text-brand-moss transition-colors"><span data-bind-text="
+                      <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id="  class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1 text-left">
+                        <img decoding="async" data-bind-attr-src="{{image}}" src="" alt="" aria-hidden="true" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0 hover:scale-105 transition-transform" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
+                        <div class="min-w-0 flex-1 text-left">
+                        <h2 class="font-botanic font-bold text-sm sm:text-base text-brand-forest leading-snug break-words">
+                          <span class="hover:text-brand-moss transition-colors"><span data-bind-text="
                             {{name}}
-                          ">
-
-                          </span></a>
-                        </h3>
+                          ">Producto</span></span>
+                        </h2>
                         <p class="text-xs text-brand-leaf/75 font-medium mt-0.5 break-words">
                           <span><span data-bind-text="{{size}}"></span></span>
                           <span class="mx-1 text-brand-forest/40">•</span>
@@ -1899,6 +1889,7 @@
                           <span class="text-brand-leaf/60"> c/u</span>
                         </p>
                       </div>
+                      </a>
 
                       <!-- Botón Eliminar en Móvil o al hacer Zoom -->
                       <button data-bind-attr-aria-label="Eliminar {{name}} del carrito" data-bind-attr-onclick="removeFromCart('{{id}}')" type="button" role="button" onclick="removeFromCart('')" class="cart-del-mobile md:hidden text-brand-leaf/40 hover:text-brand-sunflower hover:bg-brand-forest p-2 rounded-xl transition-colors active:scale-95 flex-shrink-0 self-start ml-auto cursor-pointer" title="Eliminar del carrito" aria-label="Eliminar  del carrito">
@@ -2372,13 +2363,13 @@
                 S
               </div>
               <div class="min-w-0">
-                <h3 class="font-bold text-sm text-brand-forest leading-tight break-words"><span data-bind-text="{{name}}"></span></h3>
+                <h3 class="font-bold text-sm text-brand-forest leading-tight break-words"><span data-bind-text="{{name}}">Cliente</span></h3>
                 <span class="text-xs text-brand-leaf/60 font-medium block"><span data-bind-text="{{date}}"></span></span>
               </div>
             </div>
 
             <div class="flex items-center flex-wrap gap-2.5 flex-shrink-0">
-              <div data-review-stars="" class="flex text-amber-500 text-sm flex-shrink-0">
+              <div data-review-stars="" role="img" data-bind-attr-aria-label="Calificación {{rating}} de 5 estrellas" aria-label="Calificación de la reseña" class="flex text-amber-500 text-sm flex-shrink-0">
                 <i aria-hidden="true" class="ph-fill ph-star"></i><i aria-hidden="true" class="ph-fill ph-star"></i><i aria-hidden="true" class="ph-fill ph-star"></i><i aria-hidden="true" class="ph-fill ph-star"></i><i aria-hidden="true" class="ph-fill ph-star"></i>
               </div>
 
@@ -2398,8 +2389,8 @@
 
 
             <div data-review-photo="" class="pt-2 pl-1">
-              <img decoding="async" data-bind-attr-src="{{image}}" src="" alt="Foto del producto compartida por el cliente" class="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-xl border-2 border-brand-forest/20 shadow-sm cursor-pointer hover:opacity-90 transition-opacity" title="Clic para ver foto en tamaño original">
-              <span class="text-xs text-brand-leaf/50 block mt-1.5 font-medium">Foto compartida por el cliente</span>
+              <a data-bind-attr-href="{{image}}" href="#" target="_blank" rel="noopener noreferrer" aria-label="Ver foto compartida por el cliente (abre en una nueva pestaña)" class="inline-block rounded-xl"><img decoding="async" data-bind-attr-src="{{image}}" src="" alt="Foto del producto compartida por el cliente" class="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-xl border-2 border-brand-forest/20 shadow-sm cursor-pointer hover:opacity-90 transition-opacity" title="Clic para ver foto en tamaño original"></a>
+              <span class="text-xs text-brand-moss block mt-1.5 font-medium">Foto compartida por el cliente</span>
             </div>
 
         </div>
@@ -2408,26 +2399,22 @@
               <img decoding="async" data-bind-attr-alt="Miniatura {{imageNumber}}" data-bind-attr-src="{{image}}" src="" alt="Miniatura " class="w-full h-full object-cover rounded-lg pointer-events-none">
             </button></template>
   <template id="latest-order-item-template"><div class="flex items-center gap-3 bg-[#FEFAE0] rounded-xl p-2.5 border border-brand-forest/20 shadow-xs text-brand-forest">
-                      <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
+                      <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-12 h-12 rounded-lg object-cover border border-brand-forest/20 bg-brand-cream flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Producto'">
                       <div class="flex-1 min-w-0 text-left">
                         <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="text-xs font-bold text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5"><span data-bind-text="
                           {{name}}
-                        ">
-
-                        </span></a>
+                        ">Producto</span></a>
                         <p class="text-[11px] text-brand-leaf/70 font-medium truncate"><span data-bind-text="{{size}} • Cant: "> • Cant: </span><strong><span data-bind-text="{{quantity}}"></span></strong></p>
                         <p class="text-xs text-brand-forest font-extrabold mt-0.5"><span data-bind-text="${{lineTotal}} USD">$ USD</span></p>
                       </div>
                     </div></template>
   <template id="history-order-item-template"><div class="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-brand-cream border border-brand-forest/20 text-sm shadow-2xs">
                             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                              <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-brand-forest/20 flex-shrink-0" onerror="this.src='https://placehold.co/80x80/CCD5AE/283618?text=Item'">
+                              <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-brand-forest/20 flex-shrink-0" onerror="this.src='https://placehold.co/80x80/CCD5AE/283618?text=Item'">
                               <div class="min-w-0 flex-1">
                                 <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="font-bold text-xs sm:text-sm text-brand-forest hover:text-brand-moss transition-colors truncate block pb-0.5"><span data-bind-text="
                                   {{name}}
-                                ">
-
-                                </span></a>
+                                ">Producto</span></a>
                                 <span class="text-[11px] sm:text-xs text-brand-leaf/70 block font-medium truncate"><span data-bind-text="{{size}}"></span></span>
                               </div>
                             </div>
@@ -2449,9 +2436,7 @@
                   <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                     <h2 class="font-mono text-xl sm:text-2xl font-black text-brand-cream break-all"><span data-bind-text="
                       {{number}}
-                    ">
-
-                    </span></h2>
+                    ">Pedido</span></h2>
                     <span class="bg-[#FEFAE0] text-brand-forest font-black text-xs sm:text-sm px-3 py-1 rounded-full shadow-2xs whitespace-nowrap"><span data-bind-text="
                       ${{total}} USD
                     ">
@@ -2560,9 +2545,7 @@
                       <div class="min-w-0">
                         <span class="font-mono text-sm sm:text-base font-extrabold text-brand-forest block mb-1 break-all"><span data-bind-text="
                           {{number}}
-                        ">
-
-                        </span></span>
+                        ">Pedido</span></span>
                         <span class="text-xs text-brand-leaf/80 font-medium block"><span data-bind-text="
                           Fecha: {{date}} • Modalidad: ">
                           Fecha:  • Modalidad: </span><strong><span data-bind-text="{{method}}"></span></strong>
@@ -2643,23 +2626,23 @@
                     Ver todos los productos
                   </a>
                 </div></template>
-  <template id="breadcrumb-link-template"><a data-bind-attr-href="{{href}}" href="" class="hover:text-brand-forest"><span data-bind-text="{{label}}"></span></a></template>
-  <template id="breadcrumb-text-template"><span class="font-bold text-brand-forest"><span data-bind-text="{{label}}"></span></span></template>
+  <template id="breadcrumb-link-template"><a data-bind-attr-href="{{href}}" href="" class="hover:text-brand-forest"><span data-bind-text="{{label}}">Página</span></a></template>
+  <template id="breadcrumb-text-template"><span class="font-bold text-brand-forest"><span data-bind-text="{{label}}">Página</span></span></template>
   <template id="breadcrumb-separator-template"><span>/</span></template>
   <template id="heart-filled-template"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg></template>
   <template id="heart-outline-template"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none select-none inline-block flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg></template>
   <template id="ui-icon-template"><i data-bind-attr-class="ph {{icon}}" aria-hidden="true" class="ph"></i></template>
-  <template id="toast-action-template"><i aria-hidden="true" class="ph ph-arrow-u-up-left font-bold text-sm"></i><span><span data-bind-text="{{label}}"></span></span></template>
-  <template id="favorite-detail-label-template"><span data-bind-attr-id="detail-fav-btn-text-{{id}}" id="detail-fav-btn-text-" class="whitespace-nowrap font-bold"><span data-bind-text="{{label}}"></span></span></template>
+  <template id="toast-action-template"><i aria-hidden="true" class="ph ph-arrow-u-up-left font-bold text-sm"></i><span><span data-bind-text="{{label}}">Deshacer</span></span></template>
+  <template id="favorite-detail-label-template"><span data-bind-attr-id="detail-fav-btn-text-{{id}}" id="detail-fav-btn-text-" class="whitespace-nowrap font-bold"><span data-bind-text="{{label}}">Añadir a favoritos</span></span></template>
   <template id="favorites-tab-label-template"><span>Productos Favoritos</span></template>
   <template id="rating-star-template"><i data-bind-attr-class="{{icon}}" aria-hidden="true"></i></template>
   <template id="password-match-failed-template"><i aria-hidden="true" class="ph-bold ph-x text-red-500 text-sm flex-shrink-0"></i> <span>Las contraseñas no coinciden</span></template>
   <template id="password-match-success-template"><i aria-hidden="true" class="ph-bold ph-check text-green-600 text-sm flex-shrink-0"></i> <span>Las contraseñas coinciden</span></template>
   <template id="search-item-template">
           <a data-bind-attr-href="producto.html?id={{id}}" href="producto.html?id=" class="flex items-center gap-3.5 p-3.5 hover:bg-brand-cream border-b border-brand-olive/30 last:border-none transition-colors group">
-            <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="" class="w-12 h-12 rounded-lg object-cover border border-brand-olive flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
+            <img decoding="async" data-bind-attr-alt="{{name}}" data-bind-attr-src="{{image}}" src="" alt="Imagen del producto" class="w-12 h-12 rounded-lg object-cover border border-brand-olive flex-shrink-0" onerror="this.src='https://placehold.co/100x100/CCD5AE/283618?text=Planta'">
             <div class="flex-1 min-w-0 text-left">
-              <span class="text-sm font-bold text-brand-forest truncate group-hover:text-brand-moss block"><span data-bind-text="{{name}}"></span></span>
+              <span class="text-sm font-bold text-brand-forest truncate group-hover:text-brand-moss block"><span data-bind-text="{{name}}">Producto</span></span>
               <p class="text-xs text-brand-leaf/70 font-medium"><span data-bind-text="{{subcategoryName}} • ${{price}}"> • $</span></p>
             </div>
             <i aria-hidden="true" class="ph ph-arrow-right text-lg text-brand-moss group-hover:translate-x-1 transition-transform"></i>

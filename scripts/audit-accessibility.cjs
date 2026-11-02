@@ -3,6 +3,7 @@ const path = require('node:path');
 const http = require('node:http');
 const { spawn } = require('node:child_process');
 const assert = require('node:assert/strict');
+const { browserClientModule } = require('./accessibility-fixtures.cjs');
 
 const root = path.resolve(__dirname, '..');
 const scratch = path.join(root, 'scratch');
@@ -53,7 +54,10 @@ let browser, socket;
         // A navigation can cancel a prefetched image before its response is fulfilled.
         if (!/Invalid InterceptionId|Invalid parameters|Invalid requestId/.test(error.message)) errors.push({ text: error.message });
       });
-      if (staticPage && request.url === base + '/app.js') reply('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
+      if (request.url === base + '/assets/vendor/supabase/supabase-js.bundle.mjs') {
+        reply('Fetch.fulfillRequest', { requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from(browserClientModule()).toString('base64') });
+      }
+      else if (staticPage && request.url === base + '/app.js') reply('Fetch.failRequest', { requestId, errorReason: 'BlockedByClient' });
       else if (request.url.startsWith(base)) reply('Fetch.continueRequest', { requestId });
       // A white image checks the least favorable background for text overlays.
       else if (resourceType === 'Image') reply('Fetch.fulfillRequest', { requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'image/svg+xml' }], body: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect width="600" height="600" fill="white"/></svg>').toString('base64') });
@@ -96,7 +100,8 @@ let browser, socket;
   }
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
   await go('index.html');
-  await evaluate(`localStorage.setItem('sacha_pamba_user',JSON.stringify({name:'María Morales',email:'maria@example.com',phone:'0999999999'}));addToCart('maca')`);
+  await audit('guest-home');
+  await evaluate(`localStorage.setItem('a11y-authenticated','true');localStorage.setItem('sacha_pamba_favorites','["maca"]');addToCart('maca')`);
   for (const route of ['index.html','categoria.html','producto.html?id=maca','carrito.html','cuenta.html?tab=personal','cuenta.html?tab=favorites','checkout-retiro.html','checkout-pago.html','checkout-confirmacion.html','ayuda.html','politicas-retiro.html']) {
     await go(route);
     await audit(route);
@@ -106,6 +111,10 @@ let browser, socket;
   await evaluate('switchAuthTab("register")'); await audit('register');
   await evaluate('closeAuthModal()');
   await go('producto.html?id=maca');
+  await evaluate(`localStorage.setItem('reviews_maca',JSON.stringify([{name:'Cliente Prueba',date:'02/11/2026',rating:4,comment:'Reseña con foto para comprobar accesibilidad.',verified:true,image:'https://a11y.invalid/review.png'}]));updateProductReviews('maca')`);
+  await audit('review-with-photo');
+  assert.equal(await evaluate(`document.querySelector('[data-review-photo] a').getAttribute('target')`), '_blank');
+  assert.equal(await evaluate(`document.querySelector('[data-review-photo] a').relList.contains('noopener')`), true);
   await evaluate('openReviewModal("maca");setModalRating(2)');
   assert.equal(await evaluate('document.querySelectorAll("#modal-star-picker .sr-only").length'), 5, 'Rating text must survive changes');
   assert.equal(await evaluate('document.getElementById("modal-review-rating").value'), '2');

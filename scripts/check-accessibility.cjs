@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
     assert.deepEqual(errors, [], `${file}: invalid HTML`);
     const nodes = [];
     function walk(node) { if (node.tagName) nodes.push(node); (node.childNodes || []).forEach(walk); }
-    walk(document); // Inactive template contents are checked after rendering by axe.
+    walk(document);
     const attributes = node => Object.fromEntries((node.attrs || []).map(attr => [attr.name, attr.value]));
     const ids = new Map(), labels = new Set();
     for (const node of nodes) {
@@ -58,6 +58,27 @@ const assert = require('node:assert/strict');
       }
       for (const reference of ['aria-labelledby','aria-describedby','aria-controls']) {
         for (const id of (attr[reference] || '').split(/\s+/).filter(Boolean)) assert(ids.has(id), `${file}: missing ${reference} target ${id}`);
+      }
+    }
+    // TAW también analiza las plantillas antes de que JavaScript inserte datos reales.
+    for (const template of nodes.filter(node => node.tagName === 'template')) {
+      const fragments = [];
+      function collect(node) {
+        if (node.tagName) fragments.push(node);
+        (node.childNodes || []).forEach(collect);
+        if (node.content) collect(node.content);
+      }
+      collect(template.content);
+      const templateId = attributes(template).id;
+      for (const node of fragments) {
+        if (node.tagName === 'a') assert(alternativeText(node).trim(), `${file}/${templateId}: link without text or image alternative`);
+        if (/^h[1-6]$/.test(node.tagName)) assert(alternativeText(node).trim(), `${file}/${templateId}: empty heading`);
+        if (node.tagName === 'img' && attributes(node)['data-bind-attr-alt']) {
+          assert(attributes(node).alt?.trim(), `${file}/${templateId}: missing initial image alternative`);
+        }
+      }
+      if (templateId === 'cart-item-template') {
+        assert.equal(fragments.filter(node => node.tagName === 'a').length, 1, `${file}: combine product image and name into one cart link`);
       }
     }
   }

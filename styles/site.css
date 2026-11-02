@@ -1169,6 +1169,7 @@ main .text-brand-forest\/70 { color: #3e4a2f; }
 [role="radio"] { opacity: 1 !important; }
 [data-order-level] { opacity: 1 !important; }
 .star-btn { color: #775414; min-width: 2rem; min-height: 2rem; }
+[data-review-stars] { color: #775414; }
 button[type="submit"][aria-label="Buscar productos"] { min-width: 24px; min-height: 24px; }
 #cart-side-drawer .cart-qty-btn { width: 24px !important; min-width: 24px !important; max-width: 24px !important; }
 #cart-drawer-toggle-btn { min-width: 24px !important; min-height: 24px !important; }
