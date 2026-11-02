@@ -3,6 +3,8 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const sharp = require('sharp');
 
+// Regenerar con npm run optimize:images al añadir o reemplazar fotos en Supabase.
+// Publicar assets/products/ y assets/product-images.js; los originales se conservan para ampliar.
 process.chdir(path.resolve(__dirname, '..'));
 
 async function main() {
