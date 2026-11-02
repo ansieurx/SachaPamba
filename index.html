@@ -38,7 +38,7 @@
       <div class="flex items-center justify-between gap-1.5 sm:gap-4 w-full">
         
         <!-- Logo -->
-        <a href="index.html" class="flex items-center gap-1 sm:gap-2.5 group flex-shrink-0" >
+        <a href="index.html" onclick="event.preventDefault()" class="flex items-center gap-1 sm:gap-2.5 group flex-shrink-0" >
           <div class="brand-logo-frame brand-logo-header group-hover:scale-105 transition-transform">
             <img src="https://uucegdaytxxoedwnoenv.supabase.co/storage/v1/object/public/Elementos/Logo_SachaPamba_rm.png" alt="" width="160" height="160" class="brand-logo-main">
           </div>
@@ -1084,8 +1084,8 @@
                   <span aria-hidden="true">Productos Nuevos</span>
                 </button>
                 <a
-                  href="categoria.html"
-                  aria-label="Ver todos los productos"
+                  href="categoria.html?special=all"
+                  aria-label="Ver toda la selección especial"
                   class="px-4 py-1.5 rounded-full border-2 border-transparent text-brand-forest/80 hover:text-brand-forest hover:bg-[#CCD5AE] font-bold transition-all flex items-center gap-1.5 cursor-pointer focus:outline-none"
                 >
                   <span>Ver todos</span>
@@ -1099,8 +1099,19 @@
 
         <!-- Sección Dinámica: Productos según la opción seleccionada debajo del carrusel -->
         <section aria-label="Productos destacados" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4 pb-12" id="home-products-section">
-          <!-- Cuadrícula Dinámica de Productos -->
-          <h2 class="sr-only">Productos de la selección especial</h2><div id="home-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 transition-opacity duration-200">
+          <h2 class="sr-only">Productos de la selección especial</h2>
+          <div class="home-products-toolbar">
+            <p id="home-products-status" role="status" aria-live="polite" aria-atomic="true"></p>
+            <div class="home-products-arrows" role="group" aria-label="Navegar por los productos de la selección especial">
+              <button id="home-products-prev" class="home-products-arrow" type="button" aria-label="Ver producto anterior" aria-controls="home-products-grid" disabled>
+                <i aria-hidden="true" class="ph ph-arrow-left"></i>
+              </button>
+              <button id="home-products-next" class="home-products-arrow" type="button" aria-label="Ver producto siguiente" aria-controls="home-products-grid" disabled>
+                <i aria-hidden="true" class="ph ph-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          <div id="home-products-grid" class="home-products-track" role="region" aria-roledescription="carrusel" aria-label="Carrusel de productos destacados" tabindex="0">
 
         <article id="product-card-omega-3" role="article" aria-label="Producto: Perlas de Omega 3, 6 y 9 de Sacha Inchi" class="product-card bg-brand-cream rounded-2xl sm:rounded-3xl border-2 sm:border-[3px] border-brand-forest p-3 sm:p-3.5 md:p-4 flex flex-col justify-between hover:shadow-xl group h-full product-linked-card">
             <a data-product-detail-link="" data-bind-attr-data-product-id="omega-3" data-product-id="omega-3" data-bind-attr-href="producto.html?id=omega-3" href="producto.html?id=omega-3" data-bind-attr-onclick="handleProductLinkClick(event, 'omega-3')" onclick="handleProductLinkClick(event, 'omega-3')" class="product-detail-link" draggable="false"><span class="sr-only" data-bind-text="Ver detalles de {{name}}">Ver detalles del producto</span></a>

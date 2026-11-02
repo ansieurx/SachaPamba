@@ -2378,7 +2378,53 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     function setupHomeProductTabs() {
+      const gridEl = document.getElementById('home-products-grid');
+      if (!gridEl) return;
+      const prevButton = document.getElementById('home-products-prev');
+      const nextButton = document.getElementById('home-products-next');
+      const status = document.getElementById('home-products-status');
       let currentActiveTab = 'destacados';
+
+      function updateCarousel() {
+        const cards = [...gridEl.children];
+        const bounds = gridEl.getBoundingClientRect();
+        const visible = cards.map((card, index) => ({ bounds: card.getBoundingClientRect(), index }))
+          .filter(card => card.bounds.left >= bounds.left - 1 && card.bounds.right <= bounds.right + 1);
+        prevButton.disabled = gridEl.scrollLeft <= 2;
+        nextButton.disabled = gridEl.scrollLeft >= gridEl.scrollWidth - gridEl.clientWidth - 2;
+        if (cards.length && visible.length) {
+          const first = visible[0].index + 1;
+          const last = visible.at(-1).index + 1;
+          status.textContent = `${first === last ? first : `${first}–${last}`} de ${cards.length} productos`;
+        } else if (!cards.length) {
+          status.textContent = 'No hay productos en esta selección.';
+        }
+      }
+
+      function moveCarousel(direction) {
+        const first = gridEl.firstElementChild;
+        if (!first) return;
+        const step = first.nextElementSibling
+          ? first.nextElementSibling.offsetLeft - first.offsetLeft
+          : first.getBoundingClientRect().width;
+        gridEl.scrollBy({ left: direction * step, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
+
+      prevButton.onclick = () => moveCarousel(-1);
+      nextButton.onclick = () => moveCarousel(1);
+      let scrollFrame = null;
+      gridEl.addEventListener('scroll', () => {
+        if (scrollFrame !== null) return;
+        scrollFrame = requestAnimationFrame(() => { scrollFrame = null; updateCarousel(); });
+      }, { passive: true });
+      gridEl.addEventListener('keydown', event => {
+        if (event.target !== gridEl) return;
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          event.preventDefault();
+          moveCarousel(event.key === 'ArrowLeft' ? -1 : 1);
+        }
+      });
+      new ResizeObserver(updateCarousel).observe(gridEl);
 
       const tabData = {
         'destacados': {
@@ -2399,11 +2445,12 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         currentActiveTab = tabKey;
 
         // Actualizar los productos inmediatamente, incluso al cambiar de pestaña rápidamente.
-        const gridEl = document.getElementById('home-products-grid');
         if (gridEl) {
-          const products = PRODUCTS.filter(config.filter).slice(0, 4);
+          const products = PRODUCTS.filter(config.filter);
           gridEl.replaceChildren(...products.map(product => cloneTemplate('product-card-template', productValues(product))));
           products.forEach(product => updateFavoriteUI(product.id, isFavorite(product.id)));
+          gridEl.scrollTo({ left: 0, behavior: 'instant' });
+          updateCarousel();
         }
 
         // Actualizar el texto accesible de Selección Especial indicando qué elemento está seleccionado
@@ -2426,6 +2473,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         if (productsSection) {
           productsSection.setAttribute('aria-label', currentSelectedName);
         }
+        gridEl.setAttribute('aria-label', `Carrusel de ${currentSelectedName.toLocaleLowerCase('es')}`);
 
         // Actualizar estilos y atributos ARIA en la barra de opciones (.tab-link-btn)
         document.querySelectorAll('.tab-link-btn').forEach(btn => {
@@ -2462,6 +2510,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
           switchTab(tabKey);
         };
       });
+      updateCarousel();
     }
 
     function setupDynamicListeners() {
@@ -4054,7 +4103,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       initializeCatalogPage();
       const grid = document.getElementById('home-products-grid');
       if (grid) {
-        grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured).slice(0, 4)
+        grid.replaceChildren(...PRODUCTS.filter(product => product.isFeatured)
           .map(product => cloneTemplate('product-card-template', productValues(product))));
       }
       updateCartDrawerUI();
