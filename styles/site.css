@@ -981,11 +981,17 @@ html {
     }
     #auth-modal-title {
       display: block !important;
+      font-size: clamp(1.15rem, 4.5vw, 1.55rem) !important;
+      line-height: 1.15 !important;
       min-width: 0 !important;
       white-space: normal !important;
       overflow: visible !important;
       text-overflow: clip !important;
       overflow-wrap: anywhere !important;
+    }
+    #auth-modal-header > p {
+      font-size: clamp(0.75rem, 3vw, 0.95rem) !important;
+      line-height: 1.35 !important;
     }
     #auth-modal-close {
       display: inline-flex !important;
