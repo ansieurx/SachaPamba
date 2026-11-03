@@ -2183,10 +2183,16 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     function navigateTo(url) {
       const destination = new URL(url, window.location.href);
       const path = destination.pathname.split('/').pop() || 'index.html';
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
       if (path === 'carrito.html' || path.startsWith('checkout')) closeCartDrawer();
       if (destination.href === window.location.href) return;
       closeNavCategoryMenu();
       if (path === 'categoria.html') {
+        if (currentPath === 'categoria.html') {
+          history.pushState(null, '', destination.href);
+          updateCatalogSelection();
+          return;
+        }
         prepareCatalogNavigation(destination);
         return;
       }
@@ -2217,10 +2223,15 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (catalogNavigationPending) return;
       catalogNavigationPending = true;
       try {
-        sessionStorage.setItem(CATEGORY_FILTER_SCROLL_KEY, JSON.stringify({
-          route: (destination.pathname.split('/').pop() || 'index.html') + destination.search,
-          top: window.scrollY || window.pageYOffset || 0
-        }));
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+        if (currentPath === 'categoria.html') {
+          sessionStorage.setItem(CATEGORY_FILTER_SCROLL_KEY, JSON.stringify({
+            route: (destination.pathname.split('/').pop() || 'index.html') + destination.search,
+            top: window.scrollY || window.pageYOffset || 0
+          }));
+        } else {
+          sessionStorage.removeItem(CATEGORY_FILTER_SCROLL_KEY);
+        }
       } catch { /* La navegación continúa aunque el almacenamiento esté bloqueado. */ }
       catalogReady.then(products => {
         const destinationProducts = productsForCatalogDestination(products, destination);
@@ -2249,12 +2260,39 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const title = special
         ? (specialTitles[special] || 'Toda la Selección Especial')
         : (subcategory ? products[0]?.subcategoryName : category ? products[0]?.categoryName : 'Todos los Productos') || 'Todos los Productos';
+      const categoryName = products[0]?.categoryName || 'Todos los Productos';
+      const breadcrumbs = document.createElement('div');
+      const segments = [{ label: 'Inicio', href: 'index.html' }, { label: 'Productos', href: category || special ? 'categoria.html' : null }];
+      if (category || special) segments.push({ label: special ? 'Selección Especial' : categoryName, href: subcategory || special ? (special ? 'categoria.html?special=all' : `categoria.html?${new URLSearchParams({ cat: category })}`) : null });
+      if (subcategory || special) segments.push({ label: title });
+      const last = getLastVisitedProduct();
+      if (last) segments.push({ label: last.name, href: `producto.html?id=${encodeURIComponent(last.id)}` });
+      segments.forEach((segment, index) => {
+        if (index) breadcrumbs.append(cloneTemplate('breadcrumb-separator-template'));
+        breadcrumbs.append(cloneTemplate(segment.href ? 'breadcrumb-link-template' : 'breadcrumb-text-template', segment));
+      });
+      const counters = {};
+      const catalogMenus = document.querySelectorAll('#nav-category-menu, aside[aria-label="Filtros del catálogo"]');
+      catalogMenus.forEach(menu => menu.querySelectorAll('a[href]').forEach(link => {
+        const count = link.lastElementChild;
+        if (count?.matches('span.rounded-full')) {
+          const url = new URL(link.href, window.location.href);
+          counters[`link:${url.pathname}${url.search}`] = count.textContent;
+        }
+      }));
+      const sidebar = document.querySelector('aside[aria-label="Filtros del catálogo"]');
+      sidebar?.querySelectorAll('.sidebar-cat-header[data-cat]').forEach(header => {
+        const count = header.querySelector('span.rounded-full');
+        if (count) counters[`header:${header.dataset.cat}`] = count.textContent;
+      });
       try {
         sessionStorage.setItem(CATALOG_INITIAL_VIEW_KEY, JSON.stringify({
           route: destination.pathname + destination.search,
           title,
           count: products.length,
-          cards: cards.innerHTML
+          cards: cards.innerHTML,
+          breadcrumbs: breadcrumbs.innerHTML,
+          counters
         }));
       } catch { /* La página conserva el renderizado habitual si no hay espacio. */ }
     }
@@ -3798,6 +3836,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     function updateCatalogCounters() {
+      if (!PRODUCTS.length) return;
       // Actualizar solo las insignias existentes, conservando sus clases y eventos.
       const menus = '#nav-category-menu, aside[aria-label="Filtros del catálogo"]';
       document.querySelectorAll(menus).forEach(menu => {
@@ -3806,7 +3845,8 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
           if (!url.pathname.endsWith('/categoria.html')) return;
           const badge = link.lastElementChild;
           if (badge?.matches('span.rounded-full')) {
-            badge.textContent = getCatalogProducts(url.searchParams).length;
+            const count = getCatalogProducts(url.searchParams).length;
+            if (badge.textContent !== String(count)) badge.textContent = count;
           }
         });
 
@@ -3820,7 +3860,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
               ? { special: 'all' }
               : { cat: header.dataset.cat });
           const badge = header.querySelector('span.rounded-full');
-          if (badge) badge.textContent = getCatalogProducts(params).length;
+          if (badge) {
+            const count = getCatalogProducts(params).length;
+            if (badge.textContent !== String(count)) badge.textContent = count;
+          }
         });
       });
     }
@@ -3834,8 +3877,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const categories = getCatalogCategoriesAndSubcategories();
       const categoryName = categories[cat]?.name || 'Todos los Productos';
       const title = special ? ({destacados:'Productos Destacados','mas-vendidos':'Los Más Vendidos',nuevos:'Productos Nuevos'}[special] || 'Toda la Selección Especial') : (categories[cat]?.subcategories[subcat] || categoryName);
-      document.querySelector('[data-catalog-title]').textContent = title;
-      document.querySelector('[data-catalog-count]').textContent = products.length;
+      const titleEl = document.querySelector('[data-catalog-title]');
+      if (titleEl && titleEl.textContent !== title) titleEl.textContent = title;
+      const countEl = document.querySelector('[data-catalog-count]');
+      if (countEl && countEl.textContent !== String(products.length)) countEl.textContent = products.length;
       document.querySelector('[data-catalog-results]').setAttribute('aria-label', `Listado de productos: ${title}`);
       const route = window.location.pathname + window.location.search;
       const hasPreparedView = grid.dataset.catalogSnapshot === route && grid.querySelectorAll('.product-card').length === products.length;
@@ -3852,21 +3897,21 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         if (link) {
           const query = new URL(link.href, window.location.href).searchParams;
           active = query.has('special') ? query.get('special') === special : query.has('cat') ? query.get('cat') === cat && (query.get('subcat') || null) === subcat && !special : !cat && !special;
-          // El enlace "Ver Todos" conserva sus clases de referencia invertidas.
-          // Solo ese enlace requiere invertir la clase elegida, no su estado real.
-          const selectedClass = !query.size ? !active : active;
-          node.className = node.getAttribute(selectedClass ? 'data-filter-active-class' : 'data-filter-idle-class');
+          const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+          if (targetClass && node.className !== targetClass) node.className = targetClass;
           return;
         } else {
           const header = node.closest('.sidebar-cat-header') || node.querySelector('.sidebar-cat-header') || node.parentElement?.querySelector('.sidebar-cat-header');
           active = header?.getAttribute('data-cat') === 'especiales' ? !!special : !!cat && header?.getAttribute('data-cat') === cat && !special;
           if (node.matches('.sidebar-cat-header')) {
             node.setAttribute('aria-expanded', String(active));
-            node.className = node.getAttribute('data-filter-idle-class');
+            const targetClass = node.getAttribute('data-filter-idle-class');
+            if (targetClass && node.className !== targetClass) node.className = targetClass;
             return;
           }
         }
-        node.className = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+        const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+        if (targetClass && node.className !== targetClass) node.className = targetClass;
       });
       const crumbs = document.querySelector('[data-catalog-breadcrumbs]');
       const segments = [{label:'Inicio',href:'index.html'}, {label:'Productos',href:cat||special?'categoria.html':null}];
@@ -3874,8 +3919,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (subcat || special) segments.push({label:title});
       const last = getLastVisitedProduct();
       if (last) segments.push({label:last.name,href:`producto.html?id=${encodeURIComponent(last.id)}`});
-      crumbs.replaceChildren();
-      segments.forEach((segment,index) => { if(index) crumbs.append(cloneTemplate('breadcrumb-separator-template')); crumbs.append(cloneTemplate(segment.href?'breadcrumb-link-template':'breadcrumb-text-template',segment)); });
+      if (crumbs.dataset.catalogSnapshot !== route) {
+        crumbs.replaceChildren();
+        segments.forEach((segment,index) => { if(index) crumbs.append(cloneTemplate('breadcrumb-separator-template')); crumbs.append(cloneTemplate(segment.href?'breadcrumb-link-template':'breadcrumb-text-template',segment)); });
+      }
       products.forEach(p => updateFavoriteUI(p.id,isFavorite(p.id)));
     }
 
@@ -4249,6 +4296,12 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     // Restaurar el estado real al volver con Atras o recibir cambios de otra pestana.
     // El fragmento solo actualiza la selección del menú; la navegación sigue siendo nativa.
     window.addEventListener('hashchange', () => updateActiveNav());
+    window.addEventListener('popstate', () => {
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+      if (currentPath === 'categoria.html') {
+        updateCatalogSelection();
+      }
+    });
     window.addEventListener('pageshow', event => {
       updateActiveNav();
       if (event.persisted) {

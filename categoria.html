@@ -8,10 +8,16 @@
     body { background-color: #FEFAE0; }
     html.catalog-filter-pending aside[aria-label="Filtros del catálogo"] { visibility: hidden; }
     html.catalog-scroll-pending body { visibility: hidden; }
+    html.catalog-page-active a.nav-section-link[href="categoria.html"] {
+      background-color: #CCD5AE;
+      color: #283618;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    }
     #nav-category-backdrop.hidden, [aria-modal="true"][aria-hidden="true"] { display: none; }
     @view-transition { navigation: none; }
   </style>
   <script>
+    document.documentElement.classList.add('catalog-page-active');
     if (location.search) document.documentElement.classList.add('catalog-filter-pending');
     try {
       const saved = JSON.parse(sessionStorage.getItem('sacha_category_filter_scroll') || 'null');
@@ -874,12 +880,12 @@
               </div>
 
               <!-- Botón Ver Todos -->
-              <a data-filter-active-class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2" data-filter-idle-class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-sunflower text-brand-leaf font-bold shadow-xs text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2" href="categoria.html"  class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
+              <a data-filter-active-class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-sunflower text-brand-leaf font-bold shadow-xs text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2" data-filter-idle-class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-cream hover:bg-[#CCD5AE] text-brand-forest font-semibold text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2" href="categoria.html" class="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-sunflower text-brand-leaf font-bold shadow-xs text-xs sm:text-sm transition-colors border border-brand-forest/20 gap-2">
                 <div class="flex items-center gap-2 min-w-0">
                   <i aria-hidden="true" class="ph ph-squares-four text-base flex-shrink-0 text-brand-forest"></i>
                   <span class="font-bold whitespace-nowrap">Ver Todos</span>
                 </div>
-                <span data-filter-active-class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full flex-shrink-0 bg-brand-forest/20 text-brand-forest font-bold" data-filter-idle-class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold" class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full flex-shrink-0 bg-brand-forest/20 text-brand-forest font-bold">10</span>
+                <span class="text-[11px] sm:text-xs px-2 py-0.5 rounded-full bg-brand-forest text-brand-cream font-bold flex-shrink-0">10</span>
               </a>
 
               <!-- Acordeón 1: Selección Especial -->
@@ -988,6 +994,19 @@
                   });
                   sidebar.append(card);
                 }
+                const snapshot = JSON.parse(sessionStorage.getItem('sacha_catalog_initial_view') || 'null');
+                const snapshotRoute = location.pathname + location.search;
+                if (snapshot?.route === snapshotRoute) {
+                  Object.entries(snapshot.counters || {}).forEach(([key, value]) => {
+                    const count = key.startsWith('link:')
+                      ? [...sidebar.querySelectorAll('a[href]')].find(link => {
+                          const url = new URL(link.href, location.href);
+                          return `link:${url.pathname}${url.search}` === key;
+                        })?.lastElementChild
+                      : sidebar.querySelector(`.sidebar-cat-header[data-cat="${key.slice(7)}"] span.rounded-full`);
+                    if (count?.matches('span.rounded-full')) count.textContent = value;
+                  });
+                }
                 const params = new URLSearchParams(location.search);
                 const category = params.get('cat');
                 const subcategory = params.get('subcat');
@@ -998,17 +1017,20 @@
                   if (link) {
                     const query = new URL(link.href, location.href).searchParams;
                     active = query.has('special') ? query.get('special') === special : query.has('cat') ? query.get('cat') === category && (query.get('subcat') || null) === subcategory && !special : !category && !special;
-                    node.className = node.getAttribute((!query.size ? !active : active) ? 'data-filter-active-class' : 'data-filter-idle-class');
+                    const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+                    if (targetClass && node.className !== targetClass) node.className = targetClass;
                     return;
                   }
                   const header = node.closest('.sidebar-cat-header') || node.querySelector('.sidebar-cat-header') || node.parentElement?.querySelector('.sidebar-cat-header');
                   active = header?.dataset.cat === 'especiales' ? Boolean(special) : Boolean(category) && header?.dataset.cat === category && !special;
                   if (node.matches('.sidebar-cat-header')) {
                     node.setAttribute('aria-expanded', String(active));
-                    node.className = node.getAttribute('data-filter-idle-class');
+                    const targetClass = node.getAttribute('data-filter-idle-class');
+                    if (targetClass && node.className !== targetClass) node.className = targetClass;
                     return;
                   }
-                  node.className = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+                  const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+                  if (targetClass && node.className !== targetClass) node.className = targetClass;
                 });
                 document.documentElement.classList.remove('catalog-filter-pending');
               })();
@@ -1724,12 +1746,26 @@
           const grid = document.querySelector('[data-catalog-grid]');
           const title = document.querySelector('[data-catalog-title]');
           const count = document.querySelector('[data-catalog-count]');
+          const breadcrumbs = document.querySelector('[data-catalog-breadcrumbs]');
           if (grid) {
             grid.innerHTML = snapshot.cards;
             grid.dataset.catalogSnapshot = snapshot.route;
           }
           if (title) title.textContent = snapshot.title;
           if (count) count.textContent = snapshot.count;
+          if (breadcrumbs && snapshot.breadcrumbs) {
+            breadcrumbs.innerHTML = snapshot.breadcrumbs;
+            breadcrumbs.dataset.catalogSnapshot = snapshot.route;
+          }
+          Object.entries(snapshot.counters || {}).forEach(([key, value]) => {
+            const count = key.startsWith('link:')
+              ? [...document.querySelectorAll('aside[aria-label="Filtros del catálogo"] a[href]')].find(link => {
+                  const url = new URL(link.href, location.href);
+                  return `link:${url.pathname}${url.search}` === key;
+                })?.lastElementChild
+              : document.querySelector(`aside[aria-label="Filtros del catálogo"] .sidebar-cat-header[data-cat="${key.slice(7)}"] span.rounded-full`);
+            if (count?.matches('span.rounded-full')) count.textContent = value;
+          });
         }
 
         const params = new URLSearchParams(location.search);
@@ -1746,8 +1782,8 @@
               : query.has('cat')
                 ? query.get('cat') === category && (query.get('subcat') || null) === subcategory && !special
                 : !category && !special;
-            const selectedClass = !query.size ? !active : active;
-            node.className = node.getAttribute(selectedClass ? 'data-filter-active-class' : 'data-filter-idle-class');
+            const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+            if (targetClass && node.className !== targetClass) node.className = targetClass;
             return;
           } else {
             const header = node.closest('.sidebar-cat-header') || node.querySelector('.sidebar-cat-header') || node.parentElement?.querySelector('.sidebar-cat-header');
@@ -1756,11 +1792,13 @@
               : Boolean(category) && header?.dataset.cat === category && !special;
             if (node.matches('.sidebar-cat-header')) {
               node.setAttribute('aria-expanded', String(active));
-              node.className = node.getAttribute('data-filter-idle-class');
+              const targetClass = node.getAttribute('data-filter-idle-class');
+              if (targetClass && node.className !== targetClass) node.className = targetClass;
               return;
             }
           }
-          node.className = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+          const targetClass = node.getAttribute(active ? 'data-filter-active-class' : 'data-filter-idle-class');
+          if (targetClass && node.className !== targetClass) node.className = targetClass;
         });
       } catch { /* app.js conserva el renderizado habitual. */ }
       finally {
