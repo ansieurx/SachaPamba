@@ -1104,6 +1104,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       dialog.setAttribute('aria-hidden', 'false');
       dialog.inert = false;
       refreshDialogBackground();
+      if (dialog && dialog.id === 'auth-modal' && typeof enableAuthModalZoomIsolation === 'function') enableAuthModalZoomIsolation();
       const focus = initialFocus || dialogFocusableElements(dialog)[0] || dialog;
       focus.focus({ preventScroll: true });
     }
@@ -1117,6 +1118,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       dialog.setAttribute('aria-hidden', 'true');
       dialog.inert = true;
       refreshDialogBackground();
+      if (dialog && dialog.id === 'auth-modal' && typeof disableAuthModalZoomIsolation === 'function') disableAuthModalZoomIsolation();
       const focus = entry?.returnFocus;
       if (focus?.isConnected && focus !== document.body && !focus.closest('[inert]')) focus.focus({ preventScroll: true });
       else (accessibleDialogs.at(-1)?.dialog || document.getElementById('app'))?.focus({ preventScroll: true });
@@ -2659,6 +2661,42 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
     }
 
+    // Mientras el acceso está abierto, el contenido de fondo compensa el zoom
+    // del navegador; la tarjeta del formulario conserva ese zoom.
+    let authBaseDpr = 1;
+    let authBaseViewportScale = 1;
+    let authZoomActive = false;
+
+    function updateAuthModalZoom() {
+      const modal = document.getElementById('auth-modal');
+      if (!authZoomActive || !modal || modal.classList.contains('hidden')) return;
+      const viewportScale = window.visualViewport?.scale || 1;
+      const zoomRatio = ((window.devicePixelRatio || 1) / authBaseDpr) * (viewportScale / authBaseViewportScale);
+      document.documentElement.style.setProperty('--auth-background-zoom', (1 / zoomRatio).toFixed(6));
+    }
+
+    function enableAuthModalZoomIsolation() {
+      if (authZoomActive) return;
+      authZoomActive = true;
+      authBaseDpr = window.devicePixelRatio || 1;
+      authBaseViewportScale = window.visualViewport?.scale || 1;
+      document.body.classList.add('auth-modal-open');
+      document.documentElement.style.setProperty('--auth-background-zoom', '1');
+
+      window.addEventListener('resize', updateAuthModalZoom);
+      window.visualViewport?.addEventListener('resize', updateAuthModalZoom);
+    }
+
+    function disableAuthModalZoomIsolation() {
+      if (!authZoomActive) return;
+      authZoomActive = false;
+      document.body.classList.remove('auth-modal-open');
+      document.documentElement.style.removeProperty('--auth-background-zoom');
+
+      window.removeEventListener('resize', updateAuthModalZoom);
+      window.visualViewport?.removeEventListener('resize', updateAuthModalZoom);
+    }
+
     const authModal = document.getElementById('auth-modal');
     const authCloseBtn = document.getElementById('auth-modal-close');
     const navAuthBtn = document.getElementById('nav-auth-btn');
@@ -2677,11 +2715,13 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       authModal.scrollTop = 0;
       const modalBody = document.getElementById('auth-modal-body');
       if (modalBody) modalBody.scrollTop = 0;
+      enableAuthModalZoomIsolation();
       showAccessibleDialog(authModal, document.getElementById(tab === 'login' ? 'login-email' : 'reg-name'));
     }
 
     function closeAuthModal() {
       if (!authModal) return;
+      disableAuthModalZoomIsolation();
       hideAccessibleDialog(authModal);
       if (pendingCheckoutRedirect) {
         const currentPath = getPageName();
@@ -4006,6 +4046,9 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       updateAuthUI,
       openAuthModal,
       closeAuthModal,
+      enableAuthModalZoomIsolation,
+      disableAuthModalZoomIsolation,
+      updateAuthModalZoom,
       switchAuthTab,
       showFieldError,
       clearFieldValidation,

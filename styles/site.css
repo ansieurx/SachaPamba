@@ -961,6 +961,7 @@ html {
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
+      flex-wrap: wrap !important;
       gap: 0.75rem !important;
       width: 100% !important;
       box-sizing: border-box !important;
@@ -971,8 +972,20 @@ html {
       align-items: center !important;
       gap: 0.5rem !important;
       min-width: 0 !important;
-      flex: 1 1 auto !important;
-      overflow: hidden !important;
+      flex: 1 1 min(100%, 12rem) !important;
+      overflow: visible !important;
+    }
+    .auth-header-title-box > span:first-child {
+      width: clamp(2rem, 10vw, 3rem) !important;
+      height: clamp(2rem, 10vw, 3rem) !important;
+    }
+    #auth-modal-title {
+      display: block !important;
+      min-width: 0 !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap: anywhere !important;
     }
     #auth-modal-close {
       display: inline-flex !important;
@@ -990,6 +1003,15 @@ html {
         padding-top: 1rem !important;
         padding-bottom: 2rem !important;
       }
+    }
+
+    /* El formulario conserva el zoom; el contenido de fondo se compensa. */
+    :root {
+      --auth-background-zoom: 1;
+    }
+
+    body.auth-modal-open > *:not(#auth-modal):not(script):not(template) {
+      zoom: var(--auth-background-zoom, 1);
     }
 
     /* ==========================================================================
