@@ -1307,26 +1307,24 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
 #home-products-grid {
   --visible-cards: 1;
   --card-gap: 1rem;
-  --card-peek: clamp(1.5rem, 3vw, 2rem);
+  --home-products-gutter: clamp(1rem, 3.5vw, 2.5rem);
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(20rem, calc((100% - (var(--visible-cards) - 1) * var(--card-gap) - var(--card-peek)) / var(--visible-cards)));
+  grid-auto-columns: min(20rem, calc((100% - (var(--visible-cards) - 1) * var(--card-gap)) / var(--visible-cards)));
   gap: var(--card-gap);
-  width: 100%;
+  width: calc(100% + (2 * var(--home-products-gutter)));
   min-width: 0;
-  max-width: 100%;
-  padding: 1rem var(--card-peek) 1.5rem;
+  max-width: none;
+  margin-inline: calc(-1 * var(--home-products-gutter));
+  padding: 1rem var(--home-products-gutter) 1.5rem;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--card-peek);
   scrollbar-width: thin;
   scrollbar-color: #606C38 #CCD5AE;
 }
 
 #home-products-grid > .product-card {
   height: auto;
-  scroll-snap-align: start;
   overflow-wrap: anywhere;
 }
 

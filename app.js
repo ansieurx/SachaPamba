@@ -2419,12 +2419,28 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
 
       function moveCarousel(direction) {
-        const first = gridEl.firstElementChild;
-        if (!first) return;
-        const step = first.nextElementSibling
-          ? first.nextElementSibling.offsetLeft - first.offsetLeft
-          : first.getBoundingClientRect().width;
-        gridEl.scrollBy({ left: direction * step, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+        const cards = [...gridEl.children];
+        if (!cards.length) return;
+        const bounds = gridEl.getBoundingClientRect();
+        const firstVisible = cards.findIndex(card => {
+          const rect = card.getBoundingClientRect();
+          return rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1;
+        });
+        const currentIndex = firstVisible < 0 ? 0 : firstVisible;
+        const targetIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + direction));
+        const target = cards[targetIndex];
+        const cardWidth = target.offsetWidth;
+        const span = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : cardWidth;
+        const gap = Math.max(0, span - cardWidth);
+        let fullCards = Math.max(1, Math.floor((gridEl.clientWidth + gap) / (cardWidth + gap)));
+        let remainingSpace = gridEl.clientWidth - (fullCards * cardWidth) - ((fullCards + 1) * gap);
+        if (remainingSpace < 0 && fullCards > 1) {
+          fullCards -= 1;
+          remainingSpace = gridEl.clientWidth - (fullCards * cardWidth) - ((fullCards + 1) * gap);
+        }
+        const sideCut = Math.max(0, remainingSpace / 2);
+        const targetLeft = Math.max(0, Math.min(gridEl.scrollWidth - gridEl.clientWidth, target.offsetLeft - gap - sideCut));
+        gridEl.scrollTo({ left: targetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
       }
 
       prevButton.onclick = () => moveCarousel(-1);
