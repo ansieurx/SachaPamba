@@ -1268,34 +1268,35 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
     }, true);
 
+    function toggleNavCategoryAccordion(header, event) {
+      event?.stopPropagation();
+      const card = header.closest('.nav-cat-card');
+      const drawer = card ? card.querySelector('.nav-subcat-drawer') : null;
+      const caret = card ? card.querySelector('.nav-cat-caret') : null;
+      if (!drawer) return;
+
+      const isClosed = drawer.classList.contains('hidden');
+      collapseNavCategories();
+      if (isClosed) {
+        drawer.classList.remove('hidden');
+        if (caret) caret.classList.add('rotate-180');
+        header.setAttribute('aria-expanded', 'true');
+      } else {
+        header.setAttribute('aria-expanded', 'false');
+      }
+    }
+
     if (navAccordion) {
-      navAccordion.querySelectorAll('.nav-cat-header').forEach(header => {
-        const toggleAccordion = (e) => {
-          e.stopPropagation();
-          const card = header.closest('.nav-cat-card');
-          const drawer = card ? card.querySelector('.nav-subcat-drawer') : null;
-          const caret = card ? card.querySelector('.nav-cat-caret') : null;
-
-          if (drawer) {
-            const isClosed = drawer.classList.contains('hidden');
-            collapseNavCategories();
-            if (isClosed) {
-              drawer.classList.remove('hidden');
-              if (caret) caret.classList.add('rotate-180');
-              header.setAttribute('aria-expanded', 'true');
-            } else {
-              header.setAttribute('aria-expanded', 'false');
-            }
-          }
-        };
-
-        header.addEventListener('click', toggleAccordion);
-        header.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleAccordion(e);
-          }
-        });
+      navAccordion.addEventListener('click', event => {
+        const header = event.target.closest('.nav-cat-header');
+        if (header && navAccordion.contains(header)) toggleNavCategoryAccordion(header, event);
+      });
+      navAccordion.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        const header = event.target.closest('.nav-cat-header');
+        if (!header || !navAccordion.contains(header)) return;
+        event.preventDefault();
+        toggleNavCategoryAccordion(header, event);
       });
     }
 
