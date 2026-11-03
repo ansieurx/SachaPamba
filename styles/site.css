@@ -1388,3 +1388,27 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
   body.cart-drawer-open { padding-right: 0 !important; }
   .smart-header > div:first-child a[href="index.html"] { flex: 1 1 0; }
 }
+
+/* Panel lateral del catálogo: etiquetas largas y contadores siempre legibles. */
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-header,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a {
+  gap: .5rem;
+}
+
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-header > div:first-child,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > div:first-child,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > span:first-child {
+  min-width: 0;
+}
+
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-header > div:first-child > span,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > div:first-child > span,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > span:first-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-header > div:last-child,
+aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > span:last-child {
+  flex-shrink: 0;
+}
