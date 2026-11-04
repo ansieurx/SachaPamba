@@ -112,7 +112,12 @@ export function createAccountService(supabase) {
     },
     async updatePassword(password) {
       const { data, error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
+      if (error) {
+        if (error.code === 'same_password' || /new password should be different/i.test(error.message)) {
+          throw new Error('La nueva contraseña debe ser diferente a la anterior.');
+        }
+        throw error;
+      }
       return data;
     },
     clear() { reset(); },
@@ -165,7 +170,17 @@ export function createAccountService(supabase) {
         if (emailChanged) changes.email = profile.email;
         if (password) changes.password = password;
         const { error } = await supabase.auth.updateUser(changes);
-        if (error) throw new Error(`El perfil se guardó, pero no se pudo actualizar el acceso: ${error.message}`);
+        if (error) {
+          let detail = error.message;
+          if (error.code === 'same_password' || /new password should be different/i.test(error.message)) {
+            detail = 'la nueva contraseña debe ser diferente a la anterior.';
+          } else if (/password should be at least/i.test(error.message)) {
+            detail = 'la contraseña debe cumplir con los requisitos mínimos de seguridad.';
+          } else if (/rate limit/i.test(error.message)) {
+            detail = 'has realizado demasiados intentos. Espera unos minutos.';
+          }
+          throw new Error(`El perfil se guardó, pero ${detail}`);
+        }
       }
       return { user, emailChanged };
     }

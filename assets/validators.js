@@ -21,7 +21,7 @@ export function isValidPassport(value) {
 }
 
 export function documentError(type, value) {
-  if (type === 'Cédula') return isValidCedula(value) ? '' : 'Ingresa una cédula válida de 10 dígitos; el dígito verificador debe cumplir módulo 10.';
+  if (type === 'Cédula') return isValidCedula(value) ? '' : 'Ingresa una cédula válida.';
   if (type === 'Pasaporte') return isValidPassport(value) ? '' : 'Ingresa un pasaporte de 3 a 30 letras o números, sin espacios ni símbolos.';
   return 'Selecciona un tipo de documento válido.';
 }

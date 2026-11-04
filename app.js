@@ -23,11 +23,27 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     const initialAuthReady = accountService.restore().catch(error => { initialAuthError = error; });
 
     function authErrorMessage(error) {
+      if (error?.code === 'same_password') return 'La nueva contraseña debe ser diferente a la anterior.';
       if (error?.code === 'invalid_credentials') return 'Correo o contraseña incorrectos.';
       if (error?.code === 'email_not_confirmed') return 'Confirma tu correo antes de iniciar sesión.';
       if (error?.code === 'over_email_send_rate_limit') return 'Espera unos minutos antes de volver a solicitar el correo.';
       if (error?.code === 'PGRST202' || error?.code === '42501') return 'Falta habilitar el registro y las compras en Supabase. Ejecuta registro-y-compras.sql.';
-      return error?.message || 'No se pudo completar la solicitud. Vuelve a intentarlo.';
+
+      const raw = error?.message || '';
+      if (/new password should be different/i.test(raw)) {
+        return 'El perfil se guardó, pero la nueva contraseña debe ser diferente a la anterior.';
+      }
+      if (/password should be at least/i.test(raw)) {
+        return 'La contraseña debe tener al menos 8 caracteres y cumplir los requisitos de seguridad.';
+      }
+      if (/rate limit/i.test(raw)) {
+        return 'Has alcanzado el límite de intentos. Espera unos minutos antes de volver a intentar.';
+      }
+      if (/user already registered/i.test(raw)) {
+        return 'Ya existe una cuenta registrada con este correo.';
+      }
+
+      return raw || 'No se pudo completar la solicitud. Vuelve a intentarlo.';
     }
 
     async function submitAccountRequest(form, action) {
@@ -3471,6 +3487,55 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
     }
 
+    function resetAccountPasswordFields() {
+      const newPasswordInput = document.getElementById('acc-new-password');
+      const confirmPasswordInput = document.getElementById('acc-confirm-password');
+      const confirmWrapper = document.getElementById('acc-confirm-password-wrapper');
+      const reqsContainer = document.getElementById('acc-password-reqs');
+      const matchMsg = document.getElementById('acc-password-match-msg');
+
+      if (newPasswordInput) {
+        newPasswordInput.value = '';
+        newPasswordInput.type = 'password';
+        const btn = newPasswordInput.parentElement?.querySelector('button');
+        if (btn) {
+          btn.setAttribute('aria-pressed', 'false');
+          btn.setAttribute('aria-label', 'Mostrar u ocultar contraseña');
+          const icon = btn.querySelector('i');
+          if (icon) icon.className = 'ph ph-eye text-lg';
+        }
+      }
+
+      if (confirmPasswordInput) {
+        confirmPasswordInput.value = '';
+        confirmPasswordInput.type = 'password';
+        confirmPasswordInput.classList.remove('border-green-600', 'border-red-500');
+        confirmPasswordInput.classList.add('border-brand-forest/30');
+        const btn = confirmPasswordInput.parentElement?.querySelector('button');
+        if (btn) {
+          btn.setAttribute('aria-pressed', 'false');
+          btn.setAttribute('aria-label', 'Mostrar u ocultar confirmación de contraseña');
+          const icon = btn.querySelector('i');
+          if (icon) icon.className = 'ph ph-eye text-lg';
+        }
+      }
+
+      if (confirmWrapper) {
+        confirmWrapper.classList.add('hidden');
+      }
+
+      if (reqsContainer) {
+        reqsContainer.classList.add('hidden');
+      }
+
+      if (matchMsg) {
+        matchMsg.classList.add('hidden');
+        matchMsg.textContent = '';
+      }
+
+      updatePasswordRequirements('');
+    }
+
     async function updateAccountDetails() {
       const name = document.getElementById('acc-name').value.trim();
       const usernameInput = document.getElementById('acc-username');
@@ -3516,8 +3581,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
       await submitAccountRequest(null, async () => {
         const result = await accountService.saveProfile(user, passwordUpdated ? newPasswordInput.value : undefined);
-        if (newPasswordInput) newPasswordInput.value = '';
-        if (confirmPasswordInput) confirmPasswordInput.value = '';
+        resetAccountPasswordFields();
         updateAuthUI();
         showToast(result.emailChanged ? 'Perfil guardado. Confirma el cambio de correo desde tu email.' : 'Información de cuenta actualizada', 'ph-check-circle');
         syncCurrentPage();
@@ -4371,6 +4435,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       setReqStatus,
       handlePasswordInputChange,
       validatePasswordMatch,
+      resetAccountPasswordFields,
       updateAccountDetails,
       initApp,
       bindValues,
