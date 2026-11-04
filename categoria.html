@@ -18,11 +18,16 @@
   </style>
   <script>
     document.documentElement.classList.add('catalog-page-active');
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.search) document.documentElement.classList.add('catalog-filter-pending');
     try {
-      const saved = JSON.parse(sessionStorage.getItem('sacha_category_filter_scroll') || 'null');
       const route = (location.pathname.split('/').pop() || 'index.html') + location.search;
-      if (saved?.route === route) document.documentElement.classList.add('catalog-scroll-pending');
+      const savedFilter = JSON.parse(sessionStorage.getItem('sacha_category_filter_scroll') || 'null');
+      const savedCatalogScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+      const prevRoute = sessionStorage.getItem('sacha_prev_route');
+      if (savedFilter?.route === route || (savedCatalogScroll !== null && prevRoute === route)) {
+        document.documentElement.classList.add('catalog-scroll-pending');
+      }
     } catch { /* La página conserva su carga habitual. */ }
   </script>
   <meta http-equiv="content-language" content="es">
@@ -1738,8 +1743,13 @@
     (() => {
       const filterRoute = (location.pathname.split('/').pop() || 'index.html') + location.search;
       let savedFilterScroll = null;
+      let savedCatalogScroll = null;
       try {
         savedFilterScroll = JSON.parse(sessionStorage.getItem('sacha_category_filter_scroll') || 'null');
+        const prevRoute = sessionStorage.getItem('sacha_prev_route');
+        if (prevRoute === filterRoute) {
+          savedCatalogScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+        }
         const snapshot = JSON.parse(sessionStorage.getItem('sacha_catalog_initial_view') || 'null');
         const route = location.pathname + location.search;
         if (snapshot && snapshot.route === route && snapshot.cards) {
@@ -1805,6 +1815,8 @@
         if (savedFilterScroll?.route === filterRoute) {
           window.scrollTo({ top: Number(savedFilterScroll.top) || 0, left: 0, behavior: 'instant' });
           sessionStorage.removeItem('sacha_category_filter_scroll');
+        } else if (savedCatalogScroll !== null) {
+          window.scrollTo({ top: Number(savedCatalogScroll) || 0, left: 0, behavior: 'instant' });
         }
         document.documentElement.classList.remove('catalog-scroll-pending');
       }

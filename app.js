@@ -20,6 +20,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     let authOperationPending = false;
     let appInitialized = false;
     let initialAuthError = null;
+    if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
     const initialAuthReady = accountService.restore().catch(error => { initialAuthError = error; });
 
     function authErrorMessage(error) {
@@ -4082,7 +4083,16 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const route = window.location.pathname + window.location.search;
       const hasPreparedView = grid.dataset.catalogSnapshot === route && grid.querySelectorAll('.product-card').length === products.length;
       if (!hasPreparedView) {
+        const currentScrollY = window.scrollY || window.pageYOffset || 0;
         grid.replaceChildren(...(products.length ? products.map(p => cloneTemplate('product-card-template', productValues(p))) : [cloneTemplate('catalog-empty-template')]));
+        const returningScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+        const prevRoute = sessionStorage.getItem('sacha_prev_route');
+        const targetScroll = (returningScroll !== null && prevRoute === getCurrentPageUrl())
+          ? Number(returningScroll)
+          : currentScrollY;
+        if (targetScroll > 0) {
+          window.scrollTo({ top: targetScroll, left: 0, behavior: 'instant' });
+        }
       }
       grid.querySelectorAll('img').forEach((image, index) => {
         image.loading = index < CATALOG_PREPARED_CARD_COUNT ? 'eager' : 'lazy';
@@ -4562,6 +4572,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         applyCatalogToPage();
       }
       updateCartDrawerUI();
+      const earlyReturningScroll = sessionStorage.getItem('sacha_catalog_scroll_pos');
+      if (earlyReturningScroll !== null && sessionStorage.getItem('sacha_prev_route') === getCurrentPageUrl()) {
+        window.scrollTo({ top: Number(earlyReturningScroll) || 0, left: 0, behavior: 'instant' });
+      }
       await initialAuthReady;
       const pageUrl = new URL(window.location.href);
       if (pageUrl.searchParams.get('registro') === 'confirmado') {
