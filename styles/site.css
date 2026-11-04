@@ -6,6 +6,10 @@ body:not([data-authenticated="true"]) :is(.card-fav-btn, button[id^="detail-fav-
   display: none !important;
 }
 
+body:not([data-authenticated="true"]) .detail-buy-now-btn {
+  grid-column: span 1 / span 1 !important;
+}
+
 /* Logo del encabezado: conserva sus proporciones en todos los tamaños. */
 .brand-logo-main {
   display: block;

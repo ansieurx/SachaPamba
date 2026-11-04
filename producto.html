@@ -941,22 +941,20 @@
                 </div>
 
                 <!-- Botones de Acción de Compra -->
-                <div class="space-y-3 pt-2" role="group" aria-label="Opciones de compra del producto">
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button data-bind-attr-aria-label="Añadir a favoritos: {{name}}" data-bind-attr-onclick="toggleFavorite('{{id}}')" data-bind-attr-id="detail-fav-btn-{{id}}" type="button" role="button" id="detail-fav-btn-maca" onclick="toggleFavorite('maca')"  class="w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream border-2 border-brand-forest shadow-sm font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]" aria-label="Añadir a favoritos">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-brand-sunflower flex-shrink-0 pointer-events-none select-none inline-block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
-                      <span data-bind-attr-id="detail-fav-btn-text-{{id}}" id="detail-fav-btn-text-maca" class="whitespace-nowrap font-bold">
-                        Añadir a favoritos
-                      </span>
-                    </button>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2" role="group" aria-label="Opciones de compra del producto">
+                  <button data-bind-attr-aria-label="Añadir a favoritos: {{name}}" data-bind-attr-onclick="toggleFavorite('{{id}}')" data-bind-attr-id="detail-fav-btn-{{id}}" type="button" role="button" id="detail-fav-btn-maca" onclick="toggleFavorite('maca')"  class="w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream border-2 border-brand-forest shadow-sm font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer select-none focus:outline-none min-h-[50px] sm:min-h-[52px]" aria-label="Añadir a favoritos">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-brand-sunflower flex-shrink-0 pointer-events-none select-none inline-block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+                    <span data-bind-attr-id="detail-fav-btn-text-{{id}}" id="detail-fav-btn-text-maca" class="whitespace-nowrap font-bold">
+                      Añadir a favoritos
+                    </span>
+                  </button>
 
-                    <button data-bind-attr-aria-label="Añadir a carrito: {{name}}" data-bind-attr-onclick="handleAddToCartFromDetail('{{id}}', false)" type="button" role="button" onclick="handleAddToCartFromDetail('maca', false)" class="w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer border-2 border-brand-forest min-h-[50px] sm:min-h-[52px]" aria-label="Añadir a carrito">
-                      <i aria-hidden="true" class="ph ph-shopping-cart text-lg sm:text-xl text-brand-sunflower flex-shrink-0"></i>
-                      <span class="whitespace-nowrap font-bold">Añadir a carrito</span>
-                    </button>
-                  </div>
+                  <button data-bind-attr-aria-label="Añadir a carrito: {{name}}" data-bind-attr-onclick="handleAddToCartFromDetail('{{id}}', false)" type="button" role="button" onclick="handleAddToCartFromDetail('maca', false)" class="w-full py-3.5 px-3 sm:px-4 rounded-xl bg-brand-forest hover:bg-[#1e2912] text-brand-cream font-bold text-xs sm:text-sm md:text-base flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer border-2 border-brand-forest min-h-[50px] sm:min-h-[52px]" aria-label="Añadir a carrito">
+                    <i aria-hidden="true" class="ph ph-shopping-cart text-lg sm:text-xl text-brand-sunflower flex-shrink-0"></i>
+                    <span class="whitespace-nowrap font-bold">Añadir a carrito</span>
+                  </button>
 
-                  <button data-bind-attr-aria-label="Comprar ahora: {{name}}" data-bind-attr-onclick="handleAddToCartFromDetail('{{id}}', true)" type="button" role="button" onclick="handleAddToCartFromDetail('maca', true)" class="w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer min-h-[50px] sm:min-h-[52px]" aria-label="Comprar ahora">
+                  <button data-bind-attr-aria-label="Comprar ahora: {{name}}" data-bind-attr-onclick="handleAddToCartFromDetail('{{id}}', true)" type="button" role="button" onclick="handleAddToCartFromDetail('maca', true)" class="detail-buy-now-btn sm:col-span-2 w-full py-3.5 px-5 rounded-xl bg-brand-sunflower hover:bg-[#dcb556] text-brand-leaf font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-sm transition-transform active:scale-95 cursor-pointer min-h-[50px] sm:min-h-[52px]" aria-label="Comprar ahora">
                     <i aria-hidden="true" class="ph ph-lightning text-xl text-brand-leaf flex-shrink-0"></i>
                     <span class="font-bold">Comprar ahora</span>
                   </button>
