@@ -88,6 +88,18 @@ export function createAccountService(supabase) {
       if (error) throw error;
       reset();
     },
+    async resetPasswordForEmail(email, emailRedirectTo) {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: emailRedirectTo
+      });
+      if (error) throw error;
+      return data;
+    },
+    async updatePassword(password) {
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      return data;
+    },
     clear() { reset(); },
     quoteFor(cart) {
       return user && quoteKey === cartKey(cart) ? quote : null;

@@ -3190,6 +3190,33 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       });
     }
 
+    async function handleForgotPassword() {
+      const emailInput = document.getElementById('login-email');
+      const email = emailInput ? emailInput.value.trim() : '';
+
+      if (!email) {
+        showFieldError('login-email', 'login-email-err', 'Ingresa tu correo aquí para enviarte el enlace de recuperación.');
+        emailInput?.focus();
+        showToast('Ingresa tu correo en el campo superior para enviarte el enlace.', 'ph-envelope');
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showFieldError('login-email', 'login-email-err', 'Por favor, ingresa un correo electrónico válido.');
+        emailInput?.focus();
+        showToast('Ingresa un correo electrónico válido.', 'ph-warning-circle');
+        return;
+      }
+
+      clearFieldValidation('login-email');
+
+      await submitAccountRequest(document.getElementById('form-login'), async () => {
+        const emailRedirectTo = new URL('cuenta.html?tab=personal&cambio=clave', window.location.href).href;
+        await accountService.resetPasswordForEmail(email, emailRedirectTo);
+        showToast('Enlace de recuperación enviado. Revisa tu correo.', 'ph-envelope');
+      });
+    }
+
     async function handleRegisterSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value.trim();
@@ -4145,6 +4172,16 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       updateAccountDetailsUI();
       const tab=new URLSearchParams(window.location.search).get('tab');
       switchAccountTab(['personal','orders','favorites'].includes(tab)?tab:'personal');
+      if (new URLSearchParams(window.location.search).get('cambio') === 'clave' || window.location.hash.includes('type=recovery')) {
+        setTimeout(() => {
+          const newPassInput = document.getElementById('acc-new-password');
+          if (newPassInput) {
+            newPassInput.focus();
+            newPassInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showToast('Ingresa tu nueva contraseña y presiona Guardar Cambios.', 'ph-lock-key');
+          }
+        }, 300);
+      }
     }
 
     function syncCurrentPage() {
@@ -4293,6 +4330,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       handleRegPasswordInputChange,
       validateRegPasswordMatch,
       handleLoginSubmit,
+      handleForgotPassword,
       handleRegisterSubmit,
       logoutUser,
       togglePasswordVisibility,
@@ -4458,7 +4496,18 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
           updateAuthUI();
           updateAccountDetailsUI();
           updateCartUI();
-          if (!getCurrentUser() && document.getElementById('account-tab-personal')) initializeAccountPage();
+          if (event === 'PASSWORD_RECOVERY') {
+            const newPassInput = document.getElementById('acc-new-password');
+            if (newPassInput) {
+              newPassInput.focus();
+              newPassInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              showToast('Sesión de recuperación iniciada. Ingresa tu nueva contraseña.', 'ph-lock-key');
+            } else {
+              navigateTo('cuenta.html?tab=personal&cambio=clave');
+            }
+          } else if (!getCurrentUser() && document.getElementById('account-tab-personal')) {
+            initializeAccountPage();
+          }
         } catch (error) {
           accountService.clear();
           updateAuthUI();
