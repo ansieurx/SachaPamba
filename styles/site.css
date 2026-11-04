@@ -1096,7 +1096,8 @@ html {
     [role="tab"]:focus-visible,
     [role="link"]:focus-visible,
     [tabindex="0"]:focus-visible,
-    body.user-is-tabbing :focus {
+    body.user-is-tabbing :focus,
+    body.user-is-tabbing :focus-visible {
       outline: 3px solid #FACC15 !important; /* Borde amarillo canario de alta visibilidad */
       outline-offset: 3px !important;
       box-shadow: 0 0 0 2px #283618, 0 0 12px 2px rgba(250, 204, 21, 0.75) !important;

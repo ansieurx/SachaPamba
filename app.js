@@ -805,6 +805,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     function triggerFavoriteDblClick(productId, event) {
+      if (!getCurrentUser()) return;
       if (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -3686,6 +3687,31 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
             }
           }, 15);
         }
+      });
+
+      // Saltar al contenido principal señalando inmediatamente el componente enfocado con borde amarillo
+      document.querySelectorAll('.skip-link').forEach(link => {
+        const handleSkip = (e) => {
+          e.preventDefault();
+          document.body.classList.add('user-is-tabbing');
+          link.blur();
+          const main = document.getElementById('app');
+          if (!main) return;
+          const focusable = [...main.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+            .find(el => {
+              if (el.closest('[inert]') || el.closest('.hidden')) return false;
+              const style = window.getComputedStyle(el);
+              return style.display !== 'none' && style.visibility !== 'hidden' && (el.offsetParent !== null || el.getClientRects().length > 0);
+            });
+          const target = focusable || main;
+          target.focus();
+        };
+        link.addEventListener('click', handleSkip);
+        link.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleSkip(e);
+          }
+        });
       });
     }
 

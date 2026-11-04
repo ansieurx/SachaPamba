@@ -242,7 +242,7 @@ let browser, socket;
     await sleep(350);
     assert.equal(await evaluate(`JSON.parse(localStorage.getItem('sacha_pamba_favorites')).includes(testProductId)`), true);
     assert.equal(await evaluate(`location.pathname.endsWith('/index.html')`), true, 'Double click must favorite without navigating');
-    await pointerClick(`testCard.querySelector('.product-card-actions > [aria-hidden="true"]')`);
+    await pointerClick(`testCard.querySelector('.product-card-actions .btn-card-ver, .product-card-actions > [aria-hidden="true"], .product-card-actions button:first-child')`);
     await waitFor(`location.pathname.endsWith('/producto.html')&&typeof window.navigateTo==='function'`);
   }
   await go('index.html');
