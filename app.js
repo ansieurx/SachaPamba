@@ -3220,7 +3220,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         pendingCheckoutRedirect = null;
         closeAuthModal();
         showToast('Bienvenido, ' + user.name);
-        navigateTo(destination || 'cuenta.html');
+        if (destination) navigateTo(destination);
       });
     }
 
