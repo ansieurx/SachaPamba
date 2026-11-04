@@ -45,6 +45,29 @@ html {
   transition: none !important;
 }
 
+/* La imagen alternativa se presenta dentro de la tarjeta y no queda detrás
+   de su etiqueta de categoría cuando el archivo no está disponible. */
+.product-card-image-box.product-image-unavailable > img {
+  visibility: hidden;
+}
+
+.product-image-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+  color: #283618;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+}
+
 .product-thumb-btn,
 #lightbox-thumbnails-container > button {
   transition: none !important;

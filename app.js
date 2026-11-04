@@ -1478,6 +1478,35 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       return entry;
     }
 
+    function showProductImageFallback(image) {
+      const container = image.closest('.product-card-image-box');
+      if (!container) return;
+      const label = image.alt || 'Imagen del producto no disponible';
+      image.removeAttribute('src');
+      image.alt = '';
+      container.classList.add('product-image-unavailable');
+      let fallback = container.querySelector('[data-product-image-fallback]');
+      if (!fallback) {
+        fallback = document.createElement('span');
+        fallback.dataset.productImageFallback = '';
+        fallback.className = 'product-image-fallback';
+        fallback.setAttribute('role', 'img');
+        container.append(fallback);
+      }
+      fallback.setAttribute('aria-label', label);
+      fallback.textContent = label;
+    }
+
+    // Interceptar el error antes del fallback remoto del atributo HTML para que
+    // el mensaje conserve una ubicaciÃ³n legible dentro de la tarjeta.
+    document.addEventListener('error', event => {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement) || !image.matches('.product-card-image-box > img')) return;
+      event.stopImmediatePropagation();
+      image.onerror = null;
+      showProductImageFallback(image);
+    }, true);
+
     function showPreparedProductImage(img, src, onShown = () => {}) {
       if (img.id !== 'lightbox-img') src = getProductImage(src, 'detail');
       const request = {};
