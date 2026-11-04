@@ -131,6 +131,17 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       ids.forEach(id => {
         const input = document.getElementById(id);
         if (!input) return;
+        if (id === 'checkout-card-exp') {
+          input.addEventListener('input', () => {
+            const digits = input.value.replace(/\D/g, '').slice(0, 4);
+            input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+          });
+        }
+        if (id === 'checkout-card-cvv') {
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/g, '').slice(0, input.maxLength);
+          });
+        }
         input.addEventListener('input', () => { input.setCustomValidity(''); input.removeAttribute('aria-invalid'); });
         input.addEventListener('blur', () => {
           const error = fieldValidationError(id);
