@@ -161,7 +161,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     // Respaldo para conservar la navegación si categoria aún no tiene permisos de lectura.
     const DEFAULT_CATEGORIES = [
       { id: '1', parentId: null, slug: 'suplementos', name: 'Suplementos' },
-      { id: '2', parentId: '1', slug: 'vitaminas-minerales', name: 'Vitaminas y Minerales' },
+      { id: '2', parentId: '1', slug: 'vitaminas-minerales', name: 'Vitaminas & Minerales' },
       { id: '3', parentId: '1', slug: 'remedios', name: 'Remedios' },
       { id: '4', parentId: '1', slug: 'suplementos-polvo', name: 'Suplementos en Polvo' },
       { id: '8', parentId: null, slug: 'alimentacion-natural', name: 'Alimentación Natural' },
@@ -230,7 +230,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
             id: String(category.cat_id),
             parentId: category.cat_categoria_padre_id == null ? null : String(category.cat_categoria_padre_id),
             slug: category.cat_codigo_slug,
-            name: category.cat_nombre
+            name: category.cat_codigo_slug === 'vitaminas-minerales' ? 'Vitaminas & Minerales' : category.cat_nombre
           }));
         }
 
@@ -2322,9 +2322,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const category = params.get('cat');
       const subcategory = params.get('subcat');
       const specialTitles = { destacados: 'Productos Destacados', 'mas-vendidos': 'Los Más Vendidos', nuevos: 'Productos Nuevos' };
+      const categoryTitles = { 'vitaminas-minerales': 'Vitaminas & Minerales', 'despensa-vegetariana-vegana': 'Despensa Vegetariana & Vegana', 'snacks-frutos-secos': 'Snacks & Frutos Secos' };
       const title = special
         ? (specialTitles[special] || 'Toda la Selección Especial')
-        : (subcategory ? products[0]?.subcategoryName : category ? products[0]?.categoryName : 'Todos los Productos') || 'Todos los Productos';
+        : (subcategory ? (categoryTitles[subcategory] || products[0]?.subcategoryName) : category ? products[0]?.categoryName : 'Todos los Productos') || 'Todos los Productos';
       const categoryName = products[0]?.categoryName || 'Todos los Productos';
       const breadcrumbs = document.createElement('div');
       const segments = [{ label: 'Inicio', href: 'index.html' }, { label: 'Productos', href: category || special ? 'categoria.html' : null }];
@@ -4066,6 +4067,11 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       });
     }
 
+    function formatCatalogTitle(title) {
+      const clean = String(title ?? '').replace(/&amp;/g, '&');
+      return clean.split('&').map(part => escapeHtml(part.trim())).join(' <span class="amp-normal">&amp;</span> ');
+    }
+
     function updateCatalogSelection() {
       const grid = document.querySelector('[data-catalog-grid]');
       if (!grid) return;
@@ -4076,7 +4082,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const categoryName = categories[cat]?.name || 'Todos los Productos';
       const title = special ? ({destacados:'Productos Destacados','mas-vendidos':'Los Más Vendidos',nuevos:'Productos Nuevos'}[special] || 'Toda la Selección Especial') : (categories[cat]?.subcategories[subcat] || categoryName);
       const titleEl = document.querySelector('[data-catalog-title]');
-      if (titleEl && titleEl.textContent !== title) titleEl.textContent = title;
+      if (titleEl && (titleEl.dataset.titleRaw !== title || titleEl.textContent.trim() !== title.trim())) {
+        titleEl.dataset.titleRaw = title;
+        titleEl.innerHTML = formatCatalogTitle(title);
+      }
       const countEl = document.querySelector('[data-catalog-count]');
       if (countEl && countEl.textContent !== String(products.length)) countEl.textContent = products.length;
       document.querySelector('[data-catalog-results]').setAttribute('aria-label', `Listado de productos: ${title}`);
