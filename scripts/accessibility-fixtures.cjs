@@ -43,6 +43,11 @@ export function createClient(){return {
     if(name==='web_mi_perfil')return ok(profile);
     if(name==='web_mis_pedidos')return ok(orders);
     if(name==='web_registro_disponible')return ok(true);
+    if(name==='web_correo_por_usuario'){
+      const clean=(args?.p_identificador||'').trim().toLowerCase();
+      if(clean===profile.username.toLowerCase()||clean===profile.email.toLowerCase())return ok(profile.email);
+      return ok(null);
+    }
     if(name==='web_guardar_perfil')return ok({...profile,...args.p_perfil});
     if(name==='web_cambiar_estado_pedido'){
       if(sessionStorage.getItem('a11y-status-error'))return {data:null,error:{message:'No se pudo guardar el estado'}};

@@ -376,21 +376,21 @@
         <!-- Formulario 1: Iniciar Sesión -->
         <div id="auth-panel-login" role="tabpanel" aria-labelledby="tab-login-btn"><form id="form-login" onsubmit="handleLoginSubmit(event)" novalidate class="space-y-3.5 sm:space-y-4"  aria-labelledby="tab-login-btn">
           <div>
-            <label for="login-email" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
+            <label for="login-email" class="block text-xs sm:text-sm font-bold text-brand-forest mb-1.5">Correo Electrónico o Usuario <span class="text-red-500">*</span></label>
             <div class="relative">
               <input 
-                type="email" 
+                type="text" 
                 id="login-email" 
-                placeholder="ejemplo@sachaypamba.ec" 
+                placeholder="ejemplo@sachaypamba.ec o tu usuario" 
                 value=""
                 oninput="clearFieldValidation('login-email')"
                 class="auth-input-with-icon w-full text-xs sm:text-sm py-3 sm:py-3.5 pl-11 pr-4 rounded-xl border border-brand-olive bg-[#FEFAE0] text-brand-leaf focus:outline-none focus:border-brand-forest focus:ring-1 focus:ring-brand-forest font-medium transition-colors"
                 style="padding-left: 2.85rem !important;"
-               autocomplete="username" inputmode="email" required="" aria-required="true" aria-describedby="login-email-err">
-              <i aria-hidden="true" class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
+               autocomplete="username" inputmode="text" required="" aria-required="true" aria-describedby="login-email-err">
+              <i aria-hidden="true" class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-brand-forest/60 pointer-events-none"></i>
             </div>
             <p id="login-email-err" class="text-xs font-bold text-red-600 mt-1 flex items-center gap-1 hidden" role="alert">
-              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu correo electrónico.</span>
+              <i aria-hidden="true" class="ph-bold ph-warning-circle"></i> <span>Por favor, ingresa tu correo electrónico o usuario.</span>
             </p>
           </div>
 

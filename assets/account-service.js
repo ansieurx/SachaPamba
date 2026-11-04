@@ -95,6 +95,21 @@ export function createAccountService(supabase) {
       if (error) throw error;
       return data;
     },
+    async resolveEmail(identifier) {
+      const text = String(identifier || '').trim();
+      if (!text) return null;
+      if (text.includes('@')) return text;
+      try {
+        const { data, error } = await supabase.rpc('web_correo_por_usuario', { p_identificador: text });
+        if (error) {
+          console.warn('web_correo_por_usuario:', error.message);
+          return null;
+        }
+        return data || null;
+      } catch {
+        return null;
+      }
+    },
     async updatePassword(password) {
       const { data, error } = await supabase.auth.updateUser({ password });
       if (error) throw error;

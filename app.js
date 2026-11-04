@@ -3155,7 +3155,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       e.preventDefault();
       const emailInput = document.getElementById('login-email');
       const passInput = document.getElementById('login-password');
-      const email = emailInput ? emailInput.value.trim() : '';
+      let identifier = emailInput ? emailInput.value.trim() : '';
+      if (identifier.startsWith('@') && !identifier.slice(1).includes('@')) {
+        identifier = identifier.slice(1).trim();
+      }
       const password = passInput ? passInput.value : '';
 
       let hasError = false;
@@ -3165,10 +3168,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         hasError = true;
       }
 
-      if (!email) {
-        showFieldError('login-email', 'login-email-err', 'Por favor, ingresa tu correo electrónico.');
+      if (!identifier) {
+        showFieldError('login-email', 'login-email-err', 'Por favor, ingresa tu correo electrónico o usuario.');
         hasError = true;
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      } else if (identifier.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
         showFieldError('login-email', 'login-email-err', 'Por favor, ingresa un formato de correo válido.');
         hasError = true;
       }
@@ -3179,7 +3182,17 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       }
 
       await submitAccountRequest(document.getElementById('form-login'), async () => {
-        const user = await accountService.signIn(email, password);
+        let emailToUse = identifier;
+        if (!identifier.includes('@')) {
+          const resolved = await accountService.resolveEmail(identifier);
+          if (!resolved) {
+            showFieldError('login-email', 'login-email-err', 'No se encontró ninguna cuenta con el usuario ingresado.');
+            emailInput?.focus();
+            throw new Error('No se encontró ninguna cuenta con el usuario ingresado. Verifica tu usuario o ingresa con tu correo.');
+          }
+          emailToUse = resolved;
+        }
+        const user = await accountService.signIn(emailToUse, password);
         passInput.value = '';
         updateAuthUI();
         const destination = pendingCheckoutRedirect;
@@ -3192,16 +3205,19 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
 
     async function handleForgotPassword() {
       const emailInput = document.getElementById('login-email');
-      const email = emailInput ? emailInput.value.trim() : '';
+      let identifier = emailInput ? emailInput.value.trim() : '';
+      if (identifier.startsWith('@') && !identifier.slice(1).includes('@')) {
+        identifier = identifier.slice(1).trim();
+      }
 
-      if (!email) {
-        showFieldError('login-email', 'login-email-err', 'Ingresa tu correo aquí para enviarte el enlace de recuperación.');
+      if (!identifier) {
+        showFieldError('login-email', 'login-email-err', 'Ingresa tu correo o usuario aquí para enviarte el enlace de recuperación.');
         emailInput?.focus();
-        showToast('Ingresa tu correo en el campo superior para enviarte el enlace.', 'ph-envelope');
+        showToast('Ingresa tu correo o usuario en el campo superior.', 'ph-envelope');
         return;
       }
 
-      if (!isValidEmail(email)) {
+      if (identifier.includes('@') && !isValidEmail(identifier)) {
         showFieldError('login-email', 'login-email-err', 'Por favor, ingresa un correo electrónico válido.');
         emailInput?.focus();
         showToast('Ingresa un correo electrónico válido.', 'ph-warning-circle');
@@ -3211,11 +3227,28 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       clearFieldValidation('login-email');
 
       await submitAccountRequest(document.getElementById('form-login'), async () => {
+        let emailToUse = identifier;
+        if (!identifier.includes('@')) {
+          const resolved = await accountService.resolveEmail(identifier);
+          if (!resolved) {
+            showFieldError('login-email', 'login-email-err', 'No se encontró ninguna cuenta registrada con este usuario.');
+            emailInput?.focus();
+            throw new Error('No se encontró cuenta registrada con ese usuario. Verifica o escribe tu correo.');
+          }
+          emailToUse = resolved;
+        }
+
         const emailRedirectTo = new URL('cuenta.html?tab=personal&cambio=clave', window.location.href).href;
-        await accountService.resetPasswordForEmail(email, emailRedirectTo);
-        showToast('Enlace de recuperación enviado. Revisa tu correo.', 'ph-envelope');
+        await accountService.resetPasswordForEmail(emailToUse, emailRedirectTo);
+        showToast(
+          identifier.includes('@')
+            ? 'Enlace de recuperación enviado. Revisa tu correo.'
+            : `Enlace de recuperación enviado al correo registrado asociado a "${identifier}". Revisa tu bandeja de entrada.`,
+          'ph-envelope'
+        );
       });
     }
+
 
     async function handleRegisterSubmit(e) {
       e.preventDefault();
