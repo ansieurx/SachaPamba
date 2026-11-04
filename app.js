@@ -2189,8 +2189,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       closeNavCategoryMenu();
       if (path === 'categoria.html') {
         if (currentPath === 'categoria.html') {
-          history.pushState(null, '', destination.href);
-          updateCatalogSelection();
+          selectPreparedCatalogCategory(destination);
           return;
         }
         prepareCatalogNavigation(destination);
@@ -2200,8 +2199,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     let catalogNavigationPending = false;
+    let catalogSelectionRequest = 0;
     const CATALOG_INITIAL_VIEW_KEY = 'sacha_catalog_initial_view';
     const CATEGORY_FILTER_SCROLL_KEY = 'sacha_category_filter_scroll';
+    const CATALOG_PREPARED_CARD_COUNT = 6;
 
     function productsForCatalogDestination(products, destination) {
       const params = destination.searchParams;
@@ -2217,6 +2218,23 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         return products.filter(filters[special] || (product => product.isFeatured || product.isBestSeller || product.isNew));
       }
       return products.filter(product => (!category || product.category === category) && (!subcategory || product.subcategory === subcategory));
+    }
+
+    function prepareCatalogCardImages(products) {
+      return Promise.all(products.slice(0, CATALOG_PREPARED_CARD_COUNT).map(product => {
+        const image = prepareProductImage(getProductImage(product.image, 'card'), 'high');
+        return image.ready ? true : image.promise;
+      }));
+    }
+
+    function selectPreparedCatalogCategory(destination) {
+      const request = ++catalogSelectionRequest;
+      catalogReady.then(products => prepareCatalogCardImages(productsForCatalogDestination(products, destination)))
+        .then(() => {
+          if (request !== catalogSelectionRequest) return;
+          history.pushState(null, '', destination.href);
+          updateCatalogSelection();
+        });
     }
 
     function prepareCatalogNavigation(destination) {
@@ -2235,11 +2253,8 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       } catch { /* La navegación continúa aunque el almacenamiento esté bloqueado. */ }
       catalogReady.then(products => {
         const destinationProducts = productsForCatalogDestination(products, destination);
-        const visibleProducts = destinationProducts.slice(0, 3);
-        return Promise.all(visibleProducts.map(product => {
-          const image = prepareProductImage(getProductImage(product.image, 'card'), 'high');
-          return image.ready ? true : image.promise;
-        })).then(() => saveCatalogInitialView(destination, destinationProducts));
+        return prepareCatalogCardImages(destinationProducts)
+          .then(() => saveCatalogInitialView(destination, destinationProducts));
       }).finally(() => window.location.assign(destination.href));
     }
 
@@ -2249,7 +2264,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const cards = document.createElement('div');
       products.forEach((product, index) => {
         const card = cloneTemplate('product-card-template', productValues(product));
-        card.querySelector('img')?.setAttribute('loading', index < 3 ? 'eager' : 'lazy');
+        card.querySelector('img')?.setAttribute('loading', index < CATALOG_PREPARED_CARD_COUNT ? 'eager' : 'lazy');
         cards.append(card);
       });
       const params = destination.searchParams;
@@ -3888,8 +3903,8 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         grid.replaceChildren(...(products.length ? products.map(p => cloneTemplate('product-card-template', productValues(p))) : [cloneTemplate('catalog-empty-template')]));
       }
       grid.querySelectorAll('img').forEach((image, index) => {
-        image.loading = index < 4 ? 'eager' : 'lazy';
-        image.fetchPriority = index < 2 ? 'high' : 'auto';
+        image.loading = index < CATALOG_PREPARED_CARD_COUNT ? 'eager' : 'lazy';
+        image.fetchPriority = index < CATALOG_PREPARED_CARD_COUNT ? 'high' : 'auto';
       });
       document.querySelectorAll('[data-filter-idle-class]').forEach(node => {
         const link = node.closest('a[href]');
