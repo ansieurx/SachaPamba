@@ -115,8 +115,13 @@ export function createAccountService(supabase) {
       if (error) {
         if (error.code === 'same_password' || /new password should be different/i.test(error.message)) {
           throw new Error('La nueva contraseña debe ser diferente a la anterior.');
+        } else if (/password should be at least/i.test(error.message)) {
+          throw new Error('La contraseña debe tener al menos 8 caracteres y cumplir los requisitos de seguridad.');
+        } else if (/rate limit/i.test(error.message)) {
+          throw new Error('Has alcanzado el límite de intentos. Espera unos minutos antes de volver a intentar.');
+        } else {
+          throw new Error('No se pudo actualizar la contraseña. Vuelve a intentarlo.');
         }
-        throw error;
       }
       return data;
     },
@@ -171,13 +176,15 @@ export function createAccountService(supabase) {
         if (password) changes.password = password;
         const { error } = await supabase.auth.updateUser(changes);
         if (error) {
-          let detail = error.message;
+          let detail = 'no se pudo actualizar la contraseña o el acceso. Intenta nuevamente.';
           if (error.code === 'same_password' || /new password should be different/i.test(error.message)) {
             detail = 'la nueva contraseña debe ser diferente a la anterior.';
           } else if (/password should be at least/i.test(error.message)) {
             detail = 'la contraseña debe cumplir con los requisitos mínimos de seguridad.';
           } else if (/rate limit/i.test(error.message)) {
             detail = 'has realizado demasiados intentos. Espera unos minutos.';
+          } else if (/user already registered/i.test(error.message)) {
+            detail = 'ya existe una cuenta registrada con este correo.';
           }
           throw new Error(`El perfil se guardó, pero ${detail}`);
         }

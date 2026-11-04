@@ -42,6 +42,9 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (/user already registered/i.test(raw)) {
         return 'Ya existe una cuenta registrada con este correo.';
       }
+      if (/invalid login credentials/i.test(raw)) {
+        return 'Correo o contraseña incorrectos.';
+      }
 
       return raw || 'No se pudo completar la solicitud. Vuelve a intentarlo.';
     }
