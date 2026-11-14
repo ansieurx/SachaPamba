@@ -1796,7 +1796,16 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     }
 
     function isProductPickedUp(productId) {
-      return getPickedUpProducts().includes(productId);
+      if (getPickedUpProducts().includes(productId)) return true;
+      return getAllOrders().some(order => {
+        const status = (order?.status || '').trim().toLowerCase();
+        if (status !== 'entregado' && status !== 'retirado') return false;
+        let items = order?.items;
+        if (typeof items === 'string') {
+          try { items = JSON.parse(items); } catch { items = []; }
+        }
+        return Array.isArray(items) && items.some(item => String(item?.id || item?.pro_id || '') === String(productId));
+      });
     }
 
     function toggleProductPickupDemo(productId) {
@@ -2166,6 +2175,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         const history = document.querySelectorAll('[data-order-history] [data-order-card]')[index];
         if (history) updateOrderElements(history, saved, index);
         showToast('Estado del pedido actualizado: ' + newStatus, 'ph-check-circle');
+        syncCurrentPage();
       } catch (error) {
         showToast(authErrorMessage(error), 'ph-warning');
       } finally {
@@ -3259,6 +3269,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         const user = await accountService.signIn(emailToUse, password);
         passInput.value = '';
         updateAuthUI();
+        syncCurrentPage();
         const destination = pendingCheckoutRedirect;
         pendingCheckoutRedirect = null;
         closeAuthModal();
@@ -4667,6 +4678,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
           updateAuthUI();
           updateAccountDetailsUI();
           updateCartUI();
+          updateProductDetails();
           if (event === 'PASSWORD_RECOVERY') {
             const newPassInput = document.getElementById('acc-new-password');
             if (newPassInput) {
