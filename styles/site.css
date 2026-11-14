@@ -1513,3 +1513,150 @@ aside[aria-label="Filtros del catálogo"] .sidebar-cat-header > div:last-child,
 aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a > span:last-child {
   flex-shrink: 0;
 }
+
+/* Soporte exclusivo para modo oscuro en el menú navegable de categorías y barra de catálogo,
+   garantizando máxima legibilidad y contraste únicamente cuando el dispositivo está en modo oscuro. */
+@media (prefers-color-scheme: dark) {
+  #nav-category-menu {
+    background-color: #1a2410 !important;
+    color: #fefae0 !important;
+    border-color: #4a5e31 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7) !important;
+  }
+  #nav-category-menu > div:first-child {
+    border-color: #3b4d27 !important;
+  }
+  #nav-category-menu h2 {
+    color: #fefae0 !important;
+  }
+  #nav-category-menu #nav-category-close {
+    color: #fefae0 !important;
+  }
+  #nav-category-menu #nav-category-close:hover {
+    color: #e9c46a !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  #nav-category-menu a[href="categoria.html"] {
+    background-color: #243217 !important;
+    color: #fefae0 !important;
+    border-color: #e9c46a !important;
+  }
+  #nav-category-menu a[href="categoria.html"] i {
+    color: #e9c46a !important;
+  }
+  #nav-category-menu a[href="categoria.html"] span.rounded-full {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  #nav-category-menu .nav-cat-card {
+    background-color: #222f16 !important;
+    border-color: #3e502a !important;
+  }
+  #nav-category-menu .nav-cat-header {
+    color: #fefae0 !important;
+  }
+  #nav-category-menu .nav-cat-header:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  #nav-category-menu .nav-cat-header span span,
+  #nav-category-menu .nav-cat-header span {
+    color: #fefae0 !important;
+  }
+  #nav-category-menu .nav-cat-header i {
+    color: #e9c46a !important;
+  }
+  #nav-category-menu .nav-cat-header .nav-cat-caret i {
+    color: #e9c46a !important;
+  }
+  #nav-category-menu .nav-cat-header span.rounded-full {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  #nav-category-menu .nav-subcat-drawer {
+    background-color: #192310 !important;
+    border-color: #3a4b27 !important;
+  }
+  #nav-category-menu .nav-subcat-drawer a {
+    color: #fefae0 !important;
+  }
+  #nav-category-menu .nav-subcat-drawer a:hover {
+    background-color: #2d3c1d !important;
+    color: #e9c46a !important;
+  }
+  #nav-category-menu .nav-subcat-drawer a:first-child {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  #nav-category-menu .nav-subcat-drawer a:first-child span.rounded-full {
+    background-color: #283618 !important;
+    color: #fefae0 !important;
+  }
+  #nav-category-menu .nav-subcat-drawer a span.rounded-full {
+    background-color: #2f3d20 !important;
+    color: #fefae0 !important;
+    border: 1px solid #4a5c35;
+  }
+
+  /* Barra lateral de categorías en el catálogo */
+  aside[aria-label="Filtros del catálogo"] {
+    background-color: #1a2410 !important;
+    color: #fefae0 !important;
+    border-color: #4a5e31 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] h2,
+  aside[aria-label="Filtros del catálogo"] h3,
+  aside[aria-label="Filtros del catálogo"] span {
+    color: #fefae0 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] a[title="Restablecer filtros"] {
+    color: #e9c46a !important;
+  }
+  aside[aria-label="Filtros del catálogo"] a[href="categoria.html"] {
+    background-color: #243217 !important;
+    color: #fefae0 !important;
+    border-color: #e9c46a !important;
+  }
+  aside[aria-label="Filtros del catálogo"] a[href="categoria.html"] i {
+    color: #e9c46a !important;
+  }
+  aside[aria-label="Filtros del catálogo"] a[href="categoria.html"] span.rounded-full {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-header {
+    background-color: #222f16 !important;
+    border-color: #3e502a !important;
+    color: #fefae0 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-header i {
+    color: #e9c46a !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-header span.rounded-full {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer {
+    background-color: #192310 !important;
+    border-color: #3a4b27 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a {
+    color: #fefae0 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a:hover {
+    background-color: #2d3c1d !important;
+    color: #e9c46a !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a:first-child {
+    background-color: #e9c46a !important;
+    color: #283618 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a:first-child span.rounded-full {
+    background-color: #283618 !important;
+    color: #fefae0 !important;
+  }
+  aside[aria-label="Filtros del catálogo"] .sidebar-cat-drawer a span.rounded-full {
+    background-color: #2f3d20 !important;
+    color: #fefae0 !important;
+    border: 1px solid #4a5c35;
+  }
+}
