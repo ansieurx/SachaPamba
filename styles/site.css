@@ -1422,7 +1422,7 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
   }
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1279px) {
   .smart-header > div:first-child a[href="index.html"] { flex: 1 1 0; }
 
   /* Jerarquía compacta del identificador de marca en móvil. */
@@ -1465,21 +1465,29 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
     min-height: 0 !important;
     padding-top: 0.35rem !important;
     padding-bottom: 0.35rem !important;
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow: visible !important;
   }
-  .smart-header > div:nth-child(2) > .max-w-7xl > div::-webkit-scrollbar { display: none; }
   .smart-header nav[aria-label="Navegación principal del sitio"] {
     flex-wrap: nowrap !important;
     gap: 0 !important;
     min-width: max-content;
   }
   .smart-header nav[aria-label="Navegación principal del sitio"] .nav-section-link {
-    padding: 0.35rem 0.4rem !important;
+    padding: 0.35rem 0.25rem !important;
     font-size: clamp(0.625rem, 2.75vw, 0.75rem) !important;
     line-height: 1.2 !important;
   }
   .smart-header #nav-category-btn { gap: 0.2rem !important; }
+}
+
+/* El menú de categorías siempre conserva una zona de desplazamiento propia,
+   para que sus opciones no queden fuera de la ventana. */
+#nav-category-menu {
+  max-height: calc(100dvh - 18rem);
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
 /* Panel lateral del catálogo: etiquetas largas y contadores siempre legibles. */

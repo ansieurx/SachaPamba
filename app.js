@@ -1320,6 +1320,19 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         drawer.classList.remove('hidden');
         if (caret) caret.classList.add('rotate-180');
         header.setAttribute('aria-expanded', 'true');
+        const menu = navMenu || header.closest('#nav-category-menu');
+        if (menu && card) {
+          requestAnimationFrame(() => {
+            const menuRect = menu.getBoundingClientRect();
+            const cardRect = card.getBoundingClientRect();
+            const relativeCardTop = cardRect.top - menuRect.top + menu.scrollTop;
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            menu.scrollTo({
+              top: Math.max(0, Math.round(relativeCardTop - 8)),
+              behavior: prefersReducedMotion ? 'instant' : 'smooth'
+            });
+          });
+        }
       } else {
         header.setAttribute('aria-expanded', 'false');
       }
