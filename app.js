@@ -393,9 +393,20 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       document.documentElement.style.setProperty('--cart-zoom', '1');
     }
 
+    // En móvil el resumen lateral reduce demasiado el espacio útil. El carrito
+    // completo sigue disponible desde el botón del encabezado (carrito.html).
+    const cartDrawerDesktopQuery = window.matchMedia('(min-width: 640px)');
+    function canOpenCartDrawer() {
+      return cartDrawerDesktopQuery.matches;
+    }
+
     function toggleCartDrawer() {
       const drawer = document.getElementById('cart-side-drawer');
       if (!drawer) return;
+      if (!canOpenCartDrawer()) {
+        collapseCartDrawer();
+        return;
+      }
       if (drawer.classList.contains('translate-x-0') || drawer.classList.contains('is-open')) {
         collapseCartDrawer();
       } else {
@@ -407,7 +418,7 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
       if (!toggleBtn) return;
       const drawerOpen = document.body.classList.contains('cart-drawer-open');
-      const hidden = !cart.length || /^(carrito|checkout)/.test(getPageName());
+      const hidden = !canOpenCartDrawer() || !cart.length || /^(carrito|checkout)/.test(getPageName());
       toggleBtn.hidden = hidden;
       toggleBtn.classList.toggle('hidden', hidden);
       if (hidden) toggleBtn.style.setProperty('display', 'none', 'important');
@@ -436,6 +447,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
     function openCartDrawer() {
       updateCartDrawerUI();
       if (!cart.length) return;
+      if (!canOpenCartDrawer()) {
+        collapseCartDrawer();
+        return;
+      }
       updateCartDrawerZoom();
       const drawer = document.getElementById('cart-side-drawer');
       const toggleBtn = document.getElementById('cart-drawer-toggle-btn');
@@ -3732,6 +3747,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
         history.scrollRestoration = 'manual';
       }
       updateCartDrawerZoom();
+      cartDrawerDesktopQuery.addEventListener('change', event => {
+        if (!event.matches) collapseCartDrawer();
+        else updateCartDrawerToggle();
+      });
       if (sessionStorage.getItem('sacha_cart_drawer_open') === 'true' && cart && cart.length > 0) {
         const currentPageUrl = getCurrentPageUrl() || 'index.html';
         if (!currentPageUrl.includes('carrito.html') && !currentPageUrl.includes('checkout')) {

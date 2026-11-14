@@ -1414,6 +1414,12 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
 
 @media (max-width: 639px) {
   body.cart-drawer-open { padding-right: 0 !important; }
+  /* En pantallas estrechas el carrito se consulta en su propia página para no
+     cubrir el contenido que se está navegando. */
+  #cart-side-drawer,
+  #cart-drawer-toggle-btn {
+    display: none !important;
+  }
   .smart-header > div:first-child a[href="index.html"] { flex: 1 1 0; }
 }
 
