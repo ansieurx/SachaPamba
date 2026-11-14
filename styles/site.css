@@ -1454,7 +1454,7 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
     padding-bottom: 0.55rem !important;
   }
 
-  /* Una única fila, con desplazamiento solo en anchos excepcionalmente pequeños. */
+  /* Opciones de navegación con tamaño legible y desplazamiento horizontal si no alcanzan */
   .smart-header > div:nth-child(2) > .max-w-7xl {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
@@ -1463,21 +1463,44 @@ body:not([data-cart-has-items="true"]) #cart-drawer-toggle-btn,
     flex-wrap: nowrap !important;
     justify-content: flex-start !important;
     min-height: 0 !important;
-    padding-top: 0.35rem !important;
-    padding-bottom: 0.35rem !important;
-    overflow: visible !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-x: contain !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .smart-header > div:nth-child(2) > .max-w-7xl > div::-webkit-scrollbar {
+    display: none !important;
   }
   .smart-header nav[aria-label="Navegación principal del sitio"] {
+    display: flex !important;
     flex-wrap: nowrap !important;
-    gap: 0 !important;
-    min-width: max-content;
+    gap: 0.35rem !important;
+    min-width: max-content !important;
+  }
+  .smart-header nav[aria-label="Navegación principal del sitio"] .nav-section-link,
+  .smart-header nav[aria-label="Navegación principal del sitio"] .nav-section-link span {
+    font-size: 0.85rem !important;
+    line-height: 1.25 !important;
   }
   .smart-header nav[aria-label="Navegación principal del sitio"] .nav-section-link {
-    padding: 0.35rem 0.25rem !important;
-    font-size: clamp(0.625rem, 2.75vw, 0.75rem) !important;
-    line-height: 1.2 !important;
+    padding: 0.4rem 0.65rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }
-  .smart-header #nav-category-btn { gap: 0.2rem !important; }
+  .smart-header #nav-category-btn { gap: 0.25rem !important; }
+
+  #nav-category-menu {
+    position: fixed !important;
+    top: var(--nav-menu-top, 10.5rem) !important;
+    left: 4vw !important;
+    right: 4vw !important;
+    width: auto !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
 }
 
 /* El menú de categorías siempre conserva una zona de desplazamiento propia,

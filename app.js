@@ -1256,6 +1256,10 @@ import { documentError, profileErrors, nameError, isValidEmail, isValidPhone, bi
       if (!navMenu) return;
       if (navMenu.classList.contains('hidden')) {
         collapseNavCategories();
+        if (navBtn) {
+          const rect = navBtn.getBoundingClientRect();
+          navMenu.style.setProperty('--nav-menu-top', `${Math.round(rect.bottom + 6)}px`);
+        }
         navMenu.classList.remove('hidden');
         if (navBackdrop) navBackdrop.classList.remove('hidden');
         if (navCaret) navCaret.classList.add('rotate-180');
